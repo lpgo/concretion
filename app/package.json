@@ -9,6 +9,8 @@
     "vue-electron": "^1.0.6",
     "vue-router": "^2.1.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron-rebuild": "^1.5.7"
+  },
   "author": "lpgo <whereisgirl@126.com>"
 }

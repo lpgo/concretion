@@ -1,10 +1,21 @@
 <template>
   <div style="background:#fafafa">
     <mu-appbar title="茂奂建材有限公司">
-      <mu-icon value="exit_to_app" :size="36" slot="right"/>
+      <MenuButton :menuData="menuData" icon="devices" slot="right"/>
     </mu-appbar>
-    <div class="flex-container">
-      <div class="menu-list">
+    <div class="content"> 
+      <router-view></router-view>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+  <!-- <div class="menu-list">
         <mu-list>
           <mu-list-item title="磅房" class="menuType" toggleNested nestedListClass="test">
             <mu-icon value="devices" slot="left"/>
@@ -55,24 +66,43 @@
             </mu-list-item>
           </mu-list-item>
         </mu-list>
-      </div>
-      <div class="content">
-        <router-view></router-view>
-      </div>
-    </div>
-  </div>
+      </div> -->
 </template>
 
+<script>
+
+import MenuButton from './MenuButton'
+
+export default {
+  data() {
+    return {
+      menuData: {
+        label: "磅房",
+        items: [{title:"录入过磅单"}, {title: "打印过磅单"}]
+      },
+    }
+  },
+  methods: {
+    
+  },
+  components: {
+    MenuButton
+  }
+}
+</script>
+
 <style>
-.flex-container {
+.content {
+  flex: 1 1 auto;
+}
+
+
+/*.flex-container {
   display: flex;
 }
 .menu-list {
   flex: 0 0 250px;
   border-right: 3px solid #efebe9;
-}
-.content {
-  flex: 1 1 auto;
 }
 .menuType {
   background: #efebe9;
@@ -80,9 +110,7 @@
 .menuItem {
   background: #ffffff;
   width: 250px;
-}
-
 .test {
   padding: 0px !important;
-}
+}*/
 </style>
