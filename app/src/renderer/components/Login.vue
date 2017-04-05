@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div class="login">
 		<mu-paper class="paper" :zDepth="4" >
 			<h2 class="center">系统登录</h2>
 			<mu-text-field label="用户名" hintText="请输入用户名" type="text" labelFloat fullWidth icon="account_box"/>
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <style>
-.container {
+.login {
 	height:100%;
 	width: 100%;
 	background:#009688;

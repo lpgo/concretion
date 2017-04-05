@@ -83,7 +83,6 @@
   },
   "dependencies": {
     "muse-ui": "^2.0.1",
-    "serialport": "^4.0.7",
     "vue-rx": "^3.0.0"
   }
 }

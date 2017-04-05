@@ -1,7 +1,7 @@
 <template>
-<div style="display:flex;background:#fafafa;height:100%;align-items:flex-start">
+<div style="display:flex;align-items:stretch">
 	<mu-paper class="purchase" :zDepth="0" >
-		<!--<div class="purchaseTitle">过磅单</div>-->
+		<div class="purchaseTitle">过磅单</div>
 		<mu-text-field label="请输入公司" labelFloat fullWidth/>
 		<mu-text-field label="请输入车号" labelFloat fullWidth/>
 		<mu-text-field label="请输入名称" labelFloat fullWidth/>
@@ -15,8 +15,8 @@
 			<mu-flat-button label="获取皮重" style="margin-bottom:18px;margin-left:10px" secondary/>
 		</div>
 		<div class="btnContainer">
-			<mu-raised-button label="新增" class="purchaseBtn"  secondary />
-			<mu-raised-button label="保存" class="purchaseBtn" primary />
+			<mu-raised-button label="保存" class="purchaseBtn"  secondary />
+			<mu-raised-button label="出单" class="purchaseBtn" primary />
 		</div>
 	</mu-paper>
 	<div>
@@ -73,7 +73,7 @@
 	export default {
 		data() {
 			return {
-				height:'250px',
+				height:'240px',
 				tableData:[
 					{com:"兴茂",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
 					{com:"兴茂兴茂兴",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
@@ -103,7 +103,7 @@
 }
 .purchase {
 	width: 350px;
-	padding: 25px;
+	padding: 10px 25px;
 	margin: 20px;
 	flex:1 0 350px;
 	

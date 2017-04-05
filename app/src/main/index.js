@@ -13,8 +13,9 @@ function createWindow () {
    * Initial window options
    */
   mainWindow = new BrowserWindow({
-    height: 600,
-    width: 800
+    minWidth:1280,
+    minHeight:760,
+    resizable: true,
   })
 
   mainWindow.loadURL(winURL)
@@ -22,7 +23,10 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
-
+  mainWindow.setMenu(null)
+  //mainWindow.setAutoHideMenuBar(true)
+  mainWindow.maximize()
+  mainWindow.closeDevTools()
   // eslint-disable-next-line no-console
   console.log('mainWindow opened')
   console.log(process.version)
