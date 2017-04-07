@@ -2,90 +2,99 @@
 <div style="display:flex;align-items:stretch">
 	<mu-paper class="purchase" :zDepth="0" >
 		<div class="purchaseTitle">过磅单</div>
-		<mu-text-field label="请输入公司" labelFloat fullWidth/>
-		<mu-text-field label="请输入车号" labelFloat fullWidth/>
-		<mu-text-field label="请输入名称" labelFloat fullWidth/>
-		<mu-text-field label="请输入单价" labelFloat fullWidth type="number"/>
+		<mu-text-field label="请输入公司" labelFloat fullWidth v-model="form.com" :disabled="disabled"/>
+		<mu-text-field label="请输入车号" labelFloat fullWidth v-model="form.car" :disabled="disabled"/>
+		<mu-text-field label="请输入名称" labelFloat fullWidth v-model="form.name" :disabled="disabled"/>
+		<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled"/>
 		<div class="labelGroup">
-			<mu-text-field label="请输入毛重" labelFloat fullWidth type="number"/>
+			<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="disabled"/>
 			<mu-flat-button label="获取毛重" style="margin-bottom:18px;margin-left:10px" primary/>
 		</div>
 		<div class="labelGroup">
-			<mu-text-field label="请输入皮重" labelFloat fullWidth type="number"/>
+			<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" />
 			<mu-flat-button label="获取皮重" style="margin-bottom:18px;margin-left:10px" secondary/>
 		</div>
 		<div class="btnContainer">
-			<mu-raised-button label="保存" class="purchaseBtn"  secondary />
-			<mu-raised-button label="出单" class="purchaseBtn" primary />
+			<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'"/>
+			<template v-if="state == 'save'">
+			<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
+			<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary />
+			</template>
+			<template v-if="state == 'out'">
+			<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
+			<mu-raised-button label="打印" class="purchaseBtn" @click="print" primary />
+			</template>
 		</div>
 	</mu-paper>
 	<div>
-		<mu-table style="margin:20px;" :showCheckbox="false" :fixedHeader="true" :height="height">
-			<mu-thead slot="header" >
-		      <mu-tr style="background:#ff80ab">
-		        <mu-th tooltip="施工单位" class="tdHeader">施工单位</mu-th>
-		        <mu-th tooltip="车号" class="tdHeader">车号</mu-th>
-		        <mu-th tooltip="名称" class="tdHeader">名称</mu-th>
-		        <mu-th tooltip="单价" class="tdHeader">单价</mu-th>
-		        <mu-th tooltip="毛重" class="tdHeader">毛重</mu-th>
-		        <mu-th tooltip="皮重" class="tdHeader">皮重</mu-th>
-		      </mu-tr>
-		    </mu-thead>
-		     <mu-tbody>
-		      <mu-tr v-for="item,index in tableData">
-		        <mu-td>{{item.com}}</mu-td>
-		        <mu-td>{{item.car}}</mu-td>
-		        <mu-td>{{item.name}}</mu-td>
-		        <mu-td>{{item.price}}</mu-td>
-		        <mu-td>{{item.maozhong}}</mu-td>
-		        <mu-td>{{item.pizhong}}</mu-td>
-		      </mu-tr>
-		    </mu-tbody>
-		</mu-table>
-
-		<mu-table style="margin:20px;" :showCheckbox="false" :fixedHeader="true" :height="height">
-			<mu-thead slot="header">
-		      <mu-tr style="background:#26a69a">
-		        <mu-th tooltip="施工单位" class="tdHeader">施工单位</mu-th>
-		        <mu-th tooltip="车号" class="tdHeader">车号</mu-th>
-		        <mu-th tooltip="名称" class="tdHeader">名称</mu-th>
-		        <mu-th tooltip="单价" class="tdHeader">单价</mu-th>
-		        <mu-th tooltip="毛重" class="tdHeader">毛重</mu-th>
-		        <mu-th tooltip="皮重" class="tdHeader">皮重</mu-th>
-		      </mu-tr>
-		    </mu-thead>
-		     <mu-tbody>
-		      <mu-tr v-for="item,index in tableData">
-		        <mu-td>{{item.com}}</mu-td>
-		        <mu-td>{{item.car}}</mu-td>
-		        <mu-td>{{item.name}}</mu-td>
-		        <mu-td>{{item.price}}</mu-td>
-		        <mu-td>{{item.maozhong}}</mu-td>
-		        <mu-td>{{item.pizhong}}</mu-td>
-		      </mu-tr>
-		    </mu-tbody>
-		</mu-table>	
+		<PurchaseList :height="height" theadClass="saveListHead" :data="saveList" @select="saveSelect"/>
+		<PurchaseList :height="height" theadClass="printListHead" :data="outList" @select="outSelect"/>
+ 
 	</div>
 </div>
-</template>
+</template> 
 
 <script>
+	import PurchaseList from './PurchaseList'
+	import mock from '../mock.js'
+
 	export default {
 		data() {
 			return {
 				height:'240px',
-				tableData:[
-					{com:"兴茂",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
-					{com:"兴茂兴茂兴",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
-					{com:"兴茂",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
-					{com:"兴茂兴茂兴",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
-					{com:"兴茂",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
-					{com:"兴茂兴茂兴茂",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
-					{com:"兴茂",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"},
-					{com:"兴茂兴茂兴",car:"陕K12345",name:"石子",price:"200.5",maozhong:"1231",pizhong:"12"}
-				],
+				form : {},
+				disabled : false,
+				state: "new",
+				outList: [],
+				saveList: [],
+				selectRow: null,
+				selectIndex:-1,
 			};
 		},
+		methods: {
+			save() {
+				this.saveList.push(this.form);
+				this.form = {};
+				this.form.com = '';
+				this.form.car = '';
+				this.form.name = '';
+				this.form.price = null;
+				this.form.totalWeight = null;
+				this.form.carWeight = null;
+			}, 
+			print() {
+
+			},
+			out() {
+				this.outList.push(this.form);
+				this.saveList.splice(this.selectIndex, 1);
+			},
+			newOrder() {
+				this.form = {};
+				this.state = "new"
+			},
+			saveSelect(index,tr) {
+				if(this.selectRow != null) {
+					this.selectRow.selectd = false;
+				}
+				this.selectRow = tr;
+				this.selectIndex = index;
+				this.form = this.saveList[index];
+				this.state = "save";
+			},
+			outSelect(index,tr) {
+				if(this.selectRow != null) {
+					this.selectRow.selectd = false;
+				}
+				this.selectRow = tr;
+				this.selectIndex = index;
+				this.form = this.outList[index];
+				this.state = "out"
+			},
+		},
+		components: {
+			PurchaseList
+		}
 	}
 </script>
 
@@ -116,9 +125,11 @@
 	font-weight: 2px;
 	text-align: center;
 }
-.tdHeader {
-	color:white;
-	font-size:13px;
+.saveListHead {
+	background:#ec407a;
+}
+.printListHead {
+	background:#26a69a;
 }
 
 </style>
