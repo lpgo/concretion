@@ -79,7 +79,7 @@ export default {
     return {
       menuData: {
         label: "磅房",
-        items: [{title:"录入过磅单"}, {title: "打印过磅单"}]
+        items: [{title:"录入过磅单", url:"/purchase"}, {title: "打印过磅单", url: "/test"}]
       },
     }
   },

@@ -3,7 +3,7 @@
 	 	<mu-popover :trigger="menu" :open="open" @close="close">
 	        <mu-menu>
 	        	<template v-for="item in menuData.items">
-	          		<mu-menu-item :title="item.title" />
+	          		<mu-menu-item :title="item.title" @click="click(item.url)"/>
 	          	</template>
 	        </mu-menu>
       	</mu-popover>
@@ -30,6 +30,10 @@ export default {
       },
       toggle() {
         this.open = !this.open;
+      },
+      click(url) {
+        this.open = false;
+        this.$router.push(url);
       },
     }
 }

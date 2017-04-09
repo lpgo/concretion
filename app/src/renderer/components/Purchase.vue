@@ -47,7 +47,6 @@
 				state: "new",
 				outList: [],
 				saveList: [],
-				selectRow: null,
 				selectIndex:-1,
 			};
 		},
@@ -68,25 +67,18 @@
 			out() {
 				this.outList.push(this.form);
 				this.saveList.splice(this.selectIndex, 1);
+				this.form = {};
 			},
 			newOrder() {
 				this.form = {};
 				this.state = "new"
 			},
 			saveSelect(index,tr) {
-				if(this.selectRow != null) {
-					this.selectRow.selectd = false;
-				}
-				this.selectRow = tr;
 				this.selectIndex = index;
 				this.form = this.saveList[index];
 				this.state = "save";
 			},
 			outSelect(index,tr) {
-				if(this.selectRow != null) {
-					this.selectRow.selectd = false;
-				}
-				this.selectRow = tr;
 				this.selectIndex = index;
 				this.form = this.outList[index];
 				this.state = "out"
