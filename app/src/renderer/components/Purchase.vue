@@ -11,7 +11,7 @@
 			<mu-flat-button label="获取毛重" style="margin-bottom:18px;margin-left:10px" primary/>
 		</div>
 		<div class="labelGroup">
-			<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" />
+			<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="carWeightDisabled"/>
 			<mu-flat-button label="获取皮重" style="margin-bottom:18px;margin-left:10px" secondary/>
 		</div>
 		<div class="btnContainer">
@@ -44,6 +44,7 @@
 				height:'240px',
 				form : {},
 				disabled : false,
+				carWeightDisabled: true,
 				state: "new",
 				outList: [],
 				saveList: [],
@@ -67,21 +68,31 @@
 			out() {
 				this.outList.push(this.form);
 				this.saveList.splice(this.selectIndex, 1);
+				this.state = "new";
 				this.form = {};
+				this.form.carWeight = null;
+				this.disabled = false;
+				this.carWeightDisabled = true;
 			},
 			newOrder() {
 				this.form = {};
-				this.state = "new"
+				this.state = "new";
+				this.disabled = false;
+				this.carWeightDisabled = true;
 			},
 			saveSelect(index,tr) {
 				this.selectIndex = index;
 				this.form = this.saveList[index];
 				this.state = "save";
+				this.disabled = true;
+				this.carWeightDisabled = false;
 			},
 			outSelect(index,tr) {
 				this.selectIndex = index;
 				this.form = this.outList[index];
-				this.state = "out"
+				this.state = "out";
+				this.disabled = true;
+				this.carWeightDisabled = true;
 			},
 		},
 		components: {
