@@ -3,6 +3,7 @@ import Login from 'components/Login'
 import Test from 'components/Test'
 import Home from 'components/Home'
 import Purchase from 'components/Purchase'
+import Sale from 'components/Sale'
 
 export default [
 	{
@@ -17,6 +18,7 @@ export default [
       component: Home,
       children: [
       	{ path: '/test', component: Test, name: '测试' },
+        { path: '/sale', component: Sale, name: '销售' },
         { path: '/purchase', component: Purchase, name: '过磅单' },
       ]
     }

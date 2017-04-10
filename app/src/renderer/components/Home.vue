@@ -3,10 +3,7 @@
     <mu-appbar title="茂奂建材有限公司">
       <MenuButton :menuData="menuData" icon="devices" slot="right"/>
     </mu-appbar>
-    <div class="content">
-      <router-view></router-view>
-    </div>
-    <div style="height:0"></div>
+    <router-view class="content"></router-view>
   </div>
 
 
@@ -79,7 +76,7 @@ export default {
     return {
       menuData: {
         label: "磅房",
-        items: [{title:"录入过磅单", url:"/purchase"}, {title: "打印过磅单", url: "/test"}]
+        items: [{title:"录入过磅单", url:"/purchase"}, {title: "销售", url: "/sale"}]
       },
     }
   },
@@ -96,12 +93,12 @@ export default {
 .container {
   display: flex;
   flex-direction: column;
-  background:#fafafa;
+  justify-content: flex-start;
   height:100%;
-  justify-content: space-between;
+  background:#fafafa;
 }
-.context {
-  flex: 10 1 auto;
+.content {
+  flex: 1 0 auto;
 }
 /*
 .content {

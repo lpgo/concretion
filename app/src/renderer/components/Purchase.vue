@@ -1,5 +1,5 @@
 <template>
-<div style="display:flex;align-items:stretch">
+<div style="display:flex;align-items:stretch;">
 	<mu-paper class="purchase" :zDepth="0" >
 		<div class="purchaseTitle">过磅单</div>
 		<mu-text-field label="请输入公司" labelFloat fullWidth v-model="form.com" :disabled="disabled"/>
