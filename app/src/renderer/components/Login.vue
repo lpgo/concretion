@@ -6,12 +6,12 @@
 			<mu-text-field label="密码" hintText="请输入密码" type="password" labelFloat fullWidth style="margin-bottom:30px" icon="vpn_key" v-model="pwd" :errorText="pwdMsg" @change="nameMsg=null;pwdMsg=null" @keyup.enter="login"/>
 			<mu-raised-button label="登录" v-on:click="login" class="loginBtn" labelClass="loginText" primary />
 		</mu-paper>
- 
 	</div>
 </template>
  
 <script>
 import conf from '../common/conf.js'
+import util from '../common/util.js'
 
 export default {
 	name: "login",
@@ -21,10 +21,20 @@ export default {
 			pwd: '',
 			nameMsg: null,
 			pwdMsg: null,
+			toast: false,
 		};
 	},
 	methods: {
 		login() {
+			if(!this.name) {
+				this.nameMsg = "请输入用户名";
+				return;
+			}
+			if(!this.pwd) {
+				this.pwdMsg = "请输入密码";
+				return;
+			}
+
 			const form = new FormData();
 			form.append("name",this.name);
 			form.append("pwd", this.pwd);
@@ -34,8 +44,7 @@ export default {
 		            method: "POST",
 		            body:form,
 	          	}
-	        ).catch(err => console.log("catch:", err))
-	        .then(res => {
+	        ).then(res => {
 	        	if(res.ok) {
 	        		console.log(res);
 	        		this.$router.push("/purchase");
@@ -45,8 +54,11 @@ export default {
 	        			this.pwdMsg = result.error;
 	        		});
 	        	}
+			}).catch(err => {
+				console.log("catch: ",err);
+				util.toast("网络错误");
 			});
-		}
+		},
 	}
 }
 </script>

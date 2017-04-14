@@ -37,6 +37,7 @@
 <script>
 	import PurchaseList from './PurchaseList'
 	import mock from '../mock.js'
+	import util from '../common/util.js'
 
 	export default {
 		data() {
@@ -53,14 +54,18 @@
 		},
 		methods: {
 			save() {
-				this.saveList.push(this.form);
-				this.form = {};
-				this.form.com = '';
-				this.form.car = '';
-				this.form.name = '';
-				this.form.price = null;
-				this.form.totalWeight = null;
-				this.form.carWeight = null;
+				util.request("POST", form, date => {
+					this.saveList.push(this.form);
+					this.form = {};
+					this.form.com = '';
+					this.form.car = '';
+					this.form.name = '';
+					this.form.price = null;
+					this.form.totalWeight = null;
+					this.form.carWeight = null;
+				}, err => {
+					
+				});
 			}, 
 			print() {
 
