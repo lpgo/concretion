@@ -4,7 +4,7 @@ import Vue from 'vue'
 const vue = new Vue();
 
 export default {
-	request: function(res,method,data,success,fail) {
+	request: (res,method,data,success,fail) => {
 		return fetch(conf.apiUrl+res,
 			{
 				credentials:"include",
@@ -17,9 +17,11 @@ export default {
         	} else {
         		res.json().then(result => fail(result));
         	}
+		}).catch(err => {
+			toast("网络错误");
 		});
 	},
-	requestForm: function(res,method,data,success,fail) {
+	requestForm: (res,method,data,success,fail) => {
 		const form = new FormData;
 		for(let k in data) {
 			form.append(k,data[k])
@@ -36,6 +38,24 @@ export default {
         	} else {
         		res.json().then(result => fail(result));
         	}
+		}).catch(err => {
+			toast("网络错误:"+err);
+		});
+	},
+	get: function(res,success,fail) {
+		return fetch(conf.apiUrl+res,
+			{
+				credentials:"include",
+	            method: "GET",
+        	}
+		).then(res => {
+        	if(res.ok) {
+        		res.json().then(result => success(result));
+        	} else {
+        		res.json().then(result => fail(result));
+        	}
+		}).catch(err => {
+			toast("网络错误:"+err);
 		});
 	},
 	toast(msg) {

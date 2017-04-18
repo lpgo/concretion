@@ -38,6 +38,7 @@
 	import PurchaseList from './PurchaseList'
 	import mock from '../mock.js'
 	import util from '../common/util.js'
+	import moment from 'moment'
 
 	export default {
 		data() {
@@ -56,8 +57,9 @@
 			save() {
 				this.form.price = Number(this.form.price);
 				this.form.totalWeight = Number(this.form.totalWeight);
+				this.form.complate = false;
 				util.request("purchases", "POST", this.form, data => {
-					this.form.id = data.id
+					this.form.id = data.id;
 					this.saveList.push(this.form);
 					this.form = {};
 					this.form.com = '';
@@ -75,7 +77,8 @@
 			},
 			out() {
 				this.form.carWeight = Number(this.form.carWeight);
-				util.requestForm("purchases/"+this.form.id, "PATCH", {carWeight:this.form.carWeight}, data => {
+				this.form.complate = true;
+				util.requestForm("purchases/"+this.form.id, "PATCH", {carWeight:this.form.carWeight,complate: true}, data => {
 					this.outList.push(this.form);
 					this.saveList.splice(this.selectIndex, 1);
 					this.state = "new";
@@ -111,7 +114,19 @@
 		},
 		components: {
 			PurchaseList
-		}
+		},
+		mounted() {
+			let start = encodeURIComponent(moment().startOf('day').format());
+			let end = encodeURIComponent(moment().endOf('day').format());
+			let url = `purchases?start=${start}&end=${end}&complate=false`
+			util.get(url,data => {
+				if(data) {
+					this.saveList = data;
+				}
+			},err => {
+				util.toast(err);
+			});
+		},
 	}
 </script>
 

@@ -76,7 +76,7 @@ export default {
     return {
       menuData: {
         label: "磅房",
-        items: [{title:"录入过磅单", url:"/purchase"}, {title: "销售", url: "/sale"}]
+        items: [{title:"录入过磅单", url:"/purchase"}, {title: "销售", url: "/sale"},{title: "login", url: "/login"}]
       },
     }
   },

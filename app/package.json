@@ -4,6 +4,7 @@
   "description": "双混站",
   "main": "./dist/main.js",
   "dependencies": {
+    "moment": "^2.18.1",
     "vue": "^2.1.10",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.1.2"

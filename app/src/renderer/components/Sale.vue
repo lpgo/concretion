@@ -17,20 +17,29 @@
 			<span class="textLabel">发货时间：</span><mu-text-field  v-model="time"/>
 		</div>
 		<div class="saleBtnGroup">
-			<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;"/>
+			<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="test"/>
 			<mu-raised-button label="取消" secondary style="width:10%;"/> 
 		</div>
 	</div>
 </template>
 
 <script>
+
+import moment from 'moment'
+
 export default {
 	data() {
 		return {
 			name: "Sale",
 			form: {},
 		};
-	}
+	},
+	methods: {
+		test() {
+			console.log(moment().startOf('day').format());
+			console.log(moment().endOf('day').format());
+		},
+	},
 }
 </script>
 
