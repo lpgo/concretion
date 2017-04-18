@@ -118,10 +118,18 @@
 		mounted() {
 			let start = encodeURIComponent(moment().startOf('day').format());
 			let end = encodeURIComponent(moment().endOf('day').format());
-			let url = `purchases?start=${start}&end=${end}&complate=false`
-			util.get(url,data => {
+			let url = `purchases?start=${start}&end=${end}&complate=`
+			util.get(url+"false", data => {
 				if(data) {
 					this.saveList = data;
+				}
+			},err => {
+				util.toast(err);
+			});
+
+			util.get(url+"true", data => {
+				if(data) {
+					this.outList = data;
 				}
 			},err => {
 				util.toast(err);

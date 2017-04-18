@@ -12,7 +12,7 @@
     "postinstall": "cd app && npm install"
   },
   "build": {
-    "productName": "ElectronVue",
+    "productName": "商混站",
     "appId": "org.simulatedgreg.electron-vue",
     "category": "public.app-category.tools",
     "dmg": {
