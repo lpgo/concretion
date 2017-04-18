@@ -1,7 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow, ipcMain } from 'electron'
-import SerialPort from 'serialport'
+//import SerialPort from 'serialport'
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
@@ -24,7 +24,7 @@ function createWindow () {
     mainWindow = null
   })
   mainWindow.setMenu(null)
-  //mainWindow.setAutoHideMenuBar(true)
+  mainWindow.setAutoHideMenuBar(true)
   mainWindow.maximize()
   mainWindow.closeDevTools()
   // eslint-disable-next-line no-console
@@ -49,6 +49,7 @@ app.on('activate', () => {
   }
 })
 
+/*
 ipcMain.on('getPorts', (event, arg) => {
   console.log('main get ports');
   SerialPort.list(function (err, ports) {
@@ -56,4 +57,5 @@ ipcMain.on('getPorts', (event, arg) => {
     event.sender.send('getPorts', ports);
   })
 })
+*/
 

@@ -4,7 +4,6 @@
   "description": "双混站",
   "main": "./dist/main.js",
   "dependencies": {
-    "serialport": "^4.0.7",
     "vue": "^2.1.10",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.1.2"

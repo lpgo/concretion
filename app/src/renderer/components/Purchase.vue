@@ -54,7 +54,10 @@
 		},
 		methods: {
 			save() {
-				util.request("POST", form, date => {
+				this.form.price = Number(this.form.price);
+				this.form.totalWeight = Number(this.form.totalWeight);
+				util.request("purchases", "POST", this.form, data => {
+					this.form.id = data.id
 					this.saveList.push(this.form);
 					this.form = {};
 					this.form.com = '';
@@ -64,20 +67,26 @@
 					this.form.totalWeight = null;
 					this.form.carWeight = null;
 				}, err => {
-					
+					util.toast(err);
 				});
 			}, 
 			print() {
 
 			},
 			out() {
-				this.outList.push(this.form);
-				this.saveList.splice(this.selectIndex, 1);
-				this.state = "new";
-				this.form = {};
-				this.form.carWeight = null;
-				this.disabled = false;
-				this.carWeightDisabled = true;
+				this.form.carWeight = Number(this.form.carWeight);
+				util.requestForm("purchases/"+this.form.id, "PATCH", {carWeight:this.form.carWeight}, data => {
+					this.outList.push(this.form);
+					this.saveList.splice(this.selectIndex, 1);
+					this.state = "new";
+					this.form = {};
+					this.form.carWeight = null;
+					this.disabled = false;
+					this.carWeightDisabled = true;
+				}, err => {
+					util.toast(err);
+				});
+				
 			},
 			newOrder() {
 				this.form = {};

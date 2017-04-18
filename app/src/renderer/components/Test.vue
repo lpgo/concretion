@@ -7,7 +7,6 @@
       source: {{num}}  -> result: {{num$}}
     </div>
     <button v-on:click="test()">{{platform}}</button>{{portName}}
-    <button v-on:click="test()">test1</button>
   </div>
 </template>
 
@@ -16,7 +15,7 @@ import 'rxjs/add/operator/pluck'
 import 'rxjs/add/operator/startWith'
 import 'rxjs/add/operator/delay'
 
-import SerialPort from 'serialport'
+//import SerialPort from 'serialport'
 
 import os from 'os'
 
@@ -26,7 +25,6 @@ export default {
     return {
       num: 1,
       platform: os.platform(),
-      portName:''
     }
   },
   subscriptions() {
@@ -48,16 +46,6 @@ export default {
         console.log(arg);
       });
     },
-    test1: function() {
-      SerialPort.list(function (err, ports) {
-        console.log(err);
-        ports.forEach(function(port) {
-          console.log(port.comName);
-          console.log(port.pnpId);
-          console.log(port.manufacturer);
-        });
-      });
-    }
   }
 }
 </script>
