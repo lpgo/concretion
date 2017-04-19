@@ -69,7 +69,7 @@
 					this.form.totalWeight = null;
 					this.form.carWeight = null;
 				}, err => {
-					util.toast(err);
+					util.toast(err.message);
 				});
 			}, 
 			print() {
@@ -87,7 +87,7 @@
 					this.disabled = false;
 					this.carWeightDisabled = true;
 				}, err => {
-					util.toast(err);
+					util.toast(err.message);
 				});
 				
 			},
@@ -124,7 +124,7 @@
 					this.saveList = data;
 				}
 			},err => {
-				util.toast(err);
+				util.toast(err.message);
 			});
 
 			util.get(url+"true", data => {
@@ -132,7 +132,7 @@
 					this.outList = data;
 				}
 			},err => {
-				util.toast(err);
+				util.toast(err.message);
 			});
 		},
 	}

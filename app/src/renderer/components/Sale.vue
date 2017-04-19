@@ -4,7 +4,7 @@
 		<div class="formGroup">
 			<span class="textLabel">施工单位：</span><mu-text-field  v-model="form.com"/>
 			<span class="textLabel">驾驶员：&nbsp&nbsp</span><mu-text-field  v-model="form.driver"/>
-			<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity"/>
+			<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number"/>
 		</div>
 		<div class="formGroup">
 			<span class="textLabel">工程名称：</span><mu-text-field  v-model="form.project"/>
@@ -20,7 +20,7 @@
 			<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save"/>
 			<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
 		</div>
-		<mu-table style="margin:20px;" :showCheckbox="false" :fixedHeader="true" :height="height">
+		<mu-table style="" :showCheckbox="false" :fixedHeader="true" :height="height">
 			<mu-thead slot="header" >
 		      <mu-tr class="printListHead">
 		        <mu-th tooltip="施工单位" class="tdHeader">施工单位</mu-th>
@@ -44,7 +44,7 @@
 		        <mu-td>{{item.way}}</mu-td> 
 		        <mu-td>{{item.part}}</mu-td>
 		        <mu-td>{{item.strength}}</mu-td>
-		        <mu-td>{{item.time}}</mu-td> 
+		        <mu-td>{{dateFormat(item.time)}}</mu-td> 
 		      </mu-tr>
 		    </mu-tbody>
 		</mu-table>
@@ -54,32 +54,38 @@
 <script>
 
 import moment from 'moment'
+import util from '../common/util.js'
 
 export default {
 	data() {
 		return {
 			name: "Sale",
-			height: "300px",
-			form: {},
+			height: "260px",
+			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,time:moment().format("HH:mm")},
 			data: [],
 		};
 	},
 	methods: {
 		save() {
-			this.data.push(this.form);
-			this.form = {};
-			this.form.com = "";
-			this.form.driver = "";
-			this.form.capacity = "";
-			this.form.project = "";
-			this.form.car = "";
-			this.form.way = "";
-			this.form.part = "";
-			this.form.strength = "";
-			this.form.time = "";
+			console.log("save");
+			this.form.capacity = Number(this.form.capacity);
+			this.form.time = null;
+			util.request("sales", "POST", this.form, data => {
+				this.data.push(data);
+				this.form.com = "";
+				this.form.driver = "";
+				this.form.capacity = "";
+				this.form.project = "";
+				this.form.car = "";
+				this.form.way = "";
+				this.form.part = "";
+				this.form.strength = "";
+				this.form.time = moment().format("HH:mm");
+			}, err => {
+				util.toast(err.error);
+			});
 		},
 		cancel() {
-			console.log("cancel");
 			this.form.com = "";
 			this.form.driver = "";
 			this.form.capacity = "";
@@ -88,8 +94,23 @@ export default {
 			this.form.way = "";
 			this.form.part = "";
 			this.form.strength = "";
-			this.form.time = "";
+			this.form.time = moment().format("HH:mm");
 		},
+		dateFormat(time) {
+			return moment(time).format("HH:mm");
+		}
+	},
+	mounted() {
+		let start = encodeURIComponent(moment().startOf('day').format());
+		let end = encodeURIComponent(moment().endOf('day').format());
+		let url = `sales?start=${start}&end=${end}`
+		util.get(url, data => {
+			if(data) {
+				this.data = data;
+			}
+		},err => {
+			util.toast(err.error);
+		});
 	},
 }
 </script>
