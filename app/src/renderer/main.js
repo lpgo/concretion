@@ -8,7 +8,10 @@ import MuseUI from 'muse-ui'
 import Rx from 'rxjs/Rx'
 import VueRx from 'vue-rx'
 
+import store from './vuex/store'
+import Vuex from 'vuex'
 
+Vue.use(Vuex)
 Vue.use(Electron)
 Vue.use(Router)
 Vue.use(MuseUI)
@@ -30,5 +33,6 @@ const router = new Router({
 /* eslint-disable no-new */
 new Vue({
   router,
+  store,
   ...App
 }).$mount('#app')
