@@ -12,8 +12,11 @@ const state = {
         {id:'2',name:"c30"},
         {id:'3',name:"c40"},
     ],   
-    price: [                   //混凝土价格
+    salePrices: [                   //混凝土价格
         {id:'1',com:"中铁一局",c20:100,c30:200,c40:300},
+    ],
+    purchasePrices:[
+        {id:"121",com:"水泥厂",prices:[{name:"水泥",price:100}]},
     ],
 }
 
@@ -27,11 +30,17 @@ const mutations = {
     removeType(state, index) {
         state.types.splice(index,1);
     },
-    addPrice(state, p) {
-        state.price.push(p);
+    addSalePrice(state, p) {
+        state.salePrices.push(p);
     },
-    removePrice(state, index) {
-        state.price.splice(index,1);
+    removeSalePrice(state, index) {
+        state.salePrices.splice(index,1);
+    },
+    addPurchasePrice(state, p) {
+        state.purchasePrices.push(p);
+    },
+    removePurchasePrice(state, index) {
+        state.purchasePrices.splice(index,1);
     },
 }
 
