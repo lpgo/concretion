@@ -4,8 +4,8 @@ import Test from 'components/Test'
 import Home from 'components/Home'
 import Purchase from 'components/Purchase'
 import Sale from 'components/Sale'
-import Setting from 'components/Setting'
-
+import SaleSetting from 'components/SaleSetting'
+import PurchaseSetting from 'components/PurchaseSetting'
 export default [
 	{
       path: '/login',
@@ -21,7 +21,8 @@ export default [
       	{ path: '/test', component: Test, name: '测试' },
         { path: '/sale', component: Sale, name: '销售' },
         { path: '/purchase', component: Purchase, name: '过磅单' },
-        { path: '/setting', component: Setting, name: '设置' },
+        { path: '/saleSetting', component: SaleSetting, name: '销售设置' },
+        { path: '/purchaseSetting', component: PurchaseSetting, name: '采购设置' },
       ]
     }
 ]

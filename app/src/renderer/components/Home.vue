@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <mu-appbar title="茂奂建材有限公司">
+    <mu-appbar title="茂奂建材有限公司" class="noprint">
       <MenuButton :menuData="menuData" icon="devices" slot="right"/>
     </mu-appbar>
     <router-view class="content"></router-view>
@@ -76,7 +76,7 @@ export default {
     return {
       menuData: {
         label: "磅房",
-        items: [{title:"录入过磅单", url:"/purchase"}, {title: "销售", url: "/sale"},{title: "login", url: "/login"},{title: "设置", url: "/setting"}]
+        items: [{title:"录入过磅单", url:"/purchase"}, {title: "销售", url: "/sale"},{title: "login", url: "/login"},{title: "销售设置", url: "/saleSetting"},{title: "采购设置", url: "/PurchaseSetting"}]
       },
     }
   },
@@ -100,6 +100,11 @@ export default {
 .content {
   flex: 1 0 auto;
 }
+@media print {   
+  .noprint {    
+  display: none    
+  }   
+}  
 /*
 .content {
   flex: 1 1 auto;

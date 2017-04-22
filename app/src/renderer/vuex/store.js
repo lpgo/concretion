@@ -13,7 +13,7 @@ const state = {
         {id:'3',name:"c40"},
     ],   
     salePrices: [                   //混凝土价格
-        {id:'1',com:"中铁一局",c20:100,c30:200,c40:300},
+        {id:'1',com:"中铁一局",prices:[{name:"c20",price:100}]},
     ],
     purchasePrices:[
         {id:"121",com:"水泥厂",prices:[{name:"水泥",price:100}]},
