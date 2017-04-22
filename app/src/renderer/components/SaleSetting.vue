@@ -62,8 +62,7 @@ export default {
 	methods: {
 		add() {
 			this.addType(this.type);
-			this.$set(this.newPrice,this.type,null);
-			this.type = null;
+			this.type = '';
 		},
 		click() {
 

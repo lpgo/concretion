@@ -2,9 +2,13 @@
 <div style="display:flex;align-items:stretch;">
 	<mu-paper class="purchase" :zDepth="0" >
 		<div class="purchaseTitle">过磅单</div>
-		<mu-text-field label="请输入公司" labelFloat fullWidth v-model="form.com" :disabled="disabled"/>
-		<mu-text-field label="请输入车号" labelFloat fullWidth v-model="form.car" :disabled="disabled"/>
-		<mu-text-field label="请输入名称" labelFloat fullWidth v-model="form.name" :disabled="disabled"/>
+		<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat>
+			<mu-menu-item v-for="item,index in purchasePrices" :key="item.id" :value="item.com" :title="item.com" />
+		</mu-select-field>
+		<mu-auto-complete label="请输入车号" filter="noFilter" hintText="请输入车号" fullWidth v-model="form.car" openOnFocus  :disabled="disabled" :dataSource="carPlates" labelFloat/>
+		<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat>
+			<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
+		</mu-select-field>
 		<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled"/>
 		<div class="labelGroup">
 			<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="disabled"/>
@@ -39,18 +43,21 @@
 	import mock from '../mock.js'
 	import util from '../common/util.js'
 	import moment from 'moment'
+	import { mapState,mapMutations } from 'vuex'
 
 	export default {
 		data() {
 			return {
 				height:'240px',
-				form : {},
+				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null},
 				disabled : false,
 				carWeightDisabled: true,
 				state: "new",
 				outList: [],
 				saveList: [],
 				selectIndex:-1,
+				prices:[],
+				carPlates:["陕K","蒙"],
 			};
 		},
 		methods: {
@@ -61,7 +68,7 @@
 				util.request("purchases", "POST", this.form, data => {
 					this.form.id = data.id;
 					this.saveList.push(this.form);
-					this.form = {};
+					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
 					this.form.com = '';
 					this.form.car = '';
 					this.form.name = '';
@@ -92,13 +99,18 @@
 				
 			},
 			newOrder() {
-				this.form = {};
+				this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
 				this.state = "new";
 				this.disabled = false;
 				this.carWeightDisabled = true;
 			},
 			saveSelect(index,tr) {
 				this.selectIndex = index;
+				for(let item of this.purchasePrices) {
+					if(item.com == this.saveList[index].com) {
+						this.prices = item.prices;
+					}
+				}
 				this.form = this.saveList[index];
 				this.state = "save";
 				this.disabled = true;
@@ -106,15 +118,42 @@
 			},
 			outSelect(index,tr) {
 				this.selectIndex = index;
+				for(let item of this.purchasePrices) {
+					if(item.com == this.outList[index].com) {
+						this.prices = item.prices;
+					}
+				}
 				this.form = this.outList[index];
 				this.state = "out";
 				this.disabled = true;
 				this.carWeightDisabled = true;
 			},
+			comChange(value) {
+				for(let item of this.purchasePrices) {
+					if(item.com == value) {
+						this.prices = item.prices;
+						this.form.name = null;
+						this.form.price = null;
+					}
+				}
+			},
+			nameChange(value) {
+				for(let item of this.prices) {
+					if(item.name == value) {
+						console.log(item,value);
+						this.form.price = item.price;
+					}
+				}
+			},
 		},
 		components: {
 			PurchaseList
 		},
+		computed:{
+	    	...mapState({
+	    		purchasePrices: state => state.purchasePrices,
+	    	}),
+	    },
 		mounted() {
 			let start = encodeURIComponent(moment().startOf('day').format());
 			let end = encodeURIComponent(moment().endOf('day').format());
