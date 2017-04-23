@@ -19,6 +19,7 @@ export default {
   },
   mounted() {
     util.bus.$on('showToast', (msg)=> {
+      console.log("app: showToast");
       this.msg = msg;
       this.toast = true;
       if (this.toastTimer) clearTimeout(this.toastTimer);

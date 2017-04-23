@@ -47,7 +47,7 @@ export default {
 	        ).then(res => {
 	        	if(res.ok) {
 	        		console.log(res);
-	        		this.$router.push("/purchase");
+	        		this.$router.push("/main");
 	        	} else {
 	        		res.json().then(result =>{
 	        			this.nameMsg = result.error;

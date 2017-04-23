@@ -2,7 +2,7 @@
 	<div style="padding:20px;font-size:16px;">
 		<span style="font-size:20px">型号：</span>
 		<template v-for="item,index in types">
-			<mu-chip class="demo-chip"  @delete="removeType(index)" showDelete>{{item.name}}</mu-chip>
+			<mu-chip class="demo-chip"  @delete="deleteType(index,item.id)" showDelete>{{item.name}}</mu-chip>
 		</template>
 		<mu-text-field  v-model="type" style="margin-left:20px;width:100px;"/><mu-raised-button label="添加" primary @click="add" style="margin:0 20px;"/>
 		<hr/>
@@ -24,7 +24,7 @@
 						</template>
 					</mu-td>
 			      	<mu-td>
-			      		<mu-flat-button label="删除" primary @click="removeSalePrice(index)"/>
+			      		<mu-flat-button label="删除" primary @click="deleteSalePrice(index,item.id)"/>
 			      	</mu-td>
 			    </mu-tr>
 		    </mu-tbody>
@@ -49,6 +49,7 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
+import util from '../common/util.js'
 export default {
 	data() { 
 		return {
@@ -61,24 +62,45 @@ export default {
 	},
 	methods: {
 		add() {
-			this.addType(this.type);
-			this.type = '';
+			util.request("types","POST",{name:this.type},data => {
+				this.addType(data);
+				this.type = '';
+			}, err => {
+				util.toast(err.message);
+			});
 		},
 		click() {
 
 		},
 		addSalePrices() {
-			this.addSalePrice({...this.newSalePrice});
-			this.newSalePrice.com = null;
-			this.newSalePrice.prices = [];
-			this.salePrice = null;
-			this.saleName = null;
+			util.request("salePrices","POST",{...this.newSalePrice},data => {
+				this.addSalePrice(data);
+				this.newSalePrice.com = null;
+				this.newSalePrice.prices = [];
+				this.salePrice = null;
+				this.saleName = null;
+			}, err => {
+				util.toast(err.message);
+			});
 			this.dialog = false;
 		},
 		addSalePriceItem() {
-			this.newSalePrice.prices.push({name:this.saleName,price:this.salePrice});
+			this.newSalePrice.prices.push({name:this.saleName,price:Number(this.salePrice)});
 			this.salePrice = null;
 			this.saleName = null;
+		},
+		deleteType(index,id) {
+			util.requestForm("types","DELETE",{id:id}, data => {
+				this.removeType(index);
+			});
+		},
+		deleteSalePrice(index,id) {
+			util.requestForm("salePrices","DELETE",{id:id}, data => {
+				this.removeSalePrice(index);
+			}, err => {
+				util.toast(err.error);
+				console.log(err);
+			});
 		},
 		...mapMutations([
 	        'addType',

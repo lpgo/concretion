@@ -15,10 +15,15 @@ export default {
         	if(res.ok) {
         		res.json().then(result => success(result));
         	} else {
-        		res.json().then(result => fail(result));
+        		res.json().then(result => {
+        			if(fail)  
+        				fail(result);
+        			else 
+        				vue.$emit("showToast", "网络错误:"+result.error); 
+        		});
         	}
 		}).catch(err => {
-			toast("网络错误");
+			toast("网络错误"); 
 		});
 	},
 	requestForm: (res,method,data,success,fail) => {
@@ -36,7 +41,12 @@ export default {
         	if(res.ok) {
         		res.json().then(result => success(result));
         	} else {
-        		res.json().then(result => fail(result));
+        		res.json().then(result => {
+        			if(fail)
+        				fail(result);
+        			else 
+        				vue.$emit("showToast", "网络错误:"+result.error);
+        		});
         	}
 		}).catch(err => {
 			toast("网络错误:"+err);
@@ -52,7 +62,12 @@ export default {
         	if(res.ok) {
         		res.json().then(result => success(result));
         	} else {
-        		res.json().then(result => fail(result));
+        		res.json().then(result => {
+        			if(fail)
+        				fail(result);
+        			else 
+        				vue.$emit("showToast", "网络错误:"+result.error);
+        		});
         	}
 		}).catch(err => {
 			toast("网络错误:"+err);

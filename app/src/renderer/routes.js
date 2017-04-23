@@ -6,18 +6,20 @@ import Purchase from 'components/Purchase'
 import Sale from 'components/Sale'
 import SaleSetting from 'components/SaleSetting'
 import PurchaseSetting from 'components/PurchaseSetting'
+import Main from 'components/Main'
 export default [
 	{
       path: '/login',
       name: '登录',
       component: Login,
-      alias: '/'
+      alias:"/"
     },
     {
       path: '/',
       name: 'Home',
       component: Home,
       children: [
+        { path: '/main', component: Main, name: '首页' },
       	{ path: '/test', component: Test, name: '测试' },
         { path: '/sale', component: Sale, name: '销售' },
         { path: '/purchase', component: Purchase, name: '过磅单' },
