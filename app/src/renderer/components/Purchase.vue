@@ -57,7 +57,6 @@
 				saveList: [],
 				selectIndex:-1,
 				prices:[],
-				carPlates:["陕K","蒙"],
 			};
 		},
 		methods: {
@@ -152,6 +151,7 @@
 		computed:{
 	    	...mapState({
 	    		purchasePrices: state => state.purchasePrices,
+	    		carPlates: state => state.carPlates,
 	    	}),
 	    },
 		mounted() {

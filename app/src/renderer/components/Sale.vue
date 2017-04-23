@@ -2,18 +2,28 @@
 	<div style="padding:20px;">
 		<h2 style="text-align:center">送货单</h2>
 		<div class="formGroup">
-			<span class="textLabel">施工单位：</span><mu-text-field  v-model="form.com"/>
+			<span class="textLabel">施工单位：</span>
+			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" @change="comChange">
+			<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
+		</mu-select-field>
 			<span class="textLabel">驾驶员：&nbsp&nbsp</span><mu-text-field  v-model="form.driver"/>
 			<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number"/>
 		</div>
 		<div class="formGroup">
 			<span class="textLabel">工程名称：</span><mu-text-field  v-model="form.project"/>
-			<span class="textLabel">运输车号：</span><mu-text-field  v-model="form.car"/>
-			<span class="textLabel">浇筑方式：</span><mu-text-field  v-model="form.way"/>
+			<span class="textLabel">运输车号：</span>
+			<mu-auto-complete filter="noFilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" />
+			<span class="textLabel">浇筑方式：</span>
+			<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" >
+				<mu-menu-item v-for="item,index in ways" :key="item.id" :value="item.name" :title="item.name" />
+			</mu-select-field>
 		</div>
 		<div class="formGroup">
 			<span class="textLabel">施工部位：</span><mu-text-field  v-model="form.part"/>
-			<span class="textLabel">强度等级：</span><mu-text-field  v-model="form.strength"/>
+			<span class="textLabel">强度等级：</span>
+			<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @change="typeChange">
+				<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
+			</mu-select-field>
 			<span class="textLabel">发货时间：</span><mu-text-field  v-model="form.time"/>
 		</div>
 		<div class="saleBtnGroup">
@@ -55,14 +65,20 @@
 
 import moment from 'moment'
 import util from '../common/util.js'
+import { mapState,mapMutations } from 'vuex'
 
 export default {
 	data() {
 		return {
 			name: "Sale",
 			height: "260px",
-			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,time:moment().format("HH:mm")},
+			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,time:moment().format("HH:mm"),price:null},
 			data: [],
+			prices:[],
+			ways:[
+				{id:1,name:"自卸"},
+				{id:2,name:"泵送"},
+			],
 		};
 	},
 	methods: {
@@ -98,8 +114,30 @@ export default {
 		},
 		dateFormat(time) {
 			return moment(time).format("HH:mm");
+		},
+		comChange(value) {
+			for(let item of this.salePrices) {
+				if(item.com == value) {
+					console.log(item,value);
+					this.prices = item.prices;
+				}
+			}
+		},
+		typeChange(value) {
+			for(let item of this.prices) {
+				if(item.name == value) {
+					this.form.price = item.price;
+				}
+			}
 		}
 	},
+	computed:{
+    	...mapState({
+    		types: state => state.types,
+    		salePrices: state => state.salePrices,
+    		carPlates: state => state.carPlates,
+    	}),
+    },
 	mounted() {
 		let start = encodeURIComponent(moment().startOf('day').format());
 		let end = encodeURIComponent(moment().endOf('day').format());

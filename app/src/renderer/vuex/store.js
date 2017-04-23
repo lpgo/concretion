@@ -18,6 +18,7 @@ const state = {
     purchasePrices:[
         {id:"121",com:"水泥厂",prices:[{name:"水泥",price:100}]},
     ],
+    carPlates:["陕K","蒙"],
 }
 
 // 定义所需的 mutations
