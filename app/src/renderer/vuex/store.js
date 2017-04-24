@@ -25,7 +25,7 @@ const state = {
 const mutations = {
     addType(state,type) {
         if(type) {
-            state.types.push({id:"1",name:type});
+            state.types.push(type);
         }
     },
     removeType(state, index) {
@@ -42,6 +42,15 @@ const mutations = {
     },
     removePurchasePrice(state, index) {
         state.purchasePrices.splice(index,1);
+    },
+    addAllTypes(state,types) {
+        state.types = types;
+    },
+    addAllSalePrices(state,ss) {
+        state.salePrices = ss;
+    },
+    addAllPurchasePrices(state,ps) {
+        state.purchasePrices = ps;
     },
 }
 

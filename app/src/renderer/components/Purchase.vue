@@ -64,7 +64,7 @@
 				this.form.price = Number(this.form.price);
 				this.form.totalWeight = Number(this.form.totalWeight);
 				this.form.complate = false;
-				util.request("purchases", "POST", this.form, data => {
+				util.post("purchases", this.form, data => {
 					this.form.id = data.id;
 					this.saveList.push(this.form);
 					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
@@ -84,7 +84,7 @@
 			out() {
 				this.form.carWeight = Number(this.form.carWeight);
 				this.form.complate = true;
-				util.requestForm("purchases/"+this.form.id, "PATCH", {carWeight:this.form.carWeight,complate: true}, data => {
+				util.patch("purchases/"+this.form.id, {carWeight:this.form.carWeight,complate: true}, data => {
 					this.outList.push(this.form);
 					this.saveList.splice(this.selectIndex, 1);
 					this.state = "new";

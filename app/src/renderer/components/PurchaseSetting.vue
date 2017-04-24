@@ -18,7 +18,7 @@
 						</template>
 					</mu-td>
 			      	<mu-td>
-			      		<mu-flat-button label="删除" primary @click="removePurchasePrice(index)"/>
+			      		<mu-flat-button label="删除" primary @click="deletePurchasePrice(index,item.id)"/>
 			      	</mu-td>
 			    </mu-tr>
 		    </mu-tbody>
@@ -41,6 +41,7 @@
 
 <script>
 import { mapState,mapMutations } from 'vuex'
+import util from '../common/util.js'
 import fs from 'fs'
 export default {
 	data() { 
@@ -55,19 +56,25 @@ export default {
 		
 		addPurchasePrices() {
 			console.log(this.newPurchasePrice);
-			this.addPurchasePrice({...this.newPurchasePrice});
-			this.newPurchasePrice.com = null;
-			this.newPurchasePrice.prices = [];
-			this.purchasePrice = null;
-			this.purchaseName = null;
+			util.post("purchasePrices",this.newPurchasePrice, data => {
+				this.addPurchasePrice(data);
+				this.newPurchasePrice.com = null;
+				this.newPurchasePrice.prices = [];
+				this.purchasePrice = null;
+				this.purchaseName = null;
+			});
 			this.dialog = false;
 		},
 		addPurchasePriceItem() {
-			this.newPurchasePrice.prices.push({name:this.purchaseName,price:this.purchasePrice});
+			this.newPurchasePrice.prices.push({name:this.purchaseName,price:Number(this.purchasePrice)});
 			this.purchasePrice = null;
 			this.purchaseName = null;
 		},
-		
+		deletePurchasePrice(index,id) {
+			util.delete("purchasePrices/"+id, data => {
+				this.removePurchasePrice(index);
+			});
+		},
 		...mapMutations([
 	        'addPurchasePrice',
 	        'removePurchasePrice',

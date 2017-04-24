@@ -62,7 +62,7 @@ export default {
 	},
 	methods: {
 		add() {
-			util.request("types","POST",{name:this.type},data => {
+			util.post("types",{name:this.type},data => {
 				this.addType(data);
 				this.type = '';
 			}, err => {
@@ -73,7 +73,7 @@ export default {
 
 		},
 		addSalePrices() {
-			util.request("salePrices","POST",{...this.newSalePrice},data => {
+			util.post("salePrices",{...this.newSalePrice},data => {
 				this.addSalePrice(data);
 				this.newSalePrice.com = null;
 				this.newSalePrice.prices = [];
@@ -90,16 +90,13 @@ export default {
 			this.saleName = null;
 		},
 		deleteType(index,id) {
-			util.requestForm("types","DELETE",{id:id}, data => {
+			util.delete("types/"+id, data => {
 				this.removeType(index);
 			});
 		},
 		deleteSalePrice(index,id) {
-			util.requestForm("salePrices","DELETE",{id:id}, data => {
+			util.delete("salePrices/"+id, data => {
 				this.removeSalePrice(index);
-			}, err => {
-				util.toast(err.error);
-				console.log(err);
 			});
 		},
 		...mapMutations([

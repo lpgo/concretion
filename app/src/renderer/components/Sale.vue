@@ -86,7 +86,7 @@ export default {
 			console.log("save");
 			this.form.capacity = Number(this.form.capacity);
 			this.form.time = null;
-			util.request("sales", "POST", this.form, data => {
+			util.post("sales", this.form, data => {
 				this.data.push(data);
 				this.form.com = "";
 				this.form.driver = "";
