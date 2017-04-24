@@ -118,6 +118,27 @@ export default {
 			toast("网络错误:"+err);
 		});
 	},
+	test: function(res,success,fail) {
+		return fetch(conf.server+"/"+res,
+			{
+				credentials:"include",
+	            method: "GET",
+        	}
+		).then(res => {
+        	if(res.ok) {
+        		res.json().then(result => success(result));
+        	} else {
+        		res.json().then(result => {
+        			if(fail)
+        				fail(result);
+        			else 
+        				vue.$emit("showToast", "网络错误:"+result.error);
+        		});
+        	}
+		}).catch(err => {
+			toast("网络错误:"+err);
+		});
+	},
 	toast(msg) {
 		vue.$emit("showToast", msg);
 	},
