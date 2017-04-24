@@ -5,22 +5,18 @@
 	            <td>施工单位</td>  
 	            <td>强度</td>  
 	            <td colspan="4" align="center">泵送</td>
-	            <td colspan="4" align="center">自卸</td>  
+	            <td colspan="4" align="center">自卸</td>
+	            <td align="center">合计/元</td>  
 	        </tr>
         	<template v-for="item in data">
         		<tr v-for="(value, key, index) in item">
         			<template v-if="key!='com' && key!='size'">
         				<td :rowspan="item.size" v-if="index == 0">{{item.com}}</td>  
 			            <td>{{key}}</td>
-						<template v-for="c in value">
-							<template v-if="c.way=='泵送'">
-								<td>{{c.capacity}}</td>
+							<template v-if="value['泵送']">
+								<td>{{value['泵送'].capacity}}</td>
 					            <td>方</td>
-					            <td>10000</td>  
-					            <td>元/方</td>
-					            <td>&nbsp&nbsp&nbsp</td>
-					            <td>方</td>
-					            <td>&nbsp&nbsp&nbsp</td>  
+					            <td>{{value['泵送'].price}}</td>  
 					            <td>元/方</td>
 							</template>
 							<template v-else>
@@ -28,12 +24,20 @@
 					            <td>方</td>
 					            <td>&nbsp&nbsp&nbsp</td>  
 					            <td>元/方</td>
-								<td>{{c.capacity}}</td>
+							</template>
+							<template v-if="value['自卸']">
+								<td>{{value['自卸'].capacity}}</td>
 					            <td>方</td>
-					            <td>10000</td>  
+					            <td>{{value['自卸'].price}}</td>  
 					            <td>元/方</td>
 							</template>
-						</template>
+							<template v-else>
+								<td>&nbsp&nbsp&nbsp</td>
+					            <td>方</td>
+					            <td>&nbsp&nbsp&nbsp</td>  
+					            <td>元/方</td>
+							</template>	
+						<td>{{value.count}}</td>		
         			</template>
 		        </tr> 
         	</template>
@@ -66,9 +70,12 @@ export default {
 				let size = 0;
 				for(let item of value) {
 					if(o[item._id.strength]) {
-					o[item._id.strength].push({way:item._id.way,capacity:item.total});
+						o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
+						o[item._id.strength].count += item.total;
 					} else {
-						o[item._id.strength] = [{way:item._id.way,capacity:item.total}];
+						o[item._id.strength]={};
+						o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
+						o[item._id.strength].count = item.total;
 						size++;
 					}
 				}
