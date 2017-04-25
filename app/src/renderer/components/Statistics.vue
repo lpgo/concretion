@@ -46,6 +46,7 @@
 </template>
 <script>
 import util from '../common/util.js'
+import moment from 'moment'
 export default {
 	data() {
 		return {
@@ -53,7 +54,10 @@ export default {
 		};
 	},
 	mounted() {
-		util.test("test", data => {
+		let start = encodeURIComponent(moment().startOf('month').format());
+		let end = encodeURIComponent(moment().endOf('month').format());
+		let url = `statistics?start=${start}&end=${end}`
+		util.get(url, data => {
 			//处理数据为表格准备
 			let map = new Map();
 			for(let item of data) {
