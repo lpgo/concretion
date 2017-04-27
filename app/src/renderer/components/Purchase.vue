@@ -1,39 +1,78 @@
 <template>
-<div style="display:flex;align-items:stretch;">
-	<mu-paper class="purchase" :zDepth="0" >
-		<div class="purchaseTitle">过磅单</div>
-		<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat>
-			<mu-menu-item v-for="item,index in purchasePrices" :key="item.id" :value="item.com" :title="item.com" />
-		</mu-select-field>
-		<mu-auto-complete label="请输入车号" filter="noFilter" hintText="请输入车号" fullWidth v-model="form.car" openOnFocus  :disabled="disabled" :dataSource="carPlates" labelFloat/>
-		<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat>
-			<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
-		</mu-select-field>
-		<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled"/>
-		<div class="labelGroup">
-			<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="disabled"/>
-			<mu-flat-button label="获取毛重" style="margin-bottom:18px;margin-left:10px" primary/>
+<div >
+	<div class="purchaseContainer noprint">
+		<mu-paper class="purchase" :zDepth="0" >
+			<div class="purchaseTitle">过磅单</div>
+			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat>
+				<mu-menu-item v-for="item,index in purchasePrices" :key="item.id" :value="item.com" :title="item.com" />
+			</mu-select-field>
+			<mu-auto-complete label="请输入车号" filter="noFilter" hintText="请输入车号" fullWidth v-model="form.car" openOnFocus  :disabled="disabled" :dataSource="carPlates" labelFloat/>
+			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat>
+				<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
+			</mu-select-field>
+			<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled"/>
+			<div class="labelGroup">
+				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="disabled"/>
+				<mu-flat-button label="获取毛重" style="margin-bottom:18px;margin-left:10px" primary/>
+			</div>
+			<div class="labelGroup">
+				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="carWeightDisabled"/>
+				<mu-flat-button label="获取皮重" style="margin-bottom:18px;margin-left:10px" secondary/>
+			</div>
+			<div class="btnContainer">
+				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'"/>
+				<template v-if="state == 'save'">
+				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
+				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary />
+				</template>
+				<template v-if="state == 'out'">
+				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
+				<mu-raised-button label="打印" class="purchaseBtn" @click="print" primary />
+				</template>
+			</div>
+		</mu-paper>
+		<div>
+			<PurchaseList :height="height" theadClass="saveListHead" :data="saveList" @select="saveSelect"/>
+			<PurchaseList :height="height" theadClass="printListHead" :data="outList" @select="outSelect"/>
+	 
 		</div>
-		<div class="labelGroup">
-			<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="carWeightDisabled"/>
-			<mu-flat-button label="获取皮重" style="margin-bottom:18px;margin-left:10px" secondary/>
-		</div>
-		<div class="btnContainer">
-			<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'"/>
-			<template v-if="state == 'save'">
-			<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
-			<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary />
-			</template>
-			<template v-if="state == 'out'">
-			<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
-			<mu-raised-button label="打印" class="purchaseBtn" @click="print" primary />
-			</template>
-		</div>
-	</mu-paper>
-	<div>
-		<PurchaseList :height="height" theadClass="saveListHead" :data="saveList" @select="saveSelect"/>
-		<PurchaseList :height="height" theadClass="printListHead" :data="outList" @select="outSelect"/>
- 
+	</div>
+	<div class="hidden myDivToPrint">
+		<h2 style="text-align:center">府谷县茂奂建材有限责任公司</h2>
+		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center">
+			<tr>
+				<td>送货单位：</td>
+				<td colspan="2">个体</td>
+				<td>日期：</td>
+				<td colspan="2">2017-03-25 12:12:00</td>
+				<td>单号</td>
+			</tr>
+			<tr>
+				<td>车号</td>
+				<td>陕K12345</td>
+				<td>名称</td>
+				<td>1.3石子</td>
+				<td>单价</td>
+				<td>35</td>
+				<td>签字</td>
+			</tr>
+			<tr>
+				<td>毛重</td>
+				<td>12.24</td>
+				<td>皮重</td>
+				<td>34.12</td>
+				<td>净重</td>
+				<td>123.321</td>
+				<td rowspan="2"></td>
+			</tr>
+			<tr>
+				<td>大写</td>
+				<td colspan="3">{{numberToChinese(123124)}}</td>
+				<td>实付金额</td>
+				<td>12312</td>
+			</tr>
+		</table>
+		<span style="float:right">联系电话：12345678965</span>
 	</div>
 </div>
 </template> 
@@ -44,6 +83,7 @@
 	import util from '../common/util.js'
 	import moment from 'moment'
 	import { mapState,mapMutations } from 'vuex'
+	import fs from 'fs'
 
 	export default {
 		data() {
@@ -79,7 +119,15 @@
 				});
 			}, 
 			print() {
-
+				const {remote} = this.$electron;
+		    	const web = remote.getCurrentWebContents();
+		    	web.printToPDF({}, (error, data) => {
+				    if (error) throw error
+				    fs.writeFile('print.pdf', data, (error) => {
+				      if (error) throw error
+				      console.log('Write PDF successfully.')
+				    })
+				});
 			},
 			out() {
 				this.form.carWeight = Number(this.form.carWeight);
@@ -144,6 +192,9 @@
 					}
 				}
 			},
+			numberToChinese(num) {
+				return util.moneyArabiaToChinese(num);
+			},
 		},
 		components: {
 			PurchaseList
@@ -179,6 +230,10 @@
 
 
 <style>
+.purchaseContainer{
+	display:flex;
+	align-items:stretch;
+}
 .btnContainer {
 	display: flex;
 	justify-content: space-between;
@@ -209,6 +264,31 @@
 }
 .printListHead {
 	background:#26a69a;
+}
+.hidden {
+	display: none;
+	height: 0;
+	position: fixed;
+	top:0;
+	left: 0;
+}
+@media print {
+	.myDivToPrint {
+		background-color: red;
+		height: 100%;
+		width: 100%;
+		position: fixed;
+		top:0;
+		left: 0;
+		margin: 0;
+		padding: 15px;
+		font-size: 14px;
+		line-height: 18px;
+		display: block;
+	}
+	.noprint {    
+	  	display: none;
+	}   
 }
 
 </style>
