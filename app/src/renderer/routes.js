@@ -8,6 +8,7 @@ import SaleSetting from 'components/SaleSetting'
 import PurchaseSetting from 'components/PurchaseSetting'
 import Main from 'components/Main'
 import Statistics from 'components/Statistics'
+import PurchaseSearch from 'components/PurchaseSearch'
 export default [
 	{
       path: '/login',
@@ -27,6 +28,7 @@ export default [
         { path: '/saleSetting', component: SaleSetting, name: '销售设置' },
         { path: '/purchaseSetting', component: PurchaseSetting, name: '采购设置' },
         { path: '/statistics', component: Statistics, name: '统计' },
+        { path: '/purchaseSearch', component: PurchaseSearch, name: '采购查询' },
       ]
     }
 ]

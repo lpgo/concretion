@@ -20,7 +20,7 @@
 		     		<mu-td>{{item.com}}</mu-td>
 		     		<mu-td>
 			     		<template v-for="p in item.prices">
-							<span style="font-size:18px">{{p.name}}:{{p.price}}&nbsp&nbsp&nbsp</span>
+							<mu-chip class="demo-chip">{{p.name}}&nbsp&nbsp&nbsp&nbsp泵送:{{p.auto}},自卸:{{p.self}}</mu-chip>
 						</template>
 					</mu-td>
 			      	<mu-td>
@@ -34,13 +34,14 @@
 		<mu-dialog :open="dialog" @close="close" title="添加销售价格" dialogClass="dialog">
 			<mu-text-field  v-model="newSalePrice.com" style="" hintText="公司名称"/>
 			<template v-for="p in newSalePrice.prices">
-				<span style="font-size:18px">{{p.name}}:{{p.price}}&nbsp&nbsp&nbsp</span>
+				<mu-chip class="demo-chip">{{p.name}}&nbsp&nbsp&nbsp&nbsp泵送:{{p.auto}},自卸:{{p.self}}</mu-chip>
 			</template>
 			<mu-select-field v-model="saleName" :labelFocusClass="['label-foucs']" hintText="名称" style="">
 			    <mu-menu-item v-for="item,index in types" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
 			
-			<mu-text-field  v-model="salePrice" style="" hintText="价格" type="number"/>
+			<mu-text-field  v-model="autoPrice" style="" hintText="泵送" type="number" style="width:120px"/>
+			<mu-text-field  v-model="selfPrice" style="" hintText="自卸" type="number" style="width:120px"/>
 			<mu-raised-button label="添加价格" secondary @click="addSalePriceItem" style="float:right"/>
 		    <mu-flat-button primary label="确定" @click="addSalePrices" slot="actions"/>
 		</mu-dialog>
@@ -57,6 +58,8 @@ export default {
 			newSalePrice:{com:null,prices:[]},
 			saleName:null,
 			salePrice:null,
+			autoPrice:null,
+			selfPrice:null,
 			dialog:false,
 		};
 	},
@@ -85,9 +88,11 @@ export default {
 			this.dialog = false;
 		},
 		addSalePriceItem() {
-			this.newSalePrice.prices.push({name:this.saleName,price:Number(this.salePrice)});
+			this.newSalePrice.prices.push({name:this.saleName,auto:Number(this.autoPrice),self:Number(this.selfPrice)});
 			this.salePrice = null;
 			this.saleName = null;
+			this.autoPrice = null;
+			this.selfPrice = null;
 		},
 		deleteType(index,id) {
 			util.delete("types/"+id, data => {

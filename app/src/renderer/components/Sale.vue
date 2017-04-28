@@ -14,7 +14,7 @@
 			<span class="textLabel">运输车号：</span>
 			<mu-auto-complete filter="noFilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" />
 			<span class="textLabel">浇筑方式：</span>
-			<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" >
+			<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" @change="wayChange">
 				<mu-menu-item v-for="item,index in ways" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
 		</div>
@@ -79,11 +79,11 @@ export default {
 				{id:1,name:"自卸"},
 				{id:2,name:"泵送"},
 			],
+			item:null,   //priceItem 包含两种方式的价格
 		};
 	},
 	methods: {
 		save() {
-			console.log("save");
 			this.form.capacity = Number(this.form.capacity);
 			this.form.time = null;
 			util.post("sales", this.form, data => {
@@ -96,6 +96,9 @@ export default {
 				this.form.way = "";
 				this.form.part = "";
 				this.form.strength = "";
+				this.price = null;
+				this.prices = [];
+				this.item = null;
 				this.form.time = moment().format("HH:mm");
 			}, err => {
 				util.toast(err.error);
@@ -110,6 +113,9 @@ export default {
 			this.form.way = "";
 			this.form.part = "";
 			this.form.strength = "";
+			this.price = null;
+			this.prices = [];
+			this.item = null;
 			this.form.time = moment().format("HH:mm");
 		},
 		dateFormat(time) {
@@ -118,7 +124,6 @@ export default {
 		comChange(value) {
 			for(let item of this.salePrices) {
 				if(item.com == value) {
-					console.log(item,value);
 					this.prices = item.prices;
 				}
 			}
@@ -126,10 +131,24 @@ export default {
 		typeChange(value) {
 			for(let item of this.prices) {
 				if(item.name == value) {
-					this.form.price = item.price;
+					if(this.form.way == "自卸") {
+						this.form.price = item.self;
+					} else if(this.form.way == "泵送") {
+						this.form.price = item.auto;
+					}
+					this.item = item;
 				}
 			}
-		}
+		},
+		wayChange(value) {
+			if(this.item != null) {
+				if(value == "自卸") {
+					this.form.price = this.item.self;
+				} else if(value == "泵送") {
+					this.form.price = this.item.auto;
+				}
+			}
+		},
 	},
 	computed:{
     	...mapState({

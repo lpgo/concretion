@@ -41,4 +41,10 @@ body,html{
   height:100%;
   font-family: '微软雅黑';
 }
+body{
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
 </style>
