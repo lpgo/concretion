@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <mu-appbar title="茂奂建材有限公司" class="noprint">
-      <MenuButton :menuData="menuData" icon="devices" slot="right"/>
+      <template v-for="data in menuData">
+        <MenuButton :menuData="data" :icon="data.icon" slot="right"/>
+      </template>
     </mu-appbar>
     <router-view class="content"></router-view>
   </div>
@@ -74,10 +76,13 @@ import MenuButton from './MenuButton'
 export default {
   data() {
     return {
-      menuData: {
-        label: "磅房",
-        items: [{title:"录入过磅单", url:"/purchase"}, {title: "销售", url: "/sale"},{title: "login", url: "/login"},{title: "销售设置", url: "/saleSetting"},{title: "采购设置", url: "/PurchaseSetting"},{title: "统计", url: "/statistics"},{title: "采购查询", url: "/purchaseSearch"}]
-      },
+      menuData: [
+        {label:"磅房",icon:"devices",items:[{title:"录入过磅单", url:"/purchase"}]},
+        {label:"销售",icon:"local_shipping",items:[{title: "销售", url: "/sale"}]},
+        {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"}]},
+        {label:"统计",icon:"equalizer",items:[{title: "统计", url: "/statistics"}]},
+        {label:"设置",icon:"monetization_on",items:[{title: "销售设置", url: "/saleSetting"},{title: "采购设置", url: "/PurchaseSetting"}]},
+      ],
     }
   },
   methods: {

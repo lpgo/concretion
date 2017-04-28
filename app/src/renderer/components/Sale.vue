@@ -160,7 +160,7 @@ export default {
 	mounted() {
 		let start = encodeURIComponent(moment().startOf('day').format());
 		let end = encodeURIComponent(moment().endOf('day').format());
-		let url = `sales?start=${start}&end=${end}`
+		let url = `sales?start=${start}&end=${end}&closing=false`
 		util.get(url, data => {
 			if(data) {
 				this.data = data;
