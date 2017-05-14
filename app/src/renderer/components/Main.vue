@@ -15,6 +15,11 @@ export default {
 	        'addAllTypes',
 	        'addAllSalePrices',
 	        'addAllPurchasePrices',
+	        'addComFrequency',
+	        'addDriverFrequency',
+	        'addCarFrequency',
+	        'addProjectFrequency',
+
 	    ]),
 	},
 	mounted() {
@@ -22,6 +27,10 @@ export default {
 			util.get("types",data => {this.addAllTypes(data)}),
 			util.get("salePrices",data => {this.addAllSalePrices(data)}),
 			util.get("purchasePrices",data => {this.addAllPurchasePrices(data)}),
+			util.get("getFrequency?name=com",data => {this.addComFrequency(data)}),
+			util.get("getFrequency?name=project",data => {this.addProjectFrequency(data)}),
+			util.get("getFrequency?name=driver",data => {this.addDriverFrequency(data)}),
+			util.get("getFrequency?name=car",data => {this.addCarFrequency(data)}),
 		]).then(result =>{
 			this.msg = "加载完毕";
 		}).catch(err =>{
