@@ -6,13 +6,15 @@
 			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" @change="comChange">
 			<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 		</mu-select-field>
-			<span class="textLabel">驾驶员：&nbsp&nbsp</span><mu-text-field  v-model="form.driver"/>
+			<span class="textLabel">驾驶员：&nbsp&nbsp</span>
+			<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
 			<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number"/>
 		</div>
 		<div class="formGroup">
-			<span class="textLabel">工程名称：</span><mu-text-field  v-model="form.project"/>
+			<span class="textLabel">工程名称：</span>
+			<mu-auto-complete hintText="请输入工程名称" v-model="form.project" openOnFocus :dataSource="projectFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :filter="myfilter"/>
 			<span class="textLabel">运输车号：</span>
-			<mu-auto-complete filter="noFilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" />
+			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
 			<span class="textLabel">浇筑方式：</span>
 			<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" @change="wayChange">
 				<mu-menu-item v-for="item,index in ways" :key="item.id" :value="item.name" :title="item.name" />
@@ -80,6 +82,13 @@ export default {
 				{id:2,name:"泵送"},
 			],
 			item:null,   //priceItem 包含两种方式的价格
+			myfilter (searchText, key) {
+				if(searchText) {
+					return key.indexOf(searchText) !== -1;
+				} else {
+					return true;
+				}
+		    },
 		};
 	},
 	methods: {
@@ -154,7 +163,10 @@ export default {
     	...mapState({
     		types: state => state.types,
     		salePrices: state => state.salePrices,
-    		carPlates: state => state.carPlates,
+    		carPlates: state => state.carFrequency,
+    		comFrequency: state => state.comFrequency,
+    		projectFrequency: state => state.projectFrequency,
+    		driverFrequency: state => state.driverFrequency,
     	}),
     },
 	mounted() {
