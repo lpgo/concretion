@@ -79,7 +79,8 @@ export default {
 			prices:[],
 			ways:[
 				{id:1,name:"自卸"},
-				{id:2,name:"泵送"},
+				{id:2,name:"20米泵送"},
+				{id:2,name:"30米泵送"},
 			],
 			item:null,   //priceItem 包含两种方式的价格
 			myfilter (searchText, key) {
@@ -142,7 +143,7 @@ export default {
 				if(item.name == value) {
 					if(this.form.way == "自卸") {
 						this.form.price = item.self;
-					} else if(this.form.way == "泵送") {
+					} else {
 						this.form.price = item.auto;
 					}
 					this.item = item;
@@ -153,7 +154,7 @@ export default {
 			if(this.item != null) {
 				if(value == "自卸") {
 					this.form.price = this.item.self;
-				} else if(value == "泵送") {
+				} else {
 					this.form.price = this.item.auto;
 				}
 			}

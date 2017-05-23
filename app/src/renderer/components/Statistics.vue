@@ -1,11 +1,25 @@
 <template>
 	<div style="padding:20px;">
-		<mu-radio label="当日" name="group" nativeValue="day" v-model="value" @change="change"/> 
-	  	<mu-radio label="当月" name="group" nativeValue="month" v-model="value"  @change="change"/>
-	  	<mu-radio label="自定义" name="group" nativeValue="user" v-model="value" style="margin-right:100px" />  
-		<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" :disabled="value!='user'"/>
-		<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'"/>
-		<mu-raised-button label="统计"  primary @click="statistics" :disabled="value!='user'"/>
+		<div style="display:flex">
+			<span style="font-size:20px;margin-right:10px;">时间：</span>
+			<mu-radio label="当日" name="group" nativeValue="day" v-model="value" @change="change"/> 
+		  	<mu-radio label="当月" name="group" nativeValue="month" v-model="value"  @change="change"/>
+		  	<mu-radio label="自定义" name="group" nativeValue="user" v-model="value" style="margin-right:100px" />  
+			<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" :disabled="value!='user'"/>
+			<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'"/>
+		</div>
+		<div style="display:flex">
+			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" >
+				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
+			</mu-select-field>
+			<mu-auto-complete hintText="请输入工程名称" v-model="form.project" openOnFocus :dataSource="projectFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :filter="myfilter"/>
+			<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @>
+					<mu-menu-item v-for="item,index in types" :key="item.id" :value="item.name" :title="item.name" />
+			</mu-select-field>
+			<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
+			<mu-raised-button label="统计"  primary @click="statistics" />
+		</div>
+		
 		<h2>销售统计</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
 			<tr>  
@@ -76,6 +90,7 @@
 <script>
 import util from '../common/util.js'
 import moment from 'moment'
+import { mapState,mapMutations } from 'vuex'
 export default {
 	data() {
 		return {
@@ -84,6 +99,19 @@ export default {
 			driverData:[],
 			start:moment().format('YYYY-MM-DD'),
 			end:moment().format('YYYY-MM-DD'),
+			ways:[
+				{id:1,name:"自卸"},
+				{id:2,name:"20米泵送"},
+				{id:2,name:"30米泵送"},
+			],
+			form:{com:null,driver:null,project:null,way:null},
+			myfilter (searchText, key) {
+				if(searchText) {
+					return key.indexOf(searchText) !== -1;
+				} else {
+					return true;
+				}
+		    },
 		};
 	},
 	methods: {
@@ -165,6 +193,16 @@ export default {
 			});
 		},
 	},
+	computed:{
+    	...mapState({
+    		types: state => state.types,
+    		salePrices: state => state.salePrices,
+    		carPlates: state => state.carFrequency,
+    		comFrequency: state => state.comFrequency,
+    		projectFrequency: state => state.projectFrequency,
+    		driverFrequency: state => state.driverFrequency,
+    	}),
+    },
 	mounted(){
 		this.get(this.start,this.end);
 	},

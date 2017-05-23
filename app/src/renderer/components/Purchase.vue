@@ -6,7 +6,7 @@
 			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat>
 				<mu-menu-item v-for="item,index in purchasePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-auto-complete label="请输入车号" filter="noFilter" hintText="请输入车号" fullWidth v-model="form.car" openOnFocus  :disabled="disabled" :dataSource="carPlates" labelFloat/>
+			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth />
 			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat>
 				<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
@@ -97,6 +97,13 @@
 				saveList: [],
 				selectIndex:-1,
 				prices:[],
+				myfilter (searchText, key) {
+					if(searchText) {
+						return key.indexOf(searchText) !== -1;
+					} else {
+						return true;
+					}
+			    },
 			};
 		},
 		methods: {
@@ -202,7 +209,7 @@
 		computed:{
 	    	...mapState({
 	    		purchasePrices: state => state.purchasePrices,
-	    		carPlates: state => state.carPlates,
+	    		carPlates: state => state.carFrequency,
 	    	}),
 	    },
 		mounted() {
