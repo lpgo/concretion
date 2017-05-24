@@ -18,6 +18,7 @@
 			</mu-select-field>
 			<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
 			<mu-raised-button label="统计"  primary @click="statistics" />
+			<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
 		</div>
 		
 		<h2>销售统计</h2>
@@ -63,6 +64,7 @@
 		        </tr> 
         	</template>
 		</table>
+		<!--
 		<h2>司机统计</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center">
 			<tr>  
@@ -84,7 +86,7 @@
 		        </tr> 
         	</template>
 		</table>
-
+		-->
 	</div>
 </template>
 <script>
@@ -122,18 +124,32 @@ export default {
 			if('day' == value) {
 				this.start = moment().format('YYYY-MM-DD');
 				this.end = moment().format('YYYY-MM-DD');
-				this.get(this.start,this.end);
 			} else if('month' == value) {
 				this.start = moment().startOf('month').format('YYYY-MM-DD');
 				this.end = moment().endOf('month').format('YYYY-MM-DD');
-				this.get(this.start,this.end);
 			}
 		},
 		get(start, end) {
 			let s = encodeURIComponent(moment(start).startOf('day').format());
 			let e = encodeURIComponent(moment(end).endOf('day').format());
 			let url = `statistics?start=${s}&end=${e}`
+			if(this.form.com) {
+				url += `&com=${this.form.com}`
+			}
+			if(this.form.project) {
+				url += `&project=${this.form.project}`
+			}
+			if(this.form.strength) {
+				url += `&strength=${this.form.strength}`
+			}
+			if(this.form.driver) {
+				url += `&driver=${this.form.driver}`
+			}
 			util.get(url, data => {
+				if(!data) {
+					this.data = [];
+					return ;
+				}
 				//处理数据为表格准备
 				let map = new Map();
 				for(let item of data) {
@@ -166,7 +182,7 @@ export default {
 				this.data = ss;
 			});
 
-			//根据司机统计
+			/*//根据司机统计
 			util.get(url+'&by=driver', data => {
 				//处理数据为表格准备
 				let map = new Map();
@@ -191,6 +207,14 @@ export default {
 				}
 				this.driverData = ss;
 			});
+			*/
+			
+		},
+		clear() {
+			this.form.com = null;
+			this.form.project = null;
+			this.form.strength = null;
+			this.form.driver = null;
 		},
 	},
 	computed:{
