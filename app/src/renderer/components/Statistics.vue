@@ -17,6 +17,7 @@
 					<mu-menu-item v-for="item,index in types" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
 			<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
+			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
 			<mu-raised-button label="统计"  primary @click="statistics" />
 			<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
 		</div>
@@ -144,6 +145,9 @@ export default {
 			}
 			if(this.form.driver) {
 				url += `&driver=${this.form.driver}`
+			}
+			if(this.form.car) {
+				url += `&car=${this.form.car}`
 			}
 			util.get(url, data => {
 				if(!data) {
