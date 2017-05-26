@@ -25,45 +25,29 @@
 		<h2>销售统计</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
 			<tr>  
-	            <td>施工单位</td>  
 	            <td>强度</td>  
-	            <td colspan="4">泵送</td>
+	            <td colspan="4">45米泵送</td>
+	            <td colspan="4">52米泵送</td>
 	            <td colspan="4">自卸</td>
 	            <td>合计/元</td>  
 	        </tr>
-        	<template v-for="item in data">
-        		<tr v-for="(value, key, index) in item">
-        			<template v-if="key!='com' && key!='size'">
-        				<td :rowspan="item.size" v-if="index == 0">{{item.com}}</td>  
-			            <td>{{key}}</td>
-							<template v-if="value['泵送']">
-								<td>{{value['泵送'].capacity}}</td>
-					            <td>方</td>
-					            <td>{{value['泵送'].price}}</td>  
-					            <td>元/方</td>
-							</template>
-							<template v-else>
-								<td>&nbsp&nbsp&nbsp</td>
-					            <td>方</td>
-					            <td>&nbsp&nbsp&nbsp</td>  
-					            <td>元/方</td>
-							</template>
-							<template v-if="value['自卸']">
-								<td>{{value['自卸'].capacity}}</td>
-					            <td>方</td>
-					            <td>{{value['自卸'].price}}</td>  
-					            <td>元/方</td>
-							</template>
-							<template v-else>
-								<td>&nbsp&nbsp&nbsp</td>
-					            <td>方</td>
-					            <td>&nbsp&nbsp&nbsp</td>  
-					            <td>元/方</td>
-							</template>	
-						<td>{{value.count}}</td>		
-        			</template>
-		        </tr> 
-        	</template>
+    		<tr v-for="(value, key, index) in data">
+    			<td>{{key}}</td>
+				<td>{{value["45米泵送"]?value["45米泵送"].capacity:''}}</td>
+		        <td>方</td>
+		        <td>{{value["45米泵送"]?value["45米泵送"].price:''}}</td>  
+		        <td>元/方</td>
+		        <td>{{value["52米泵送"]?value["52米泵送"].capacity:''}}</td>
+		        <td>方</td>
+		        <td>{{value["52米泵送"]?value["52米泵送"].price:''}}</td>  
+		        <td>元/方</td>
+		        <td>{{value["自卸"]?value["自卸"].capacity:''}}</td>
+		        <td>方</td>
+		        <td>{{value["自卸"]?value["自卸"].price:''}}</td>  
+		        <td>元/方</td>
+				<td>{{value.total}}</td>
+	        </tr> 
+ 
 		</table>
 		<!--
 		<h2>司机统计</h2>
@@ -102,11 +86,6 @@ export default {
 			driverData:[],
 			start:moment().format('YYYY-MM-DD'),
 			end:moment().format('YYYY-MM-DD'),
-			ways:[
-				{id:1,name:"自卸"},
-				{id:2,name:"20米泵送"},
-				{id:2,name:"30米泵送"},
-			],
 			form:{com:null,driver:null,project:null,way:null},
 			myfilter (searchText, key) {
 				if(searchText) {
@@ -155,35 +134,16 @@ export default {
 					return ;
 				}
 				//处理数据为表格准备
-				let map = new Map();
+				let o = {};
 				for(let item of data) {
-					if(map.has(item._id.com)) {
-						map.get(item._id.com).push(item);
+					if(o[item._id.strength]) {
+						o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
 					} else {
-						map.set(item._id.com,[item]);
+						o[item._id.strength]={};
+						o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
 					}
-				} 
-
-				let ss = [];
-				for(let [key, value] of map) {
-					let o = {};
-					let size = 0;
-					for(let item of value) {
-						if(o[item._id.strength]) {
-							o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
-							o[item._id.strength].count += item.total;
-						} else {
-							o[item._id.strength]={};
-							o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
-							o[item._id.strength].count = item.total;
-							size++;
-						}
-					}
-					o.com = key;
-					o.size = size;
-					ss.push(o);	
 				}
-				this.data = ss;
+				this.data = o;
 			});
 
 			/*//根据司机统计
@@ -219,6 +179,7 @@ export default {
 			this.form.project = null;
 			this.form.strength = null;
 			this.form.driver = null;
+			this.form.car = null;
 		},
 	},
 	computed:{

@@ -79,8 +79,8 @@ export default {
 			prices:[],
 			ways:[
 				{id:1,name:"自卸"},
-				{id:2,name:"20米泵送"},
-				{id:2,name:"30米泵送"},
+				{id:2,name:"45米泵送"},
+				{id:2,name:"52米泵送"},
 			],
 			item:null,   //priceItem 包含两种方式的价格
 			myfilter (searchText, key) {
