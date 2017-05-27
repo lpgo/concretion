@@ -26,25 +26,37 @@
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
 			<tr>  
 	            <td>强度</td>  
-	            <td colspan="4">45米泵送</td>
-	            <td colspan="4">52米泵送</td>
-	            <td colspan="4">自卸</td>
+	            <td colspan="3">45米泵送</td>
+	            <td colspan="3">52米泵送</td>
+	            <td colspan="3">自卸</td>
 	            <td>合计/元</td>  
 	        </tr>
     		<tr v-for="(value, key, index) in data">
     			<td>{{key}}</td>
-				<td>{{value["45米泵送"]?value["45米泵送"].capacity:''}}</td>
-		        <td>方</td>
-		        <td>{{value["45米泵送"]?value["45米泵送"].price:''}}</td>  
-		        <td>元/方</td>
-		        <td>{{value["52米泵送"]?value["52米泵送"].capacity:''}}</td>
-		        <td>方</td>
-		        <td>{{value["52米泵送"]?value["52米泵送"].price:''}}</td>  
-		        <td>元/方</td>
-		        <td>{{value["自卸"]?value["自卸"].capacity:''}}</td>
-		        <td>方</td>
-		        <td>{{value["自卸"]?value["自卸"].price:''}}</td>  
-		        <td>元/方</td>
+    			<template v-if="value['45米泵送']">
+					<td>{{value["45米泵送"].capacity}}方</td>
+			        <td>{{value["45米泵送"].price}}元/方</td>  
+			        <td>总计:{{value["45米泵送"].total}}元</td>
+		        </template>
+		        <template v-else>
+		        	<td colspan="3">---</td>
+		        </template>
+		       	<template v-if="value['52米泵送']">
+					<td>{{value["52米泵送"].capacity}}方</td>
+			        <td>{{value["52米泵送"].price}}元/方</td>  
+			        <td>总计:{{value["52米泵送"].total}}元</td>
+		        </template>
+		        <template v-else>
+		        	<td colspan="3">---</td>
+		        </template>
+		        <template v-if="value['自卸']">
+					<td>{{value["自卸"].capacity}}方</td>
+			        <td>{{value["自卸"].price}}元/方</td>  
+			        <td>总计:{{value["自卸"].total}}元</td>
+		        </template>
+		        <template v-else>
+		        	<td colspan="3">---</td>
+		        </template>
 				<td>{{value.total}}</td>
 	        </tr> 
  
@@ -138,9 +150,11 @@ export default {
 				for(let item of data) {
 					if(o[item._id.strength]) {
 						o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
+						o[item._id.strength].total += item.total;
 					} else {
 						o[item._id.strength]={};
 						o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
+						o[item._id.strength].total = item.total;
 					}
 				}
 				this.data = o;
