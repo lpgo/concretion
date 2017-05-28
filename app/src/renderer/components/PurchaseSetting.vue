@@ -25,7 +25,7 @@
 		</mu-table>
 		<hr/>
 		<mu-raised-button label="添加" primary @click="dialog=true" style="margin:0 20px;float:right"/>
-		<mu-raised-button label="打印" primary @click="myPrint" style="margin:0 20px;float:right"/>
+		
 		<mu-dialog :open="dialog" @close="close" title="添加采购价格" dialogClass="dialog">
 			<mu-text-field  v-model="newPurchasePrice.com" style="" hintText="公司名称"/>
 			<template v-for="p in newPurchasePrice.prices">

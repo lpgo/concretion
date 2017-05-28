@@ -28,10 +28,15 @@
 			</mu-select-field>
 			<span class="textLabel">发货时间：</span><mu-text-field  v-model="form.time"/>
 		</div>
-		<div class="saleBtnGroup">
-			<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save"/>
-			<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
+		<div class="formGroup">
+			<span class="textLabel">塌落度：</span><mu-text-field  v-model="form.tld"/>
+			<span class="textLabel">配比编号：</span><mu-text-field  v-model="form.pbbh"/>
+			<div class="saleBtnGroup">
+				<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save"/>
+				<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
+			</div>
 		</div>
+		
 		<mu-table style="" :showCheckbox="false" :fixedHeader="true" :height="height">
 			<mu-thead slot="header" >
 		      <mu-tr class="printListHead">
@@ -194,7 +199,7 @@ export default {
 .saleBtnGroup {
 	display: flex;
 	justify-content: flex-end;
-	padding: 20px;
+	margin-left: 172px;
 }
 .textLabel {
 	font-size: 18px;
