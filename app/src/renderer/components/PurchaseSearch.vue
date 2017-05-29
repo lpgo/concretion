@@ -23,8 +23,8 @@
 		        <mu-td>{{item.car}}</mu-td>
 		        <mu-td>{{item.name}}</mu-td>
 		        <mu-td>{{item.price}}</mu-td>
-		        <mu-td>{{item.weight}}</mu-td>
-		        <mu-td>{{item.total}}</mu-td>
+		        <mu-td>{{item.weight.toFixed(2)}}</mu-td>
+		        <mu-td>{{item.total.toFixed(2)}}</mu-td>
 		        <mu-td><mu-flat-button label="结账" primary @click="close(item.id,index)" v-if="!item.closing"/></mu-td> 
 		      </mu-tr>
 		    </mu-tbody>

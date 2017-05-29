@@ -12,18 +12,18 @@
 			</mu-select-field>
 			<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled"/>
 			<div class="labelGroup">
-				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="disabled"/>
-				<mu-flat-button label="获取毛重" style="margin-bottom:18px;margin-left:10px" primary/>
+				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="true"/>
+
 			</div>
 			<div class="labelGroup">
-				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="carWeightDisabled"/>
-				<mu-flat-button label="获取皮重" style="margin-bottom:18px;margin-left:10px" secondary/>
+				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="true"/>
+				
 			</div>
 			<div class="btnContainer">
-				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'"/>
+				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'" :disabled="disabled"/>
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
-				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary />
+				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="carWeightDisabled"/>
 				</template>
 				<template v-if="state == 'out'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
@@ -37,39 +37,39 @@
 	 
 		</div>
 	</div>
-	<div class="hidden myDivToPrint">
+	<div class=" myDivToPrint">
 		<h2 style="text-align:center">府谷县茂奂建材有限责任公司</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center">
 			<tr>
 				<td>送货单位：</td>
-				<td colspan="2">个体</td>
+				<td colspan="2">{{printData.com}}</td>
 				<td>日期：</td>
-				<td colspan="2">2017-03-25 12:12:00</td>
-				<td>单号</td>
+				<td colspan="2">{{dateFormat(printData.time)}}</td>
+				<td>{{printData.no}}</td>
 			</tr>
 			<tr>
 				<td>车号</td>
-				<td>陕K12345</td>
+				<td>{{printData.car}}</td>
 				<td>名称</td>
-				<td>1.3石子</td>
+				<td>{{printData.name}}</td>
 				<td>单价</td>
-				<td>35</td>
+				<td>{{printData.price}}</td>
 				<td>签字</td>
 			</tr>
 			<tr>
 				<td>毛重</td>
-				<td>12.24</td>
+				<td>{{printData.totalWeight}}</td>
 				<td>皮重</td>
-				<td>34.12</td>
+				<td>{{printData.carWeight}}</td>
 				<td>净重</td>
-				<td>123.321</td>
+				<td>{{printData.weight.toFixed(2)}}</td>
 				<td rowspan="2"></td>
 			</tr>
 			<tr>
 				<td>大写</td>
 				<td colspan="3">{{numberToChinese(123124)}}</td>
 				<td>实付金额</td>
-				<td>12312</td>
+				<td>{{printData.total.toFixed(2)}}</td>
 			</tr>
 		</table>
 		<span style="float:right">联系电话：12345678965</span>
@@ -85,12 +85,14 @@
 	import { mapState,mapMutations } from 'vuex'
 	import fs from 'fs'
 
+	import SerialPort from 'serialport'
 	export default {
 		data() {
 			return {
 				height:'240px',
 				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null},
-				disabled : false,
+				disabled : true,
+				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null},
 				carWeightDisabled: true,
 				state: "new",
 				outList: [],
@@ -104,6 +106,7 @@
 						return true;
 					}
 			    },
+			  	port:null,
 			};
 		},
 		methods: {
@@ -145,8 +148,10 @@
 					this.state = "new";
 					this.form = {};
 					this.form.carWeight = null;
-					this.disabled = false;
-					this.carWeightDisabled = true;
+
+					this.printData = data;
+					this.$nextTick(this.print);
+		
 				}, err => {
 					util.toast(err.message);
 				});
@@ -155,8 +160,7 @@
 			newOrder() {
 				this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
 				this.state = "new";
-				this.disabled = false;
-				this.carWeightDisabled = true;
+
 			},
 			saveSelect(index,tr) {
 				this.selectIndex = index;
@@ -167,8 +171,7 @@
 				}
 				this.form = this.saveList[index];
 				this.state = "save";
-				this.disabled = true;
-				this.carWeightDisabled = false;
+
 			},
 			outSelect(index,tr) {
 				this.selectIndex = index;
@@ -179,8 +182,7 @@
 				}
 				this.form = this.outList[index];
 				this.state = "out";
-				this.disabled = true;
-				this.carWeightDisabled = true;
+				this.printData = this.outList[index];
 			},
 			comChange(value) {
 				for(let item of this.purchasePrices) {
@@ -201,6 +203,9 @@
 			},
 			numberToChinese(num) {
 				return util.moneyArabiaToChinese(num);
+			},
+			dateFormat(time) {
+				return moment(time).format("YYYY-MM-DD HH:mm:ss");
 			},
 		},
 		components: {
@@ -231,6 +236,55 @@
 			},err => {
 				util.toast(err.message);
 			});
+
+			SerialPort.list(function (err, ports) {
+			  ports.forEach(function(port) {
+			    console.log(port.comName);
+			    console.log(port.pnpId);
+			    console.log(port.manufacturer);
+			  });
+			});
+			
+			this.port = new SerialPort("COM6", {
+			  baudRate: 9600,
+			  autoOpen: false
+			});
+			
+			this.port.open(function (err) {
+			  if (err) {
+			    return console.log('Error opening port: ', err.message);
+			  }
+			});
+			let last,count;
+			this.port.on('data', data => {
+				
+				let str = data.toString();	 
+				let weight = Number(str.substring(3,8)) / Math.pow(10,Number(str[8]));
+
+				if(last != weight) {
+					last = weight;
+					count = 0;
+					this.disabled = true;
+					this.carWeightDisabled = true;
+				} else {
+					count ++;
+				}
+
+				if(this.state == "save") {
+					this.form.carWeight = weight;
+					if(count >= 50 && weight != 0) {
+						this.carWeightDisabled = false;
+					}
+				} else if(this.state == "new") {
+					this.form.totalWeight = weight;
+					if(count >= 50 && weight != 0) {
+						this.disabled = false;
+					}
+				}
+			});
+		},
+		beforeDestroy() {
+			this.port.close();
 		},
 	}
 </script>
