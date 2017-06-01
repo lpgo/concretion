@@ -52,10 +52,12 @@ export default {
 		};
 	},
 	methods: {
-		close(id,index) {               //结账
-			util.patch("sales/"+id,{closing:true},data => {
-				this.data.splice(index,1);
-			});
+		close(id,index) {    
+			if(confirm("共计："+this.data[index].total+",确定结账吗？")){
+				util.patch("sales/"+id,{closing:true},data => {
+					this.data.splice(index,1);
+				});
+			}           //结账
 		},
 		search() {
 			this.get();

@@ -1,9 +1,11 @@
 <template>
 	<div style="margin:20px;">
-		<mu-radio label="采购" name="group" nativeValue="p" v-model="value"  />
-		<mu-radio label="销售" name="group" nativeValue="s" v-model="value"/> 
-		<input type="text" v-model="no">
-	  	<mu-raised-button label="查询"  primary @click="search"  style="margin-left:20px"/>
+		<div style="display:flex;padding:10px">
+			<mu-radio label="采购" name="group" nativeValue="p" v-model="value"  />
+			<mu-radio label="销售" name="group" nativeValue="s" v-model="value"/> 
+			<span style="margin-left:30px;font-size:22px">单号：</span><input type="text" v-model="no" @keydown.enter="get">
+		  	
+	  	</div>
 	  	<mu-table  :showCheckbox="false" :fixedHeader="true" v-if="value == 's'">
 			<mu-thead slot="header" >
 		      <mu-tr class="printListHead">
@@ -30,7 +32,7 @@
 		        <mu-td>{{item.part}}</mu-td>
 		        <mu-td>{{item.strength}}</mu-td>
 		        <mu-td>{{dateFormat(item.time)}}</mu-td> 
-		        <mu-td><mu-flat-button label="结账" primary @click="close(item.id,index)" v-if="!item.closing"/></mu-td> 
+		        <mu-td><mu-flat-button label="删除" primary @click="removeSale(item.id,index)" v-if="!item.closing"/></mu-td> 
 		      </mu-tr>
 		    </mu-tbody>
 		</mu-table>
@@ -55,11 +57,11 @@
 		        <mu-td>{{item.price}}</mu-td>
 		        <mu-td>{{item.weight.toFixed(2)}}</mu-td>
 		        <mu-td>{{item.total.toFixed(2)}}</mu-td>
-		        <mu-td><mu-flat-button label="结账" primary @click="close(item.id,index)" v-if="!item.closing"/></mu-td> 
+		        <mu-td><mu-flat-button label="删除" primary @click="removePurchase(item.id,index)" v-if="!item.closing"/></mu-td> 
 		      </mu-tr>
 		    </mu-tbody>
 		</mu-table>
-
+		<mu-raised-button label="全部结账"  primary @click="check"  style="margin-top:20px;float:right"/>
 	</div>
 </template>
 
@@ -73,35 +75,61 @@ export default {
 			value:"s",
 			sData:[],
 			pData:[],
-			no:0,
+			no:null,
 		};
 	},
 	methods: {
-		close(id,index) {               //结账
-			util.patch("sales/"+id,{closing:true},data => {
-				this.data.splice(index,1);
-			});
+		removeSale(id,index) {               
+			this.sData.splice(index,1);
 		},
-		search() {
-			this.get();
+		removePurchase(id,index) {               
+			this.pData.splice(index,1);
+		},
+		check() {    //结账
+			if(this.value == "s") {
+				let total = 0;
+				for (var i = this.sData.length - 1; i >= 0; i--) {
+					total += this.sData[i].total;
+				}
+				if(confirm("共计："+total+",确定结账吗？")) {
+					for (var i = this.sData.length - 1; i >= 0; i--) {
+						util.patch("sales/"+this.sData[i].id,{closing:true},data => {
+							this.sData.pop();
+						});
+					}
+				}
+			} else {
+				let total = 0;
+				for (var i = this.pData.length - 1; i >= 0; i--) {
+					total += this.pData[i].total;
+				}
+				if(confirm("共计："+total+",确定结账吗？")) {
+					for (var i = this.pData.length - 1; i >= 0; i--) {
+						util.patch("purchases/"+this.pData[i].id,{closing:true},data => {
+							this.pData.pop();
+						});
+					}
+				}
+			}
 		},
 		get() {
 			let url;
-			if(this.value == s){
+			if(this.value == "s"){
 				url = `sales?closing=false&no=${this.no}`
 				util.get(url, data => {
 					if(data) {
-						this.sData.push(data);
+						this.sData.push(data[0]);
 					}
 				});
 			} else {
-				url = `purchase?closing=false&no=${this.no}`
+				url = `purchases?closing=false&no=${this.no}`
 				util.get(url, data => {
 					if(data) {
-						this.pData.push(data);
+						this.pData.push(data[0]);
 					}
 				});
 			}
+			this.no = null;
 		},
 		dateFormat(time) {
 			return moment(time).format("YYYY-MM-DD HH:mm");
