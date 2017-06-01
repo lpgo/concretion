@@ -79,7 +79,7 @@ export default {
       menuData: [
         {label:"磅房",icon:"devices",items:[{title:"录入过磅单", url:"/purchase"}]},
         {label:"销售",icon:"local_shipping",items:[{title: "销售", url: "/sale"}]},
-        {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"}]},
+        {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"},{title: "结账", url: "/checkout"}]},
         {label:"统计",icon:"equalizer",items:[{title: "统计", url: "/statistics"}]},
         {label:"设置",icon:"monetization_on",items:[{title: "销售设置", url: "/saleSetting"},{title: "采购设置", url: "/PurchaseSetting"}]},
       ],

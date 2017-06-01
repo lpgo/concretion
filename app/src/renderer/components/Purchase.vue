@@ -37,7 +37,7 @@
 	 
 		</div>
 	</div>
-	<div class=" myDivToPrint">
+	<div class="hidden myDivToPrint">
 		<h2 style="text-align:center">府谷县茂奂建材有限责任公司</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center">
 			<tr>
@@ -92,7 +92,7 @@
 				height:'240px',
 				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null},
 				disabled : true,
-				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null},
+				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0},
 				carWeightDisabled: true,
 				state: "new",
 				outList: [],
@@ -131,6 +131,8 @@
 			print() {
 				const {remote} = this.$electron;
 		    	const web = remote.getCurrentWebContents();
+		    	window.print();
+		    	/*
 		    	web.printToPDF({}, (error, data) => {
 				    if (error) throw error
 				    fs.writeFile('print.pdf', data, (error) => {
@@ -138,6 +140,7 @@
 				      console.log('Write PDF successfully.')
 				    })
 				});
+				*/
 			},
 			out() {
 				this.form.carWeight = Number(this.form.carWeight);
@@ -150,7 +153,7 @@
 					this.form.carWeight = null;
 
 					this.printData = data;
-					this.$nextTick(this.print);
+					this.print();
 		
 				}, err => {
 					util.toast(err.message);
@@ -245,7 +248,7 @@
 			  });
 			});
 			
-			this.port = new SerialPort("COM6", {
+			this.port = new SerialPort("COM4", {
 			  baudRate: 9600,
 			  autoOpen: false
 			});

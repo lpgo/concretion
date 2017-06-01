@@ -67,7 +67,7 @@
 			    </mu-tbody>
 			</mu-table>
 		</div>
-		<div class="myDivToPrint">
+		<div class="hidden myDivToPrint">
 			<h2 style="text-align:center">送货单</h2>
 			<div style="display:flex;justify-content:space-between;padding:0 20px">
 				<span>搅拌站号：{{"茂奂建材有限责任公司"}}</span>
@@ -88,7 +88,7 @@
 					<td colspan="3">{{printData.project}}</td>
 					<td>运输车号</td>
 					<td>{{printData.car}}</td>
-					<td colspan="2" rowspan="2"><img :src="barcodeSrc"></td>
+					<td colspan="2" rowspan="2"><img :src="barcodeSrc" @load="print"></td>
 					
 				</tr>
 				<tr>
@@ -184,7 +184,6 @@ export default {
 				this.form.tld = null;
 				this.form.pbbh = null;
 				this.form.time = moment().format("HH:mm:ss");
-				this.$nextTick(this.print);
 			}, err => {
 				util.toast(err.error);
 			});
@@ -243,6 +242,7 @@ export default {
 			const {remote} = this.$electron;
 	    	const web = remote.getCurrentWebContents();
 	    	
+	    	/*
 	    	web.printToPDF({}, (error, data) => {
 			    if (error) throw error
 			    fs.writeFile('sale.pdf', data, (error) => {
@@ -250,8 +250,8 @@ export default {
 			      console.log('Write PDF successfully.')
 			    })
 			});
-			
-			//web.print();
+			*/
+			web.print({silent:true});
 			
 		},
 	},
