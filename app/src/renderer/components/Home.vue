@@ -1,11 +1,21 @@
 <template>
   <div class="container">
     <mu-appbar title="茂奂建材有限公司" class="noprint">
+      <mu-flat-button label="刷新"  slot="right"/>
+      <mu-flat-button label="修改密码" slot="right" @click="openPwd"/>
       <template v-for="data in menuData">
         <MenuButton :menuData="data" :icon="data.icon" slot="right"/>
       </template>
     </mu-appbar>
     <router-view class="content"></router-view>
+    <mu-dialog :open="changePwdDialog" title="修改密码" dialogClass="changePwdDialog">
+      <span class="textLabel">旧密码：</span><mu-text-field type="password" v-model="oldPwd" :errorText="oldPwdError" @change="oldPwdError = ''"/><br/>
+      <span class="textLabel">新密码：</span><mu-text-field  type="password" v-model="newPwd" :errorText="newPwdError" @change="newPwdError = ''"/><br/>
+      <span class="textLabel">确认新密码：</span><mu-text-field type="password"  v-model="newPwd2"  :errorText="newPwdError2" @change="newPwdError2 = ''"/>
+
+      <mu-flat-button slot="actions" @click="closePwd" primary label="取消"/>
+      <mu-flat-button slot="actions" primary @click="change" label="确定"/>
+    </mu-dialog>
   </div>
 
 
@@ -72,21 +82,84 @@
 <script>
 
 import MenuButton from './MenuButton'
+import { mapState } from 'vuex'
+import util from '../common/util.js'
 
 export default {
   data() {
     return {
-      menuData: [
-        {label:"磅房",icon:"devices",items:[{title:"录入过磅单", url:"/purchase"}]},
+      menuData: null,
+      admin:[
         {label:"销售",icon:"local_shipping",items:[{title: "销售", url: "/sale"}]},
         {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"},{title: "结账", url: "/checkout"}]},
         {label:"统计",icon:"equalizer",items:[{title: "统计", url: "/statistics"}]},
         {label:"设置",icon:"monetization_on",items:[{title: "销售设置", url: "/saleSetting"},{title: "采购设置", url: "/PurchaseSetting"}]},
       ],
+      cw:[
+        {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"},{title: "结账", url: "/checkout"}]},
+      ],
+      bf:[
+        {label:"磅房",icon:"devices",items:[{title:"录入过磅单", url:"/purchase"}]},
+      ],
+
+      changePwdDialog: false,
+      oldPwd: "",
+      newPwd: "",
+      newPwd2: "",
+      oldPwdError: null,
+      newPwdError: null,
+      newPwdError2: null,
     }
   },
-  methods: {
-    
+  methods:{
+    openPwd() {
+      this.changePwdDialog = true;
+    },
+    closePwd() {
+      this.changePwdDialog = false;
+    },
+    change() {
+      if(!this.oldPwd) {
+        this.oldPwdError = "请输入旧密码";
+        return;
+      } 
+      if(!this.newPwd) {
+        this.newPwdError = "请输入新密码";
+        return;
+      }
+      if(!this.newPwd2) {
+        this.newPwdError2 = "请再次输入新密码";
+        return;
+      }
+      if(this.newPwd != this.newPwd2) {
+        this.newPwdError = "两次输入密码不同";
+        this.newPwdError2 = "两次输入密码不同";
+        return ;
+      }
+
+      util.patch("user/"+this.user.id, {oldPwd:this.oldPwd,newPwd: this.newPwd}, data =>{
+          util.toast("修改成功");
+          this.changePwdDialog = false;
+          this.oldPwdError = null;
+          this.newPwd = null;
+          this.newPwd2 = null;
+          this.oldPwd = null;
+          this.newPwdError2 = null;
+          this.newPwdError = null;
+      }, err => {
+          util.toast(err.error);
+      });
+
+    },
+  },
+  computed: {
+    ...mapState({
+      user: state => state.user,
+    }),
+  },
+  mounted() { 
+    console.log(this.user);
+    this.menuData = this[this.user.role];
   },
   components: {
     MenuButton
@@ -110,6 +183,10 @@ export default {
   display: none    
   }   
 }  
+
+.changePwdDialog {
+  width:300px;
+}
 /*
 .content {
   flex: 1 1 auto;

@@ -6,7 +6,7 @@
 			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat>
 				<mu-menu-item v-for="item,index in purchasePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth />
+			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled"/>
 			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat>
 				<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
@@ -20,7 +20,7 @@
 				
 			</div>
 			<div class="btnContainer">
-				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'" :disabled="disabled"/>
+				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'" :disabled="totalWeightDisabled"/>
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
 				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="carWeightDisabled"/>
@@ -91,8 +91,9 @@
 			return {
 				height:'240px',
 				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null},
-				disabled : true,
+				disabled : false,
 				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0},
+				totalWeightDisabled: true,
 				carWeightDisabled: true,
 				state: "new",
 				outList: [],
@@ -267,7 +268,7 @@
 				if(last != weight) {
 					last = weight;
 					count = 0;
-					this.disabled = true;
+					this.totalWeightDisabled = true;
 					this.carWeightDisabled = true;
 				} else {
 					count ++;
@@ -281,7 +282,7 @@
 				} else if(this.state == "new") {
 					this.form.totalWeight = weight;
 					if(count >= 50 && weight != 0) {
-						this.disabled = false;
+						this.totalWeightDisabled = false;
 					}
 				}
 			});

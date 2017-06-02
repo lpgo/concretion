@@ -22,10 +22,16 @@ const state = {
     projectFrequency:[],
     driverFrequency:[],
     carFrequency:[],
+    user:null,
 }
 
 // 定义所需的 mutations
 const mutations = {
+    addUser(state, user) {
+        if(user) {
+            state.user = user;
+        }
+    },
     addType(state,type) {
         if(type) {
             state.types.push(type);

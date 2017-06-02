@@ -12,6 +12,7 @@
 <script>
 import conf from '../common/conf.js'
 import util from '../common/util.js'
+import { mapMutations } from 'vuex'
 
 export default {
 	name: "login",
@@ -46,8 +47,10 @@ export default {
 	          	}
 	        ).then(res => {
 	        	if(res.ok) {
-	        		console.log(res);
-	        		this.$router.push("/main");
+	        		res.json().then(result => {
+	        			this.addUser(result);
+	        			this.$router.push("/main");
+	        		});
 	        	} else {
 	        		res.json().then(result =>{
 	        			this.nameMsg = result.error;
@@ -59,6 +62,9 @@ export default {
 				util.toast("网络错误");
 			});
 		},
+		...mapMutations([
+	        'addUser',
+	    ]),
 	}
 }
 </script>
