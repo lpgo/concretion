@@ -3,14 +3,14 @@
 	<div class="purchaseContainer noprint">
 		<mu-paper class="purchase" :zDepth="0" >
 			<div class="purchaseTitle">过磅单</div>
-			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat>
+			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat :errorText="error.com" >
 				<mu-menu-item v-for="item,index in purchasePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled"/>
-			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat>
+			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled" :errorText="error.car" @change="error.car = null"/>
+			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat :errorText="error.name">
 				<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
-			<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled"/>
+			<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled" :errorText="error.price"/>
 			<div class="labelGroup">
 				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="true"/>
 
@@ -108,6 +108,7 @@
 					}
 			    },
 			  	port:null,
+			  	error:{com:"",car:null,name:null,price:null},
 			};
 		},
 		methods: {
@@ -196,6 +197,7 @@
 						this.form.price = null;
 					}
 				}
+				this.error.com = null;
 			},
 			nameChange(value) {
 				for(let item of this.prices) {
@@ -204,6 +206,7 @@
 						this.form.price = item.price;
 					}
 				}
+				this.error.name = null;
 			},
 			numberToChinese(num) {
 				return util.moneyArabiaToChinese(num);

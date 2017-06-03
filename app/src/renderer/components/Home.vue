@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <mu-appbar title="茂奂建材有限公司" class="noprint">
-      <mu-flat-button label="刷新"  slot="right"/>
+      <mu-flat-button label="刷新"  slot="right" @click="refresh"/>
       <mu-flat-button label="修改密码" slot="right" @click="openPwd"/>
       <template v-for="data in menuData">
         <MenuButton :menuData="data" :icon="data.icon" slot="right"/>
@@ -15,6 +15,10 @@
 
       <mu-flat-button slot="actions" @click="closePwd" primary label="取消"/>
       <mu-flat-button slot="actions" primary @click="change" label="确定"/>
+    </mu-dialog>
+
+    <mu-dialog :open="refreshDialog" title="加载数据">
+      <mu-linear-progress mode="determinate" :value="value"/>
     </mu-dialog>
   </div>
 
@@ -82,7 +86,7 @@
 <script>
 
 import MenuButton from './MenuButton'
-import { mapState } from 'vuex'
+import { mapState,mapMutations } from 'vuex'
 import util from '../common/util.js'
 
 export default {
@@ -109,6 +113,9 @@ export default {
       oldPwdError: null,
       newPwdError: null,
       newPwdError2: null,
+
+      refreshDialog: false,
+      value:0,
     }
   },
   methods:{
@@ -151,6 +158,31 @@ export default {
       });
 
     },
+    refresh() {
+      this.refreshDialog = true;
+      Promise.all([
+        util.get("types",data => {this.addAllTypes(data);this.value += 15;}),
+        util.get("salePrices",data => {this.addAllSalePrices(data);this.value += 15;}),
+        util.get("purchasePrices",data => {this.addAllPurchasePrices(data);this.value += 15;}),
+        util.get("getFrequency?name=com",data => {this.addComFrequency(data);this.value += 15;}),
+        util.get("getFrequency?name=project",data => {this.addProjectFrequency(data);this.value += 15;}),
+        util.get("getFrequency?name=driver",data => {this.addDriverFrequency(data);this.value += 15;}),
+        util.get("getFrequency?name=car",data => {this.addCarFrequency(data);this.value += 15;}),
+      ]).then(result =>{
+        this.refreshDialog = false;
+      }).catch(err =>{
+        util.toast(err.message);
+      });
+    },
+    ...mapMutations([
+        'addAllTypes',
+        'addAllSalePrices',
+        'addAllPurchasePrices',
+        'addComFrequency',
+        'addDriverFrequency',
+        'addCarFrequency',
+        'addProjectFrequency',
+    ]),
   },
   computed: {
     ...mapState({

@@ -2,6 +2,9 @@
   <div style="height:100%">
     <router-view></router-view>
     <mu-toast v-if="toast" :message="msg" @close="hideToast"/>
+    <mu-dialog :open="loadDialog" title="加载数据" style="width:80px">
+      <mu-circular-progress :size="60" :strokeWidth="5"/>
+    </mu-dialog>
   </div>
 </template>
 
@@ -15,6 +18,7 @@ export default {
     return {
       toast: false,
       msg:'',
+      loadDialog: false,
     }
   },
   mounted() {
@@ -25,6 +29,14 @@ export default {
       if (this.toastTimer) clearTimeout(this.toastTimer);
       this.toastTimer = setTimeout(() => { this.toast = false }, 2000);
     });
+
+    util.bus.$on("loading", () => {
+      this.loadDialog = true;
+    });
+
+    util.bus.$on("loaded", () => {
+      this.loadDialog = false;
+    })
   },
   methods: {
     hideToast() {

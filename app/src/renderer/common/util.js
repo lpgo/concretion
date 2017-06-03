@@ -4,7 +4,8 @@ import Vue from 'vue'
 const vue = new Vue();
 
 export default {
-	post: (res,data,success,fail) => {
+	post: (res,data,success,fail,showload) => {
+		if(showload) vue.$emit("loading", null);
 		return fetch(conf.apiUrl+res,
 			{
 				credentials:"include",
@@ -22,8 +23,10 @@ export default {
         				vue.$emit("showToast", "网络错误:"+result.error); 
         		});
         	}
+        	vue.$emit("loaded", null);
 		}).catch(err => {
-			toast("网络错误"); 
+			vue.$emit("showToast", "网络错误:"); 
+			vue.$emit("loaded", null);
 		});
 	},
 	put: (res,data,success,fail) => {
@@ -45,7 +48,7 @@ export default {
         		});
         	}
 		}).catch(err => {
-			toast("网络错误"); 
+			vue.$emit("showToast", "网络错误:"); 
 		});
 	},
 	patch: (res,data,success,fail) => {
@@ -71,7 +74,7 @@ export default {
         		});
         	}
 		}).catch(err => {
-			toast("网络错误:"+err);
+			vue.$emit("showToast", "网络错误:"); 
 		});
 	},
 	get: function(res,success,fail) {
@@ -92,7 +95,7 @@ export default {
         		});
         	}
 		}).catch(err => {
-			toast("网络错误:"+err);
+			vue.$emit("showToast", "网络错误:"); 
 		});
 	},
 	delete: function(res,success,fail) {
@@ -115,7 +118,7 @@ export default {
         		});
         	}
 		}).catch(err => {
-			toast("网络错误:"+err);
+			vue.$emit("showToast", "网络错误:"); 
 		});
 	},
 	test: function(res,success,fail) {
@@ -136,7 +139,7 @@ export default {
         		});
         	}
 		}).catch(err => {
-			toast("网络错误:"+err);
+			vue.$emit("showToast", "网络错误:"); 
 		});
 	},
 	moneyArabiaToChinese: function(num) { 
@@ -310,6 +313,12 @@ export default {
 	},
 	toast(msg) {
 		vue.$emit("showToast", msg);
+	},
+	loading: () => {
+		vue.$emit("loading", null);
+	},
+	loaded: ()=> {
+		vue.$emit("loaded", null);
 	},
 	bus: vue,
 }

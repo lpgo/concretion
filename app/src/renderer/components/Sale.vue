@@ -186,7 +186,7 @@ export default {
 				this.form.time = moment().format("HH:mm:ss");
 			}, err => {
 				util.toast(err.error);
-			});
+			},true);
 		},
 		cancel() {
 			this.form.com = "";

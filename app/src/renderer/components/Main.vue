@@ -1,13 +1,18 @@
 <template>
+<div>
 	<h2>{{msg}}</h2>
+	<span style="position:fixed;right:0;bottom:0;padding:20px">版本：{{version}}</span>
+</div>
 </template>
 <script>
 import { mapState,mapMutations } from 'vuex'
 import util from '../common/util.js'
+import conf from '../common/conf.js'
 export default {
 	data() {
 		return {
 			msg: "正在加载数据。。。",
+			version: conf.version,
 		};
 	},
 	methods: {
