@@ -3,7 +3,7 @@
 		<div style="display:flex;padding:10px">
 			<mu-radio label="采购" name="group" nativeValue="p" v-model="value"  />
 			<mu-radio label="销售" name="group" nativeValue="s" v-model="value"/> 
-			<span style="margin-left:30px;font-size:22px">单号：</span><input type="text" v-model="no" @keydown.enter="get">
+			<span style="margin-left:30px;font-size:22px">单号：</span><input type="text" v-model="no" @keydown.enter="get" ref="no">
 		  	
 	  	</div>
 	  	<mu-table  :showCheckbox="false" :fixedHeader="true" v-if="value == 's'">
@@ -137,6 +137,7 @@ export default {
 	},
 	mounted() {
 		//this.get();
+		this.$refs.no.focus()
 	},
 }
 </script>
