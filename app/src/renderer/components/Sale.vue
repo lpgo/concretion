@@ -4,34 +4,36 @@
 			<h2 style="text-align:center">送货单</h2>
 			<div class="formGroup">
 				<span class="textLabel">施工单位：</span>
-				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" @change="comChange">
+				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" @change="comChange" :errorText="error.com">
 				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
 				<span class="textLabel">驾驶员：&nbsp&nbsp</span>
-				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
-				<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number"/>
+				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.driver" @change="error.driver = null"/>
+				<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number" hintText="请输入本车方量" :errorText="error.capacity" @change="error.capacity = null"/>
 			</div>
 			<div class="formGroup">
 				<span class="textLabel">工程名称：</span>
-				<mu-auto-complete hintText="请输入工程名称" v-model="form.project" openOnFocus :dataSource="projectFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :filter="myfilter"/>
+				<mu-auto-complete hintText="请输入工程名称" v-model="form.project" openOnFocus :dataSource="projectFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :filter="myfilter" :errorText="error.project" @change="error.project = null"/>
 				<span class="textLabel">运输车号：</span>
-				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
+				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.car" @change="error.car = null"/>
 				<span class="textLabel">浇筑方式：</span>
-				<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" @change="wayChange">
+				<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" @change="wayChange" :errorText="error.way" >
 					<mu-menu-item v-for="item,index in ways" :key="item.id" :value="item.name" :title="item.name" />
 				</mu-select-field>
 			</div>
 			<div class="formGroup">
-				<span class="textLabel">施工部位：</span><mu-text-field  v-model="form.part"/>
+				<span class="textLabel">施工部位：</span><mu-text-field  v-model="form.part" hintText="请选输入施工部位" :errorText="error.part" @change="error.part = null"/>
 				<span class="textLabel">强度等级：</span>
-				<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @change="typeChange">
+				<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @change="typeChange" :errorText="error.strength" >
 					<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
 				</mu-select-field>
-				<span class="textLabel">发货时间：</span><mu-text-field  v-model="form.time"/>
-			</div>
+				<span class="textLabel">附加条件：</span><mu-select-field v-model="form.attach" :labelFocusClass="['label-foucs']" hintText="请选择附加条件" style="" multiple>
+					<mu-menu-item v-for="item,index in attachs" :key="item.id" :value="item.id" :title="item.name" />
+				</mu-select-field>
+			</div> 
 			<div class="formGroup">
-				<span class="textLabel">塌落度：</span><mu-text-field  v-model="form.tld"/>
-				<span class="textLabel">配比编号：</span><mu-text-field  v-model="form.pbbh"/>
+				<span class="textLabel">塌落度：</span><mu-text-field  v-model="form.tld" hintText="请选输入塌落度" :errorText="error.tld" @change="error.tld = null"/>
+				<span class="textLabel">配比编号：</span><mu-text-field  v-model="form.pbbh" hintText="请输入配比编号" :errorText="error.pbbh" @change="error.pbbh = null"/>
 				<div class="saleBtnGroup">
 					<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save"/>
 					<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
@@ -141,7 +143,8 @@ export default {
 		return {
 			name: "Sale",
 			height: "260px",
-			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,time:moment().format("HH:mm:ss"),price:null},
+			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[]},
+			error: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null},
 			data: [],
 			prices:[],
 			ways:[
@@ -150,8 +153,16 @@ export default {
 				{id:2,name:"52米泵送"},
 			],
 			item:null,   //priceItem 包含两种方式的价格
-			printData:{com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,time:moment().format("HH:mm:ss"),price:null},
+			printData:{com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[]},
 			barcode:"",
+			attachs:[
+				{id:1,name:"同标号细石砼",value:20},
+				{id:2,name:"抗渗P6砼",value:15},
+				{id:3,name:"抗渗P8砼",value:25},
+				{id:4,name:"抗冻砼",value:25},
+				{id:5,name:"抗裂防水HA-P8%",value:25},
+				{id:6,name:"抗裂防水HA-P14%",value:40},
+			],
 			myfilter (searchText, key) {
 				if(searchText) {
 					return key.indexOf(searchText) !== -1;
@@ -164,7 +175,61 @@ export default {
 	methods: {
 		save() {
 			this.form.capacity = Number(this.form.capacity);
-			this.form.time = null;
+			//计算附加价格
+			let sum = 0;
+			let attachNames = [];
+			this.form.attach.forEach((i) =>{
+				this.attachs.forEach((item)=>{
+					if(item.id === i) {
+						attachNames.push(item.name);
+						sum += item.value;
+					}
+				});
+			});
+			this.form.price += sum;
+			this.form.attach = attachNames;
+			//检查输入
+			if(!this.form.com) {
+				this.error.com = "请选择施工单位";
+				return ;
+			}
+			if(!this.form.driver) {
+				this.error.driver = "请输入驾驶员";
+				return ;
+			}
+			if(!this.form.capacity) {
+				this.error.capacity = "请输入本车方量";
+				return ;
+			}
+			if(!this.form.project) {
+				this.error.project = "请输入工程名称";
+				return ;
+			}
+			if(!this.form.car) {
+				this.error.car = "请输入车号";
+				return ;
+			}
+			if(!this.form.way) {
+				this.error.way = "请选择浇筑方式";
+				return ;
+			}
+			if(!this.form.part) {
+				this.error.part = "请输入施工部位";
+				return ;
+			}
+			if(!this.form.strength) {
+				this.error.strength = "请选择强度等级";
+				return ;
+			}
+			if(!this.form.tld) {
+				this.error.tld = "请选输入塌落度";
+				return ;
+			}
+			if(!this.form.pbbh) {
+				this.error.pbbh = "请输入配比编号";
+				return ;
+			}
+
 			util.post("sales", this.form, data => {
 				this.data.push(data);
 				this.printData = data;
@@ -183,7 +248,7 @@ export default {
 				this.item = null;
 				this.form.tld = null;
 				this.form.pbbh = null;
-				this.form.time = moment().format("HH:mm:ss");
+				this.attach = [];
 			}, err => {
 				util.toast(err.error);
 			},true);
@@ -202,7 +267,7 @@ export default {
 			this.item = null;
 			this.form.tld = null;
 			this.form.pbbh = null;
-			this.form.time = moment().format("HH:mm:ss");
+			this.attach = [];
 		},
 		dateFormat(time) {
 			return moment(time).format("YYYY-MM-DD");
@@ -216,6 +281,7 @@ export default {
 					this.prices = item.prices;
 				}
 			}
+			this.error.com = null;
 		},
 		typeChange(value) {
 			for(let item of this.prices) {
@@ -228,6 +294,7 @@ export default {
 					this.item = item;
 				}
 			}
+			this.error.strength = null;
 		},
 		wayChange(value) {
 			if(this.item != null) {
@@ -237,6 +304,7 @@ export default {
 					this.form.price = this.item.auto;
 				}
 			}
+			this.error.way = null;
 		},
 		print() {
 			const {remote} = this.$electron;

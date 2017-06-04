@@ -113,6 +113,19 @@
 		},
 		methods: {
 			save() {
+				if (!this.form.com) {
+					this.error.com = "请选择公司";
+					return ;
+				};
+				if(!this.form.name) {
+					this.error.name = "请选择名称";
+					return ;
+				}
+				if(!this.form.car) {
+					this.error.car = "请输入车号";
+					return ;
+				}
+
 				this.form.price = Number(this.form.price);
 				this.form.totalWeight = Number(this.form.totalWeight);
 				this.form.complate = false;
@@ -128,7 +141,7 @@
 					this.form.carWeight = null;
 				}, err => {
 					util.toast(err.message);
-				});
+				},true);
 			}, 
 			print() {
 				const {remote} = this.$electron;
@@ -159,7 +172,7 @@
 		
 				}, err => {
 					util.toast(err.message);
-				});
+				},true);
 				
 			},
 			newOrder() {
