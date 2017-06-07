@@ -12,18 +12,18 @@
 			</mu-select-field>
 			<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled" :errorText="error.price"/>
 			<div class="labelGroup">
-				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="true"/>
+				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="false"/>
 
 			</div>
 			<div class="labelGroup">
-				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="true"/>
+				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="false"/>
 				
 			</div>
 			<div class="btnContainer">
-				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'" :disabled="totalWeightDisabled"/>
+				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'" :disabled="false"/>
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
-				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="carWeightDisabled"/>
+				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="false"/>
 				</template>
 				<template v-if="state == 'out'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
@@ -37,8 +37,8 @@
 	 
 		</div>
 	</div>
-	<div class="hidden myDivToPrint">
-		<h2 style="text-align:center">府谷县茂奂建材有限责任公司</h2>
+	<div class=" myDivToPrint">
+		<h2 style="text-align:center">府谷县茂奂建材有限责任公司过磅单</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center">
 			<tr>
 				<td>送货单位：</td>
@@ -72,7 +72,7 @@
 				<td>{{printData.total.toFixed(2)}}</td>
 			</tr>
 		</table>
-		<span style="float:right">联系电话：12345678965</span>
+		<span style="float:right">15319601610</span>
 	</div>
 </div>
 </template> 
@@ -266,7 +266,7 @@
 			});
 			
 			this.port = new SerialPort("COM4", {
-			  baudRate: 9600,
+			  baudRate: 2400,
 			  autoOpen: false
 			});
 			
@@ -279,6 +279,7 @@
 			this.port.on('data', data => {
 				
 				let str = data.toString();	 
+				console.log(data);
 				let weight = Number(str.substring(3,8)) / Math.pow(10,Number(str[8]));
 
 				if(last != weight) {
@@ -362,7 +363,7 @@
 		top:0;
 		left: 0;
 		margin: 0;
-		padding: 15px;
+		padding: 0px;
 		font-size: 14px;
 		line-height: 18px;
 		display: block;

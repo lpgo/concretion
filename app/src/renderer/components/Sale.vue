@@ -70,9 +70,8 @@
 			</mu-table>
 		</div>
 		<div class="hidden myDivToPrint">
-			<h2 style="text-align:center">送货单</h2>
+			<h2 style="text-align:center;margin-bottom:-5px">府谷县茂奂建材有限责任公司送货单</h2>
 			<div style="display:flex;justify-content:space-between;padding:0 20px">
-				<span>搅拌站号：{{"茂奂建材有限责任公司"}}</span>
 				<span>出厂日期：{{dateFormat(printData.time)}}</span>
 				<span>No:{{printData.no}}</span>
 			</div>
@@ -90,15 +89,16 @@
 					<td colspan="3">{{printData.project}}</td>
 					<td>运输车号</td>
 					<td>{{printData.car}}</td>
-					<td colspan="2" rowspan="2"><img :src="barcodeSrc" @load="print"></td>
-					
+					<td>已完方量</td>
+					<td>{{20}} M<sup>3</sup></td>
 				</tr>
 				<tr>
 					<td>施工部位</td>
 					<td colspan="3">{{printData.part}}</td>
 					<td>运距</td>
-					<td>0</td>
-					
+					<td>{{printData.pbbh}}</td>
+					<td>方量计划</td>
+					<td>{{20}} M<sup>3</sup></td>
 				</tr>
 				<tr>
 					<td>强度等级</td>
@@ -124,7 +124,7 @@
 					<td colspan="8" style="text-align:left">说明：求经本公司许可不得往混凝土内添加水或其它材料，否则由此引起的质量问题概不负责。</td>
 				</tr>
 				<tr>
-					<td colspan="8" style="text-align:left;height:100px">备注：调度：13112345678</td>
+					<td colspan="8" style="text-align:left;height:50px">备注：调度：18091998178,17792164189<img :src="barcodeSrc" @load="print" style="float:right"></td>
 				</tr>
 			</table>
 		</div>
