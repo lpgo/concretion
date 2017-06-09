@@ -23,7 +23,9 @@
 			</div>
 			
 			<div class="btnContainer">
-				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'" :disabled="false"/>
+				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="false"/>
+				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="onceDisabled"/> 
+
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
 				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="false"/>
@@ -94,10 +96,11 @@
 			return {
 				height:'240px',
 				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null},
-				disabled : false,
 				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0,chargebacks:0,reason:null},
+				disabled : false,
 				totalWeightDisabled: true,
 				carWeightDisabled: true,
+				onceDisabled: true,
 				state: "new",
 				outList: [],
 				saveList: [],
@@ -229,6 +232,17 @@
 				}
 				this.error.name = null;
 			},
+
+			carChage(value) {
+				let info = this.getCarInfo(value);
+				if(info) {
+					this.form.carWeight = info.weight;
+					this.onceDisabled = false;
+				} else {
+					this.onceDisabled = true;
+				}
+			},
+
 			numberToChinese(num) {
 				return util.moneyArabiaToChinese(num);
 			},
@@ -238,6 +252,10 @@
 			dateFormat(time) {
 				return moment(time).format("YYYY-MM-DD HH:mm:ss");
 			},
+			...mapMutations([
+		        'addCarInfo',
+		        'getCarInfo',
+		    ]),
 		},
 		components: {
 			PurchaseList
@@ -267,7 +285,7 @@
 			},err => {
 				util.toast(err.message);
 			});
-
+			/*
 			SerialPort.list(function (err, ports) {
 			  ports.forEach(function(port) {
 			    console.log(port.comName);
@@ -275,7 +293,7 @@
 			    console.log(port.manufacturer);
 			  });
 			});
-			
+			*/
 			this.port = new SerialPort("COM4", {
 			  baudRate: 2400,
 			  autoOpen: false

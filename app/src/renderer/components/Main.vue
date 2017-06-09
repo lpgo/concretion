@@ -34,7 +34,7 @@ export default {
 	        'addDriverFrequency',
 	        'addCarFrequency',
 	        'addProjectFrequency',
-
+	        'loadCarInfos',
 	    ]),
 
 	    download() {
@@ -74,6 +74,7 @@ export default {
 			util.get("getFrequency?name=project",data => {this.addProjectFrequency(data)}),
 			util.get("getFrequency?name=driver",data => {this.addDriverFrequency(data)}),
 			util.get("getFrequency?name=car",data => {this.addCarFrequency(data)}),
+			util.get("carInfos",data => {this.loadCarInfos(data)}),
 		]).then(result =>{
 			this.msg = "加载完毕";
 		}).catch(err =>{

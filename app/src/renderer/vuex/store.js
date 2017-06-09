@@ -22,6 +22,7 @@ const state = {
     projectFrequency:[],
     driverFrequency:[],
     carFrequency:[],
+    carInfos:[],
     user:null,
 }
 
@@ -36,6 +37,23 @@ const mutations = {
         if(type) {
             state.types.push(type);
         }
+    },
+    loadCarInfos(state, infos) {
+        if(infos != null && infos.length > 0)
+            state.carInfos = infos;
+    },
+    addCarInfo(state, info) {
+        if(info) {
+            state.carInfos.push(info);
+        }
+    },
+    getCarInfo(state, car) {
+        state.carInfos.forEach(i => {
+            if(i.car === car) {
+                return i;
+            }
+        });
+        return null;
     },
     removeType(state, index) {
         state.types.splice(index,1);
