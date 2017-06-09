@@ -11,14 +11,17 @@
 				<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
 			<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled" :errorText="error.price"/>
+
+			<div class="labelGroup">
+				<mu-text-field label="请输入扣款" labelFloat type="number" v-model="form.chargebacks" :disabled="false" style="width:150px"/>
+				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="number" v-model="form.reason" :disabled="false"/>
+			</div>
 			<div class="labelGroup">
 				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="false"/>
+				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="false"/>
 
 			</div>
-			<div class="labelGroup">
-				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="false"/>
-				
-			</div>
+			
 			<div class="btnContainer">
 				<mu-raised-button label="保存" style="width:100%" @click="save" secondary v-if="state == 'new'" :disabled="false"/>
 				<template v-if="state == 'save'">
@@ -62,14 +65,14 @@
 				<td>皮重</td>
 				<td>{{printData.carWeight}}</td>
 				<td>净重</td>
-				<td>{{printData.weight.toFixed(2)}}</td>
+				<td>{{printData.weight.toFixed(0)}}</td>
 				<td rowspan="2"></td>
 			</tr>
 			<tr>
 				<td>大写</td>
-				<td colspan="3">{{numberToChinese(123124)}}</td>
+				<td colspan="3">{{numberToChinese(myFix(printData.total))}}</td>
 				<td>实付金额</td>
-				<td>{{printData.total.toFixed(2)}}</td>
+				<td>{{myFix(printData.total)}}</td>
 			</tr>
 		</table>
 		<span style="float:right">15319601610</span>
@@ -90,9 +93,9 @@
 		data() {
 			return {
 				height:'240px',
-				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null},
+				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null},
 				disabled : false,
-				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0},
+				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0,chargebacks:0,reason:null},
 				totalWeightDisabled: true,
 				carWeightDisabled: true,
 				state: "new",
@@ -128,6 +131,7 @@
 
 				this.form.price = Number(this.form.price);
 				this.form.totalWeight = Number(this.form.totalWeight);
+				this.form.carWeight = Number(this.form.carWeight);
 				this.form.complate = false;
 				util.post("purchases", this.form, data => {
 					this.form.id = data.id;
@@ -139,6 +143,8 @@
 					this.form.price = null;
 					this.form.totalWeight = null;
 					this.form.carWeight = null;
+					this.form.chargebacks = null;
+					this.form.reason = null;
 				}, err => {
 					util.toast(err.message);
 				},true);
@@ -166,6 +172,8 @@
 					this.state = "new";
 					this.form = {};
 					this.form.carWeight = null;
+					this.form.chargebacks = null;
+					this.form.reason = null;
 
 					this.printData = data;
 					this.print();
@@ -223,6 +231,9 @@
 			},
 			numberToChinese(num) {
 				return util.moneyArabiaToChinese(num);
+			},
+			myFix(num) {
+				return util.myFix(num);
 			},
 			dateFormat(time) {
 				return moment(time).format("YYYY-MM-DD HH:mm:ss");

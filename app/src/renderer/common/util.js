@@ -311,6 +311,19 @@ export default {
 
 		return newchar;
 	},
+
+	//8进7不进 
+	myFix(num) {
+		num = num.toFixed(0);
+		let s = num / 10;
+		let y = num % 10;
+		if(y > 7) {
+			return s + 10;
+		} else {
+			return s ;
+		}
+	},
+
 	toast(msg) {
 		vue.$emit("showToast", msg);
 	},

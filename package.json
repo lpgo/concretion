@@ -1,7 +1,9 @@
 {
   "name": "concretion",
-  "version": "0.0.0",
-  "description": "双混站",
+  "version": "0.1.0",
+  "productName":"商砼站",
+  "author":"liupeng",
+  "description": "商砼站",
   "scripts": {
     "build": "npm run pack && build",
     "build:dir": "npm run pack && build --dir",
@@ -47,7 +49,6 @@
       ]
     }
   },
-  "author": "Greg Holguin <simulatedgreg@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.8.0",
