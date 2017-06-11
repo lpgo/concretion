@@ -25,19 +25,22 @@
 				<span class="textLabel">施工部位：</span><mu-text-field  v-model="form.part" hintText="请选输入施工部位" :errorText="error.part" @change="error.part = null"/>
 				<span class="textLabel">强度等级：</span>
 				<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @change="typeChange" :errorText="error.strength" >
-					<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
+					<mu-menu-item v-for="item,index in strengths" :key="item" :value="item" :title="item" />
 				</mu-select-field>
 				<span class="textLabel">附加条件：</span><mu-select-field v-model="form.attach" :labelFocusClass="['label-foucs']" hintText="请选择附加条件" style="" multiple>
 					<mu-menu-item v-for="item,index in attachs" :key="item.id" :value="item.id" :title="item.name" />
 				</mu-select-field>
 			</div> 
 			<div class="formGroup">
-				<span class="textLabel">塌落度：</span><mu-text-field  v-model="form.tld" hintText="请选输入塌落度" :errorText="error.tld" @change="error.tld = null"/>
-				<span class="textLabel">配比编号：</span><mu-text-field  v-model="form.pbbh" hintText="请输入配比编号" :errorText="error.pbbh" @change="error.pbbh = null"/>
-				<div class="saleBtnGroup">
+				<span class="textLabel">塌落度：</span>
+				<mu-auto-complete :filter="myfilter" hintText="请选输入塌落度" v-model="form.tld" openOnFocus :dataSource="tlds" :maxSearchResults="10" :errorText="error.tld" @change="error.tld = null"/>
+				<span class="textLabel">联系电话：</span><mu-text-field  v-model="form.pbbh" hintText="联系电话" :errorText="error.pbbh" @change="error.pbbh = null"/>
+				<span class="textLabel">备注：</span><mu-text-field  v-model="form.remarks" hintText="请输入备注" :errorText="error.remarks" @change="error.remarks = null"/>
+				
+			</div>
+			<div class="saleBtnGroup">
 					<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save"/>
 					<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
-				</div>
 			</div>
 			
 			<mu-table style="" :showCheckbox="false" :fixedHeader="true" :height="height">
@@ -69,8 +72,8 @@
 			    </mu-tbody>
 			</mu-table>
 		</div>
-		<div class="hidden myDivToPrint">
-			<h2 style="text-align:center;margin-bottom:-5px">府谷县茂奂建材有限责任公司送货单</h2>
+		<div class=" myDivToPrint">
+			<h2 style="text-align:center;margin-bottom:-7px">府谷县茂奂建材有限责任公司送货单</h2>
 			<div style="display:flex;justify-content:space-between;padding:0 20px">
 				<span>出厂日期：{{dateFormat(printData.time)}}</span>
 				<span>No:{{printData.no}}</span>
@@ -90,15 +93,15 @@
 					<td>运输车号</td>
 					<td>{{printData.car}}</td>
 					<td>已完方量</td>
-					<td>{{20}} M<sup>3</sup></td>
+					<td>{{salePrice.acc.toFixed(0)}} M<sup>3</sup></td>
 				</tr>
 				<tr>
 					<td>施工部位</td>
 					<td colspan="3">{{printData.part}}</td>
 					<td>运距</td>
 					<td>{{printData.pbbh}}</td>
-					<td>方量计划</td>
-					<td>{{20}} M<sup>3</sup></td>
+					<td>计划方量</td>
+					<td>{{salePrice.plan.toFixed(0)}} M<sup>3</sup></td>
 				</tr>
 				<tr>
 					<td>强度等级</td>
@@ -108,23 +111,23 @@
 					<td>发货时间</td>
 					<td>{{timeFormat(printData.time)}}</td>
 					<td>累计车次</td>
-					<td>1</td>
+					<td>{{salePrice.count}}</td>
 				</tr>
 				<tr>
 					<td>塌落度</td>
 					<td>{{printData.tld}}</td>
 					<td>浇筑方式</td>
 					<td>{{printData.way}}</td>
-					<td>配比编号</td>
-					<td>{{printData.pbbh}}</td>
-					<td>签收人</td>
-					<td></td>
+					<td>联系电话</td>
+					<td colspan="3">{{printData.pbbh}}</td>
 				</tr>
 				<tr>
 					<td colspan="8" style="text-align:left">说明：求经本公司许可不得往混凝土内添加水或其它材料，否则由此引起的质量问题概不负责。</td>
 				</tr>
 				<tr>
-					<td colspan="8" style="text-align:left;height:50px">备注：调度：18091998178,17792164189<img :src="barcodeSrc" @load="print" style="float:right"></td>
+					<td colspan="6" style="text-align:left;height:50px">备注：调度：18091998178,17792164189<br/>{{printData.remarks}}</td>
+					<td>签字：</td>
+					<td></td>
 				</tr>
 			</table>
 		</div>
@@ -146,7 +149,7 @@ export default {
 			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[]},
 			error: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null},
 			data: [],
-			prices:[],
+			salePrice: {acc:0.0,plan:0.0,count:0},//选定公司后的销售价格对象
 			ways:[
 				{id:1,name:"自卸"},
 				{id:2,name:"45米泵送"},
@@ -163,6 +166,26 @@ export default {
 				{id:5,name:"抗裂防水HA-P8%",value:25},
 				{id:6,name:"抗裂防水HA-P14%",value:40},
 			],
+
+			tlds:[
+				"140±20mm",
+				"160±20mm",
+				"180±20mm",
+				"200±20mm",
+				"220±20mm",
+			],
+
+			strengths:[
+				"C15",
+				"C20",
+				"C25",
+				"C30",
+				"C35",
+				"C40",
+				"C45",
+				"C50",
+			],
+
 			myfilter (searchText, key) {
 				if(searchText) {
 					return key.indexOf(searchText) !== -1;
@@ -186,6 +209,39 @@ export default {
 					}
 				});
 			});
+
+			//计算各种强度的价格以C30为基础
+			switch(this.form.strength) {
+				case "C15": {
+					this.form.price -= 30;
+					break;
+				}
+				case "C20": {
+					this.form.price -= 20;
+					break;
+				}
+				case "C25": {
+					this.form.price -= 10;
+					break;
+				}
+				case "C35": {
+					this.form.price += 15;
+					break;
+				}
+				case "C40": {
+					this.form.price += 35;
+					break;
+				}
+				case "C45": {
+					this.form.price += 65;
+					break;
+				}
+				case "C50": {
+					this.form.price += 115;
+					break;
+				}
+			}
+
 			this.form.price += sum;
 			this.form.attach = attachNames;
 			//检查输入
@@ -278,33 +334,24 @@ export default {
 		comChange(value) {
 			for(let item of this.salePrices) {
 				if(item.com == value) {
-					this.prices = item.prices;
+					this.salePrice = item;
 				}
 			}
 			this.error.com = null;
 		},
 		typeChange(value) {
-			for(let item of this.prices) {
-				if(item.name == value) {
-					if(this.form.way == "自卸") {
-						this.form.price = item.self;
-					} else {
-						this.form.price = item.auto;
-					}
-					this.item = item;
-				}
-			}
 			this.error.strength = null;
 		},
 		wayChange(value) {
-			if(this.item != null) {
+			if(this.salePrice != null) {
 				if(value == "自卸") {
-					this.form.price = this.item.self;
+					this.form.price = this.salePrice.self;
 				} else {
-					this.form.price = this.item.auto;
+					this.form.price = this.salePrice.auto;
 				}
 			}
 			this.error.way = null;
+			console.log(this.form.price);
 		},
 		print() {
 			const {remote} = this.$electron;
@@ -333,7 +380,7 @@ export default {
     		driverFrequency: state => state.driverFrequency,
     	}),
     	barcodeSrc() {
-    		return "http://182.61.33.210/api/barcode?str=" + this.barcode;
+    		return "http://182.61.33.210/api/qrcode?str=" + this.barcode;
     	}
     },
 	mounted() {
@@ -361,6 +408,7 @@ export default {
 	display: flex;
 	justify-content: flex-end;
 	margin-left: 172px;
+	margin-bottom: 10px;
 }
 .textLabel {
 	font-size: 18px;

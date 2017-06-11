@@ -6,7 +6,7 @@
 			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat :errorText="error.com" >
 				<mu-menu-item v-for="item,index in purchasePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled" :errorText="error.car" @change="error.car = null"/>
+			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled" :errorText="error.car" @change="carChange"/>
 			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat :errorText="error.name">
 				<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
@@ -14,7 +14,7 @@
 
 			<div class="labelGroup">
 				<mu-text-field label="请输入扣款" labelFloat type="number" v-model="form.chargebacks" :disabled="false" style="width:150px"/>
-				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="number" v-model="form.reason" :disabled="false"/>
+				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="text" v-model="form.reason" :disabled="false"/>
 			</div>
 			<div class="labelGroup">
 				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="false"/>
@@ -42,7 +42,8 @@
 	 
 		</div>
 	</div>
-	<div class=" myDivToPrint">
+	<div class="hidden myDivToPrint">
+		
 		<h2 style="text-align:center">府谷县茂奂建材有限责任公司过磅单</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center">
 			<tr>
@@ -50,6 +51,7 @@
 				<td colspan="2">{{printData.com}}</td>
 				<td>日期：</td>
 				<td colspan="2">{{dateFormat(printData.time)}}</td>
+				<td>单号：</td>
 				<td>{{printData.no}}</td>
 			</tr>
 			<tr>
@@ -59,6 +61,7 @@
 				<td>{{printData.name}}</td>
 				<td>单价</td>
 				<td>{{printData.price}}</td>
+				<td rowspan="4"><img :src="qrcodeSrc" @load="print" style="width:100px;height:100px"></td>
 				<td>签字</td>
 			</tr>
 			<tr>
@@ -68,8 +71,20 @@
 				<td>{{printData.carWeight}}</td>
 				<td>净重</td>
 				<td>{{printData.weight.toFixed(0)}}</td>
-				<td rowspan="2"></td>
+				
+				<td rowspan="3"></td>
 			</tr>
+
+			<tr>
+				<td>单位</td>
+				<td>吨</td>
+				<td>扣款</td>
+				<td>{{printData.chargebacks}}</td>
+				<td>扣款原因</td>
+				<td>{{printData.reason}}</td>
+				
+			</tr>
+
 			<tr>
 				<td>大写</td>
 				<td colspan="3">{{numberToChinese(myFix(printData.total))}}</td>
@@ -106,6 +121,7 @@
 				saveList: [],
 				selectIndex:-1,
 				prices:[],
+				qrcode:"",
 				myfilter (searchText, key) {
 					if(searchText) {
 						return key.indexOf(searchText) !== -1;
@@ -135,6 +151,7 @@
 				this.form.price = Number(this.form.price);
 				this.form.totalWeight = Number(this.form.totalWeight);
 				this.form.carWeight = Number(this.form.carWeight);
+				this.form.chargebacks = Number(this.form.chargebacks);
 				this.form.complate = false;
 				util.post("purchases", this.form, data => {
 					this.form.id = data.id;
@@ -155,7 +172,7 @@
 			print() {
 				const {remote} = this.$electron;
 		    	const web = remote.getCurrentWebContents();
-		    	window.print();
+		    	web.print({silent:true});
 		    	/*
 		    	web.printToPDF({}, (error, data) => {
 				    if (error) throw error
@@ -179,12 +196,56 @@
 					this.form.reason = null;
 
 					this.printData = data;
-					this.print();
+					this.addCarInfo({car:data.car,weight:data.carWeight});
 		
 				}, err => {
 					util.toast(err.message);
 				},true);
 				
+			},
+			once() {
+				if (!this.form.com) {
+					this.error.com = "请选择公司";
+					return ;
+				};
+				if(!this.form.name) {
+					this.error.name = "请选择名称";
+					return ;
+				}
+				if(!this.form.car) {
+					this.error.car = "请输入车号";
+					return ;
+				}
+
+				this.form.price = Number(this.form.price);
+				this.form.totalWeight = Number(this.form.totalWeight);
+				this.form.carWeight = Number(this.form.carWeight);
+				this.form.chargebacks = Number(this.form.chargebacks);
+				this.form.weight = this.form.totalWeight - this.form.carWeight;
+				this.form.total = this.form.price * this.form.weight;
+				this.form.total -= this.form.chargebacks;
+				this.form.complate = true;
+				util.post("purchases", this.form, data => {
+					this.form.id = data.id;
+					this.outList.push(this.form);
+					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
+					this.form.com = '';
+					this.form.car = '';
+					this.form.name = '';
+					this.form.price = null;
+					this.form.totalWeight = null;
+					this.form.carWeight = null;
+					this.form.weight = null;
+					this.form.total = null;
+					this.form.chargebacks = null;
+					this.form.reason = null;
+					this.onceDisabled = true;
+
+					this.printData = data;
+					this.addCarInfo({car:data.car,weight:data.carWeight});
+				}, err => {
+					util.toast(err.message);
+				},true);
 			},
 			newOrder() {
 				this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
@@ -233,14 +294,17 @@
 				this.error.name = null;
 			},
 
-			carChage(value) {
-				let info = this.getCarInfo(value);
-				if(info) {
-					this.form.carWeight = info.weight;
-					this.onceDisabled = false;
-				} else {
-					this.onceDisabled = true;
+			carChange(value) {
+				for (var i = this.carInfos.length - 1; i >= 0; i--) {
+					if(this.carInfos[i].car == value) {
+						this.form.carWeight = this.carInfos[i].weight;
+						this.onceDisabled = false;
+					} else {
+						this.onceDisabled = true;
+						this.form.carWeight = null;
+					}
 				}
+				this.error.car = null;
 			},
 
 			numberToChinese(num) {
@@ -254,7 +318,6 @@
 			},
 			...mapMutations([
 		        'addCarInfo',
-		        'getCarInfo',
 		    ]),
 		},
 		components: {
@@ -264,7 +327,11 @@
 	    	...mapState({
 	    		purchasePrices: state => state.purchasePrices,
 	    		carPlates: state => state.carFrequency,
+	    		carInfos: state => state.carInfos,
 	    	}),
+	    	qrcodeSrc() {
+	    		return "http://182.61.33.210/api/qrcode?str=" + this.printData.no; 
+	    	},
 	    },
 		mounted() {
 			let start = encodeURIComponent(moment().startOf('day').format());
@@ -334,7 +401,8 @@
 			});
 		},
 		beforeDestroy() {
-			this.port.close();
+			if(this.port.isOpen())
+				this.port.close();
 		},
 	}
 </script>

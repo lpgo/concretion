@@ -25,7 +25,7 @@ export default {
         	}
         	vue.$emit("loaded", null);
 		}).catch(err => {
-			vue.$emit("showToast", "网络错误:"); 
+			vue.$emit("showToast", "网络错误"); 
 			vue.$emit("loaded", null);
 		});
 	},
@@ -314,13 +314,12 @@ export default {
 
 	//8进7不进 
 	myFix(num) {
-		num = num.toFixed(0);
-		let s = num / 10;
+		let s = parseInt(num / 10);
 		let y = num % 10;
 		if(y > 7) {
-			return s + 10;
+			return s*10 + 10;
 		} else {
-			return s ;
+			return s*10 ;
 		}
 	},
 

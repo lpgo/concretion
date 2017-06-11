@@ -8,15 +8,12 @@ Vue.use(Vuex)
 // 应用初始状态
 const state = {
     types:[                   //混凝土类型
-        {id:'1',name:"c20"},
-        {id:'2',name:"c30"},
-        {id:'3',name:"c40"},
     ],   
     salePrices: [                   //混凝土价格
-        {id:'1',com:"中铁一局",prices:[{name:"c20",price:100}]},
+       
     ],
     purchasePrices:[
-        {id:"121",com:"水泥厂",prices:[{name:"水泥",price:100}]},
+        
     ],
     comFrequency:[],
     projectFrequency:[],
@@ -47,14 +44,6 @@ const mutations = {
             state.carInfos.push(info);
         }
     },
-    getCarInfo(state, car) {
-        state.carInfos.forEach(i => {
-            if(i.car === car) {
-                return i;
-            }
-        });
-        return null;
-    },
     removeType(state, index) {
         state.types.splice(index,1);
     },
@@ -71,25 +60,46 @@ const mutations = {
         state.purchasePrices.splice(index,1);
     },
     addAllTypes(state,types) {
-        state.types = types;
+        if(types)
+            state.types = types;
+        else 
+            state.types = [];
     },
     addAllSalePrices(state,ss) {
-        state.salePrices = ss;
+        if(ss)
+            state.salePrices = ss;
+        else 
+            state.salePrices = [];
     },
     addAllPurchasePrices(state,ps) {
-        state.purchasePrices = ps;
+        if(ps)
+            state.purchasePrices = ps;
+        else 
+            state.purchasePrices = [];
     },
     addComFrequency(state,cf) {
-        state.comFrequency = cf
+        if(cf)
+            state.comFrequency = cf;
+        else 
+            state.comFrequency = [];
     },
     addProjectFrequency(state,cf) {
-        state.projectFrequency = cf
+        if(cf)
+            state.projectFrequency = cf;
+        else 
+            state.projectFrequency = [];
     },
     addDriverFrequency(state,cf) {
-        state.driverFrequency = cf
+        if(cf)
+            state.driverFrequency = cf;
+        else 
+            state.driverFrequency = [];
     },
     addCarFrequency(state,cf) {
-        state.carFrequency = cf
+        if(cf)
+            state.carFrequency = cf;
+        else 
+            state.carFrequency = [];
     },
 }
 
