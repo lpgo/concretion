@@ -134,6 +134,10 @@
 			    },
 			  	port:null,
 			  	error:{com:"",car:null,name:null,price:null},
+
+			  	comList:[],
+			  	materialList:[],
+
 			};
 		},
 		methods: {
