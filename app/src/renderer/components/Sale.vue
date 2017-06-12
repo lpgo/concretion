@@ -28,7 +28,7 @@
 					<mu-menu-item v-for="item,index in strengths" :key="item" :value="item" :title="item" />
 				</mu-select-field>
 				<span class="textLabel">附加条件：</span><mu-select-field v-model="form.attach" :labelFocusClass="['label-foucs']" hintText="请选择附加条件" style="" multiple>
-					<mu-menu-item v-for="item,index in attachs" :key="item.id" :value="item.id" :title="item.name" />
+					<mu-menu-item v-for="item,index in attachs" :key="item" :value="item" :title="item" />
 				</mu-select-field>
 			</div> 
 			<div class="formGroup">
@@ -72,7 +72,7 @@
 			    </mu-tbody>
 			</mu-table>
 		</div>
-		<div class=" myDivToPrint">
+		<div class="hidden myDivToPrint">
 			<h2 style="text-align:center;margin-bottom:-7px">府谷县茂奂建材有限责任公司送货单</h2>
 			<div style="display:flex;justify-content:space-between;padding:0 20px">
 				<span>出厂日期：{{dateFormat(printData.time)}}</span>
@@ -99,7 +99,7 @@
 					<td>施工部位</td>
 					<td colspan="3">{{printData.part}}</td>
 					<td>运距</td>
-					<td>{{printData.pbbh}}</td>
+					<td>{{salePrice.distance}}</td>
 					<td>计划方量</td>
 					<td>{{salePrice.plan.toFixed(0)}} M<sup>3</sup></td>
 				</tr>
@@ -125,7 +125,7 @@
 					<td colspan="8" style="text-align:left">说明：求经本公司许可不得往混凝土内添加水或其它材料，否则由此引起的质量问题概不负责。</td>
 				</tr>
 				<tr>
-					<td colspan="6" style="text-align:left;height:50px">备注：调度：18091998178,17792164189<br/>{{printData.remarks}}</td>
+					<td colspan="6" style="text-align:left;height:50px">备注：调度：18091998178或17792164189<br/>{{printData.remarks}}</td>
 					<td>签字：</td>
 					<td></td>
 				</tr>
@@ -158,6 +158,7 @@ export default {
 			item:null,   //priceItem 包含两种方式的价格
 			printData:{com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[]},
 			barcode:"",
+			/*
 			attachs:[
 				{id:1,name:"同标号细石砼",value:20},
 				{id:2,name:"抗渗P6砼",value:15},
@@ -166,7 +167,16 @@ export default {
 				{id:5,name:"抗裂防水HA-P8%",value:25},
 				{id:6,name:"抗裂防水HA-P14%",value:40},
 			],
+			*/
 
+			attachs:[
+				"同标号细石砼",
+				"抗渗P6砼",
+				"抗渗P8砼",
+				"抗冻砼",
+				"抗裂防水HA-P8%",
+				"抗裂防水HA-P14%",
+			],
 			tlds:[
 				"140±20mm",
 				"160±20mm",
@@ -196,19 +206,55 @@ export default {
 		};
 	},
 	methods: {
+		...mapMutations([
+	        'addAllTypes',
+	        'addAllSalePrices',
+	        'addAllPurchasePrices',
+	        'addComFrequency',
+	        'addDriverFrequency',
+	        'addCarFrequency',
+	        'addProjectFrequency',
+	        'loadCarInfos',
+	    ]),
 		save() {
 			this.form.capacity = Number(this.form.capacity);
 			//计算附加价格
 			let sum = 0;
 			let attachNames = [];
 			this.form.attach.forEach((i) =>{
-				this.attachs.forEach((item)=>{
-					if(item.id === i) {
-						attachNames.push(item.name);
-						sum += item.value;
+				switch(i) {
+					case "同标号细石砼":{
+						sum += 20;
+						break;
 					}
-				});
+					case "抗渗P6砼":{
+						sum += 15;
+						break;
+					}
+					case "抗渗P8砼":{
+						sum += 25;
+						break;
+					}
+					case "抗冻砼":{
+						sum += 25;
+						break;
+					}
+					case "抗裂防水HA-P8%":{
+						sum += 25;
+						break;
+					}
+					case "抗裂防水HA-P14%":{
+						sum += 40;
+						break;
+					}
+				}
 			});
+
+			if(this.form.way == "自卸") {
+				this.form.price = this.salePrice.self;
+			} else {
+				this.form.price = this.salePrice.auto;
+			}
 
 			//计算各种强度的价格以C30为基础
 			switch(this.form.strength) {
@@ -243,7 +289,6 @@ export default {
 			}
 
 			this.form.price += sum;
-			this.form.attach = attachNames;
 			//检查输入
 			if(!this.form.com) {
 				this.error.com = "请选择施工单位";
@@ -288,23 +333,18 @@ export default {
 
 			util.post("sales", this.form, data => {
 				this.data.push(data);
-				this.printData = data;
-				this.barcode = this.printData.no;
-
-				this.form.com = "";
-				this.form.driver = "";
-				this.form.capacity = "";
-				this.form.project = "";
-				this.form.car = "";
-				this.form.way = "";
-				this.form.part = "";
-				this.form.strength = "";
-				this.price = null;
-				this.prices = [];
-				this.item = null;
-				this.form.tld = null;
-				this.form.pbbh = null;
-				this.attach = [];
+				let sale = data;
+				util.get("salePrices",data => {
+					this.addAllSalePrices(data);
+					for(let item of this.salePrices) {
+						if(item.com == this.form.com) {
+							this.salePrice = item;
+						}
+					}
+					this.printData = sale;
+					this.print();
+					this.cancel();
+				});
 			}, err => {
 				util.toast(err.error);
 			},true);
@@ -323,7 +363,8 @@ export default {
 			this.item = null;
 			this.form.tld = null;
 			this.form.pbbh = null;
-			this.attach = [];
+			this.form.attach = [];
+			this.form.remarks =null;
 		},
 		dateFormat(time) {
 			return moment(time).format("YYYY-MM-DD");
@@ -337,6 +378,13 @@ export default {
 					this.salePrice = item;
 				}
 			}
+			util.get(`sales?com=${value}&limit=1`,data => {
+				if(data) {
+					this.form = data[0];
+					delete this.form.no;
+					delete this.form.id;
+				}	
+			});
 			this.error.com = null;
 		},
 		typeChange(value) {

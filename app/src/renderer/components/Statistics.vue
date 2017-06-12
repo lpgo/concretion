@@ -13,7 +13,7 @@
 				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
 			<mu-auto-complete hintText="请输入工程名称" v-model="form.project" openOnFocus :dataSource="projectFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :filter="myfilter"/>
-			<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @>
+			<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" >
 					<mu-menu-item v-for="item,index in types" :key="item.id" :value="item.name" :title="item.name" />
 			</mu-select-field>
 			<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
@@ -98,7 +98,7 @@ export default {
 			driverData:[],
 			start:moment().format('YYYY-MM-DD'),
 			end:moment().format('YYYY-MM-DD'),
-			form:{com:null,driver:null,project:null,way:null},
+			form:{com:null,driver:null,project:null,way:null,strength:null,car:null},
 			myfilter (searchText, key) {
 				if(searchText) {
 					return key.indexOf(searchText) !== -1;

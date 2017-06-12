@@ -72,7 +72,7 @@ import moment from 'moment'
 export default {
 	data() {
 		return {
-			value:"s",
+			value:"p",
 			sData:[],
 			pData:[],
 			no:null,

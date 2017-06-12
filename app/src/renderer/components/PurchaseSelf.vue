@@ -23,12 +23,12 @@
 			</div>
 			
 			<div class="btnContainer">
-				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="totalWeightDisabled"/>
-				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="onceDisabled"/> 
+				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="false"/>
+				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="false"/> 
 
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
-				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="carWeightDisabled"/>
+				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="false"/>
 				</template>
 				<template v-if="state == 'out'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
@@ -45,7 +45,7 @@
 	<div class="hidden myDivToPrint">
 		
 		<h2 style="text-align:center;">府谷县茂奂建材有限责任公司过磅单</h2>
-		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center" style="font-size:18px">
+		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center" style="font-size:18px;">
 			<tr>
 				<td>单位</td>
 				<td colspan="2">{{printData.com}}</td>
@@ -369,7 +369,7 @@
 			    console.log(port.manufacturer);
 			  });
 			});
-			*/
+			
 			this.port = new SerialPort("COM3", {
 			  baudRate: 2400,
 			  autoOpen: false
@@ -410,6 +410,7 @@
 					}
 				}
 			});
+			*/
 		},
 		beforeDestroy() {
 			if(this.port.isOpen())

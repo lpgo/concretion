@@ -316,7 +316,7 @@ export default {
 	myFix(num) {
 		let s = parseInt(num / 10);
 		let y = num % 10;
-		if(y > 7) {
+		if(y >= 8) {
 			return s*10 + 10;
 		} else {
 			return s*10 ;

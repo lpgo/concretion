@@ -94,6 +94,7 @@ export default {
     return {
       menuData: null,
       admin:[
+        {label:"磅房",icon:"devices",items:[{title:"手动录入过磅单", url:"/purchaseSelf"}]},
         {label:"销售",icon:"local_shipping",items:[{title: "销售", url: "/sale"}]},
         {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"},{title: "结账", url: "/checkout"}]},
         {label:"统计",icon:"equalizer",items:[{title: "统计", url: "/statistics"}]},
@@ -104,6 +105,9 @@ export default {
       ],
       bf:[
         {label:"磅房",icon:"devices",items:[{title:"录入过磅单", url:"/purchase"}]},
+      ],
+      xs:[
+        {label:"销售",icon:"local_shipping",items:[{title: "销售", url: "/sale"}]},
       ],
 
       changePwdDialog: false,
