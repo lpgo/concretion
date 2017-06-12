@@ -1,6 +1,6 @@
 <template>
 	<div style="padding:20px" class="myDivToPrint">
-		<h2 style="font-size:20px;text-align:center">采购价格</h2>
+		<h2 style="font-size:20px;text-align:center">采购物资及价格</h2>
 		<mu-table :showCheckbox="false">
 			<mu-thead slot="header" >
 		      <mu-tr class="printListHead" >
@@ -26,7 +26,7 @@
 		<hr/>
 		<mu-raised-button label="添加" primary @click="dialog=true" style="margin:0 20px;float:right"/>
 		
-		<mu-dialog :open="dialog" @close="close" title="添加采购价格" dialogClass="dialog" >
+		<mu-dialog :open="dialog" @close="close" title="添加物资及价格" dialogClass="dialog" >
 			<mu-text-field  v-model="newPurchasePrice.com" style="" hintText="客户"/>
 			<mu-text-field  v-model="newPurchasePrice.material" hintText="物资"/>
 			<mu-text-field  v-model="newPurchasePrice.standard" hintText="规格"/>

@@ -3,21 +3,26 @@
 	<div class="purchaseContainer noprint">
 		<mu-paper class="purchase" :zDepth="0" >
 			<div class="purchaseTitle">过磅单</div>
-			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择公司" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择公司" labelFloat :errorText="error.com" >
-				<mu-menu-item v-for="item,index in purchasePrices" :key="item.id" :value="item.com" :title="item.com" />
+			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择客户" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择客户" labelFloat :errorText="error.com" >
+				<mu-menu-item v-for="item,index in comList" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
 			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled" :errorText="error.car" @change="carChange"/>
-			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请输入名称" label="请选择名称" :disabled="disabled" fullWidth @change="nameChange" labelFloat :errorText="error.name">
-				<mu-menu-item v-for="item,index in prices" :key="item.id" :value="item.name" :title="item.name" />
+			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请选择物资" label="请选择物资" :disabled="disabled" fullWidth @change="nameChange" labelFloat :errorText="error.name">
+				<mu-menu-item v-for="item,index in materialList" :key="item.id" :value="item.material" :title="item.material" />
 			</mu-select-field>
+
+			<mu-select-field v-model="form.standard" :labelFocusClass="['label-foucs']" hintText="请选择规格" label="请选择规格" :disabled="disabled" fullWidth @change="standardChange" labelFloat :errorText="error.standard">
+				<mu-menu-item v-for="item,index in standardList" :key="item.id" :value="item.standard" :title="item.standard" />
+			</mu-select-field>
+
 			<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled" :errorText="error.price"/>
 
 			<div class="labelGroup">
-				<mu-text-field label="请输入扣款" labelFloat type="number" v-model="form.chargebacks" :disabled="false" style="width:150px"/>
-				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="text" v-model="form.reason" :disabled="false"/>
+				<mu-text-field label="请输入扣款" labelFloat type="number" v-model="form.chargebacks" :disabled="disabled" style="width:150px"/>
+				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="text" v-model="form.reason" :disabled="disabled"/>
 			</div>
 			<div class="labelGroup">
-				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="false"/>
+				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="disabled"/>
 				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="false"/>
 
 			</div>
@@ -57,7 +62,7 @@
 			<tr>
 				<td>车号</td>
 				<td>{{printData.car}}</td>
-				<td>名称</td>
+				<td>物资</td>
 				<td>{{printData.name}}</td>
 				<td>单价</td>
 				<td>{{printData.price}}</td>
@@ -112,7 +117,7 @@
 		data() {
 			return {
 				height:'240px',
-				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null},
+				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null,standard:null},
 				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0,chargebacks:0,reason:null},
 				disabled : false,
 				totalWeightDisabled: true,
@@ -123,7 +128,7 @@
 				outList: [],
 				saveList: [],
 				selectIndex:-1,
-				prices:[],
+				//prices:[],
 				qrcode:"",
 				myfilter (searchText, key) {
 					if(searchText) {
@@ -135,8 +140,9 @@
 			  	port:null,
 			  	error:{com:"",car:null,name:null,price:null},
 
-			  	comList:[],
-			  	materialList:[],
+			  	comList:[],    //客户列表
+			  	materialList:[], //物资列表
+			  	standardList:[],
 
 			};
 		},
@@ -172,6 +178,7 @@
 					this.form.carWeight = null;
 					this.form.chargebacks = null;
 					this.form.reason = null;
+					this.form.standard = null;
 				}, err => {
 					util.toast(err.message);
 				},true);
@@ -251,6 +258,7 @@
 					this.form.total = null;
 					this.form.chargebacks = null;
 					this.form.reason = null;
+					this.form.standard = null;
 					this.onceDisabled = true;
 
 					this.printData = data;
@@ -264,47 +272,65 @@
 				this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
 				this.state = "new";
 				this.printData =  {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0,chargebacks:0,reason:null};
-
+				this.disabled = false;
 			},
 			saveSelect(index,tr) {
 				this.selectIndex = index;
-				for(let item of this.purchasePrices) {
-					if(item.com == this.saveList[index].com) {
-						this.prices = item.prices;
-					}
-				}
+				this.willSelect(this.saveList[index])
 				this.form = this.saveList[index];
 				this.state = "save";
 
 			},
 			outSelect(index,tr) {
 				this.selectIndex = index;
-				for(let item of this.purchasePrices) {
-					if(item.com == this.outList[index].com) {
-						this.prices = item.prices;
-					}
-				}
+				this.willSelect(this.outList[index])
 				this.form = this.outList[index];
 				this.state = "out";
 			},
+
+			willSelect(value) {
+				this.materialList = [];
+				for(let item of this.purchasePrices) {
+					if(item.com == value.com) {
+						this.materialList.push(item);
+					}
+				}
+				this.standardList = [];
+				for(let item of this.materialList) {
+					if(item.material == value.name) {
+						this.standardList.push(item);
+					}
+				}
+				this.disabled = true;
+			},
+
 			comChange(value) {
+				this.materialList = [];
+				this.form.name = null;
+				this.form.price = null;
 				for(let item of this.purchasePrices) {
 					if(item.com == value) {
-						this.prices = item.prices;
-						this.form.name = null;
-						this.form.price = null;
+						this.materialList.push(item);
 					}
 				}
 				this.error.com = null;
 			},
 			nameChange(value) {
-				for(let item of this.prices) {
-					if(item.name == value) {
-						console.log(item,value);
-						this.form.price = item.price;
+				this.standardList = [];
+				this.form.standard = null;
+				this.form.price = null;
+				for(let item of this.materialList) {
+					if(item.material == value) {
+						this.standardList.push(item);
 					}
 				}
 				this.error.name = null;
+			},
+			standardChange(value) {
+				for(let item of this.standardList) {
+					if(item.standard == value)
+						this.form.price = item.price;
+				}
 			},
 
 			carChange(value) {
@@ -415,10 +441,21 @@
 				}
 			});
 			*/
+			
+			out:for(let p of this.purchasePrices) {
+				for(let c of this.comList) {
+					if(c.com == p.com)
+						continue out;
+				}
+				this.comList.push(p);
+			}
 		},
 		beforeDestroy() {
+			/*
 			if(this.port.isOpen())
 				this.port.close();
+
+			*/
 		},
 	}
 </script>
