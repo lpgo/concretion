@@ -28,8 +28,10 @@
 			</div>
 			
 			<div class="btnContainer">
+				<!--
 				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="false"/>
-				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="false"/> 
+				-->
+				<mu-raised-button label="保存" fullWidth @click="once" primary v-if="state == 'new'" :disabled="false"/> 
 
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
@@ -42,7 +44,7 @@
 			</div>
 		</mu-paper>
 		<div>
-			<PurchaseList :height="height" theadClass="saveListHead" :data="saveList" @select="saveSelect"/>
+			<!--<PurchaseList :height="height" theadClass="saveListHead" :data="saveList" @select="saveSelect"/>-->
 			<PurchaseList :height="height" theadClass="printListHead" :data="outList" @select="outSelect"/>
 	 
 		</div>
@@ -116,7 +118,7 @@
 	export default {
 		data() {
 			return {
-				height:'240px',
+				height:'500px',
 				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null,standard:null},
 				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0,chargebacks:0,reason:null},
 				disabled : false,
@@ -292,14 +294,18 @@
 
 			willSelect(value) {
 				this.materialList = [];
-				for(let item of this.purchasePrices) {
+				l1:for(let item of this.purchasePrices) {
 					if(item.com == value.com) {
+						for(let m of this.materialList) {
+							if(item.material == m.material)
+								continue  l1;
+						}
 						this.materialList.push(item);
 					}
 				}
 				this.standardList = [];
-				for(let item of this.materialList) {
-					if(item.material == value.name) {
+				for(let item of this.purchasePrices) {
+					if(item.com == value.com && item.material == value.name) {
 						this.standardList.push(item);
 					}
 				}
@@ -310,8 +316,12 @@
 				this.materialList = [];
 				this.form.name = null;
 				this.form.price = null;
-				for(let item of this.purchasePrices) {
+				l1:for(let item of this.purchasePrices) {
 					if(item.com == value) {
+						for(let m of this.materialList) {
+							if(item.material == m.material)
+								continue  l1;
+						}
 						this.materialList.push(item);
 					}
 				}
@@ -321,8 +331,8 @@
 				this.standardList = [];
 				this.form.standard = null;
 				this.form.price = null;
-				for(let item of this.materialList) {
-					if(item.material == value) {
+				for(let item of this.purchasePrices) {
+					if(item.com == this.form.com && item.material == value) {
 						this.standardList.push(item);
 					}
 				}
@@ -443,7 +453,7 @@
 				}
 			});
 			*/
-			
+	
 			out:for(let p of this.purchasePrices) {
 				for(let c of this.comList) {
 					if(c.com == p.com)
@@ -456,8 +466,8 @@
 			/*
 			if(this.port.isOpen())
 				this.port.close();
-
 			*/
+			
 		},
 	}
 </script>

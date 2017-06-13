@@ -17,6 +17,7 @@
 			<mu-text-field hintText="请输入车号"   v-model="form.car"  style="width:150px"/>
 			<mu-text-field hintText="请输入单号"   v-model="form.no"  style="width:150px"/>
 	  		<mu-raised-button label="查询"  primary @click="search"  style="margin-left:20px"/>
+	  		<mu-raised-button label="清空条件"  secondary @click="clear"  style="margin-left:20px"/>
 	  	</div>
 	  	<mu-table  :showCheckbox="false" :fixedHeader="true" >
 
@@ -112,12 +113,17 @@ export default {
 		};
 	},
 	methods: {
+		clear() {
+			this.form = {com:null,name:null,standard:null,car:null,no:null};
+		},
 		updataSure() {
+			this.updataForm.price = Number(this.updataForm.price);
+			this.updataForm.chargebacks = Number(this.updataForm.chargebacks);
+			this.updataForm.totalWeight = Number(this.updataForm.totalWeight);
+			this.updataForm.carWeight = Number(this.updataForm.carWeight);
 			this.updataForm.weight = this.updataForm.totalWeight - this.updataForm.carWeight;
 			this.updataForm.total = this.updataForm.price * this.updataForm.weight;
 			this.updataForm.total -= this.updataForm.chargebacks;
-			this.updataForm.price = Number(this.updataForm.price);
-			this.updataForm.chargebacks = Number(this.updataForm.chargebacks);
 			util.put("purchases/"+this.updataForm.id, this.updataForm, data =>{
 				this.dialog = false;
 			},err =>{
@@ -150,7 +156,22 @@ export default {
 		get() {
 			let s = encodeURIComponent(moment(this.start+' '+this.startTime).format());
 			let e = encodeURIComponent(moment(this.end+' '+this.endTime).format());
-			let url = `purchases?start=${s}&end=${e}&closing=${this.value}`
+			let url = `purchases?start=${s}&end=${e}`
+			if(this.form.com) {
+				url += '&com='+this.form.com;
+			}
+			if(this.form.name) {
+				url += '&name='+this.form.name;
+			}
+			if(this.form.standard) {
+				url += '&standard='+this.form.standard;
+			}
+			if(this.form.car) {
+				url += '&car='+this.form.car;
+			}
+			if(this.form.no) {
+				url += '&no='+this.form.no;
+			}
 			util.get(url, data => {
 				if(data) {
 					this.data = data;
@@ -159,23 +180,31 @@ export default {
 		},
 		willSelect(value) {
 			this.updataMaterialList = [];
-			for(let item of this.purchasePrices) {
+			l1:for(let item of this.purchasePrices) {
 				if(item.com == value.com) {
+					for(let m of this.updataMaterialList) {
+						if(item.material == m.material)
+							continue  l1;
+					}
 					this.updataMaterialList.push(item);
 				}
 			}
 			this.updataStandardList = [];
-			for(let item of this.updataMaterialList) {
-				if(item.material == value.name) {
+			for(let item of this.purchasePrices) {
+				if(item.com == value.com && item.material == value.name) {
 					this.updataStandardList.push(item);
 				}
-			} 
+			}
 		},
 		comChange(value) {
 			this.materialList = [];
 			this.form.name = null;
-			for(let item of this.purchasePrices) {
+			l2:for(let item of this.purchasePrices) {
 				if(item.com == value) {
+					for(let m of this.materialList) {
+						if(item.material == m.material)
+							continue  l2;
+					}
 					this.materialList.push(item);
 				}
 			}
@@ -184,8 +213,8 @@ export default {
 		nameChange(value) {
 			this.standardList = [];
 			this.form.standard = null;
-			for(let item of this.materialList) {
-				if(item.material == value) {
+			for(let item of this.purchasePrices) {
+				if(item.com == this.form.com && item.material == value) {
 					this.standardList.push(item);
 				}
 			}
@@ -194,8 +223,12 @@ export default {
 		updateComChange(value) {
 			this.updataMaterialList = [];
 			this.updataForm.name = null;
-			for(let item of this.purchasePrices) {
+			l3:for(let item of this.purchasePrices) {
 				if(item.com == value) {
+					for(let m of this.updataMaterialList) {
+						if(item.material == m.material)
+							continue  l3;
+					}
 					this.updataMaterialList.push(item);
 				}
 			}
@@ -204,8 +237,8 @@ export default {
 		updateNameChange(value) {
 			this.updataStandardList = [];
 			this.updataForm.standard = null;
-			for(let item of this.updataMaterialList) {
-				if(item.material == value) {
+			for(let item of this.purchasePrices) {
+				if(item.com == this.updataForm.com && item.material == value) {
 					this.updataStandardList.push(item);
 				}
 			}

@@ -18,22 +18,22 @@
 			<mu-text-field label="请输入单价" labelFloat fullWidth type="number" v-model="form.price" :disabled="disabled" :errorText="error.price"/>
 
 			<div class="labelGroup">
-				<mu-text-field label="请输入扣款" labelFloat type="number" v-model="form.chargebacks" :disabled="false" style="width:150px"/>
-				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="text" v-model="form.reason" :disabled="false"/>
+				<mu-text-field label="请输入扣款" labelFloat type="number" v-model="form.chargebacks" :disabled="disabled" style="width:150px"/>
+				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="text" v-model="form.reason" :disabled="disabled"/>
 			</div>
 			<div class="labelGroup">
-				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="true"/>
-				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="true"/>
+				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" :disabled="false"/>
+				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" :disabled="false"/>
 
 			</div>
 			
 			<div class="btnContainer">
-				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="true"/>
-				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="true"/> 
+				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="totalWeightDisabled"/>
+				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="onceDisabled"/> 
 
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
-				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="false"/>
+				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="carWeightDisabled"/>
 				</template>
 				<template v-if="state == 'out'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
@@ -275,7 +275,6 @@
 				this.state = "new";
 				this.printData =  {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0,chargebacks:0,reason:null};
 				this.disabled = false;
-
 			},
 			saveSelect(index,tr) {
 				this.selectIndex = index;
@@ -293,26 +292,34 @@
 
 			willSelect(value) {
 				this.materialList = [];
-				for(let item of this.purchasePrices) {
+				l1:for(let item of this.purchasePrices) {
 					if(item.com == value.com) {
+						for(let m of this.materialList) {
+							if(item.material == m.material)
+								continue  l1;
+						}
 						this.materialList.push(item);
 					}
 				}
 				this.standardList = [];
-				for(let item of this.materialList) {
-					if(item.material == value.name) {
+				for(let item of this.purchasePrices) {
+					if(item.com == value.com && item.material == value.name) {
 						this.standardList.push(item);
 					}
 				}
-				this.disabled = true;   
+				this.disabled = true;
 			},
 
 			comChange(value) {
 				this.materialList = [];
 				this.form.name = null;
 				this.form.price = null;
-				for(let item of this.purchasePrices) {
+				l1:for(let item of this.purchasePrices) {
 					if(item.com == value) {
+						for(let m of this.materialList) {
+							if(item.material == m.material)
+								continue  l1;
+						}
 						this.materialList.push(item);
 					}
 				}
@@ -322,8 +329,8 @@
 				this.standardList = [];
 				this.form.standard = null;
 				this.form.price = null;
-				for(let item of this.materialList) {
-					if(item.material == value) {
+				for(let item of this.purchasePrices) {
+					if(item.com == this.form.com && item.material == value) {
 						this.standardList.push(item);
 					}
 				}
@@ -444,7 +451,7 @@
 				}
 			});
 			
-			
+	
 			out:for(let p of this.purchasePrices) {
 				for(let c of this.comList) {
 					if(c.com == p.com)
