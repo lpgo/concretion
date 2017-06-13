@@ -80,7 +80,7 @@ export default {
 		}).catch(err =>{
 			this.msg = "加载出错："+err.message;
 		});
-
+		/*
 		util.get("version", data => {
 			if(conf.version != data.version) {
 				this.hasNew = true;		
@@ -89,7 +89,7 @@ export default {
 				this.url = data.url;
 			}	
 		});   
-
+		*/
 		
 	},
 }

@@ -198,30 +198,6 @@ export default {
 				}
 			}
 		},
-		comChange(value) {
-			this.materialList = [];
-			this.form.name = null;
-			l2:for(let item of this.purchasePrices) {
-				if(item.com == value) {
-					for(let m of this.materialList) {
-						if(item.material == m.material)
-							continue  l2;
-					}
-					this.materialList.push(item);
-				}
-			}
-			
-		},
-		nameChange(value) {
-			this.standardList = [];
-			this.form.standard = null;
-			for(let item of this.purchasePrices) {
-				if(item.com == this.form.com && item.material == value) {
-					this.standardList.push(item);
-				}
-			}
-			
-		},
 		updateComChange(value) {
 			this.updataMaterialList = [];
 			this.updataForm.name = null;
