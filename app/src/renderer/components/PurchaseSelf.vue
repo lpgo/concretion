@@ -168,6 +168,7 @@
 				this.form.complate = false;
 				util.post("purchases", this.form, data => {
 					this.form.id = data.id;
+					this.form.no = data.no;
 					this.saveList.push(this.form);
 					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
 					this.form.com = '';
@@ -246,6 +247,7 @@
 				this.form.complate = true;
 				util.post("purchases", this.form, data => {
 					this.form.id = data.id;
+					this.form.no = data.no;
 					this.outList.push(this.form);
 					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
 					this.form.com = '';

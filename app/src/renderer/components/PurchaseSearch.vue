@@ -32,8 +32,8 @@
 		        <mu-th tooltip="毛重" class="tdHeader">毛重</mu-th>
 		        <mu-th tooltip="皮重" class="tdHeader">皮重</mu-th>
 		        <mu-th tooltip="总价" class="tdHeader">总价</mu-th>
-		        <mu-th tooltip="操作" class="tdHeader">操作</mu-th>
-
+		        <mu-th tooltip="操作" class="tdHeader">修改</mu-th>
+				<mu-th tooltip="操作" class="tdHeader">删除</mu-th>
 		      </mu-tr>
 		    </mu-thead>
 		     <mu-tbody>
@@ -47,34 +47,35 @@
 		        <mu-td>{{item.totalWeight}}</mu-td>
 		        <mu-td>{{item.carWeight}}</mu-td> 
 		        <mu-td>{{item.total.toFixed(2)}}</mu-td>
-		        <mu-td><mu-flat-button label="修改" primary @click="updata(item.id,index)" v-if="!item.closing"/></mu-td> 
+		        <mu-td><mu-flat-button label="修改" primary @click="updata(item.id,index)"/></mu-td>
+		        <mu-td><mu-flat-button label="删除" secondary @click="remove(item.id,index)"/></mu-td> 
 		      </mu-tr>
 		    </mu-tbody>
 		</mu-table>
 
 		<mu-dialog :open="dialog" @close="close" dialogClass="dialog" >
-			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择客户" style=""  fullWidth @change="comChange"   >
+			<mu-select-field v-model="updataForm.com" :labelFocusClass="['label-foucs']" hintText="请选择客户" style=""  fullWidth @change="updateComChange"   >
 				<mu-menu-item v-for="item,index in comList" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-text-field hintText="请输入车号"  fullWidth  v-model="form.car" />
+			<mu-text-field hintText="请输入车号"  fullWidth  v-model="updataForm.car" />
 
-			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请选择物资"    @change="nameChange" labelFloat >
-				<mu-menu-item v-for="item,index in materialList" :key="item.id" :value="item.material" :title="item.material" />
+			<mu-select-field v-model="updataForm.name" :labelFocusClass="['label-foucs']" hintText="请选择物资"    @change="updateNameChange" labelFloat >
+				<mu-menu-item v-for="item,index in updataMaterialList" :key="item.id" :value="item.material" :title="item.material" />
 			</mu-select-field>
 
-			<mu-select-field v-model="form.standard" :labelFocusClass="['label-foucs']" hintText="请选择规格"   fullWidth   >
-				<mu-menu-item v-for="item,index in standardList" :key="item.id" :value="item.standard" :title="item.standard" />
+			<mu-select-field v-model="updataForm.standard" :labelFocusClass="['label-foucs']" hintText="请选择规格"   fullWidth   >
+				<mu-menu-item v-for="item,index in updataStandardList" :key="item.id" :value="item.standard" :title="item.standard" />
 			</mu-select-field>
 
-			<mu-text-field hintText="请输入单价"  fullWidth type="number" v-model="form.price" />
+			<mu-text-field hintText="请输入单价"  fullWidth type="number" v-model="updataForm.price" />
 
 			<div class="labelGroup">
-				<mu-text-field label="请输入扣款" labelFloat type="number" v-model="form.chargebacks"  style="width:150px"/>
-				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="text" v-model="form.reason" />
+				<mu-text-field label="请输入扣款" labelFloat type="number" v-model="updataForm.chargebacks"  style="width:150px"/>
+				<mu-text-field label="请输入扣款原因" labelFloat fullWidth type="text" v-model="updataForm.reason" />
 			</div>
 			<div class="labelGroup">
-				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="form.totalWeight" />
-				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="form.carWeight" />
+				<mu-text-field label="请输入毛重" labelFloat fullWidth type="number" v-model="updataForm.totalWeight" />
+				<mu-text-field label="请输入皮重" labelFloat fullWidth type="number" v-model="updataForm.carWeight" />
 
 			</div>
 			<mu-raised-button label="确定"   @click="updataSure" primary fullWidth />
@@ -92,6 +93,7 @@ export default {
 	data() {
 		return {
 			form:{com:null,name:null,standard:null,car:null,no:null},
+			updataForm:{com:null,name:null,car:null,standard:null,price:null,chargebacks:null,reason:null,totalWeight:null,carWeight:null},
 			value:"false",
 			data:[],
 			start:moment().format('YYYY-MM-DD'),
@@ -102,17 +104,39 @@ export default {
 		  	materialList:[], //物资列表
 		  	standardList:[],
 
+		  	//updataComList:[],
+		  	updataMaterialList:[],
+		  	updataStandardList:[],
+
 		  	dialog:false,
 		};
 	},
 	methods: {
 		updataSure() {
-
+			this.updataForm.weight = this.updataForm.totalWeight - this.updataForm.carWeight;
+			this.updataForm.total = this.updataForm.price * this.updataForm.weight;
+			this.updataForm.total -= this.updataForm.chargebacks;
+			this.updataForm.price = Number(this.updataForm.price);
+			this.updataForm.chargebacks = Number(this.updataForm.chargebacks);
+			util.put("purchases/"+this.updataForm.id, this.updataForm, data =>{
+				this.dialog = false;
+			},err =>{
+				util.toast("修改失败");
+			}, true);
 		},
 		updata(id,index) {
 			this.willSelect(this.data[index]);
-			this.form = this.data[index];
+			this.updataForm = this.data[index];
 			this.dialog = true;
+		},
+		remove(id,index) {
+			if(!confirm("确定删除？")) 
+				return ;
+			util.delete("purchases/"+id, data=>{
+				this.data.splice(index,1);
+			}, err=>{
+				util.toast("删除失败");
+			}, true);
 		},
 		open() {
 	      this.dialog = true;
@@ -124,9 +148,9 @@ export default {
 			this.get();
 		},
 		get() {
-			let s = encodeURIComponent(moment(this.start).startOf('day').format());
-			let e = encodeURIComponent(moment(this.end).endOf('day').format());
-			let url = `purchases?start=${s}&end=${e}&closing=${this.value}&complate=true`
+			let s = encodeURIComponent(moment(this.start+' '+this.startTime).format());
+			let e = encodeURIComponent(moment(this.end+' '+this.endTime).format());
+			let url = `purchases?start=${s}&end=${e}&closing=${this.value}`
 			util.get(url, data => {
 				if(data) {
 					this.data = data;
@@ -134,19 +158,18 @@ export default {
 			});
 		},
 		willSelect(value) {
-			this.materialList = [];
+			this.updataMaterialList = [];
 			for(let item of this.purchasePrices) {
 				if(item.com == value.com) {
-					this.materialList.push(item);
+					this.updataMaterialList.push(item);
 				}
 			}
-			this.standardList = [];
-			for(let item of this.materialList) {
+			this.updataStandardList = [];
+			for(let item of this.updataMaterialList) {
 				if(item.material == value.name) {
-					this.standardList.push(item);
+					this.updataStandardList.push(item);
 				}
-			}
-			this.disabled = true;   
+			} 
 		},
 		comChange(value) {
 			this.materialList = [];
@@ -164,6 +187,26 @@ export default {
 			for(let item of this.materialList) {
 				if(item.material == value) {
 					this.standardList.push(item);
+				}
+			}
+			
+		},
+		updateComChange(value) {
+			this.updataMaterialList = [];
+			this.updataForm.name = null;
+			for(let item of this.purchasePrices) {
+				if(item.com == value) {
+					this.updataMaterialList.push(item);
+				}
+			}
+			
+		},
+		updateNameChange(value) {
+			this.updataStandardList = [];
+			this.updataForm.standard = null;
+			for(let item of this.updataMaterialList) {
+				if(item.material == value) {
+					this.updataStandardList.push(item);
 				}
 			}
 			
