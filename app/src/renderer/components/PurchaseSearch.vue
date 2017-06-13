@@ -5,10 +5,10 @@
 		至<mu-date-picker mode="landscape" hintText="结束日期" v-model="end" />
 		<mu-time-picker hintText="结束时间" format="24hr" v-model="endTime"  /><br>
 		<div style="display:flex;justify-content:space-around">
-			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择客户"    @change="comChange"   style="width:150px" >
+			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择客户"       style="width:150px" >
 				<mu-menu-item v-for="item,index in comList" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请选择物资"    @change="nameChange"  style="width:150px">
+			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请选择物资"      style="width:150px">
 				<mu-menu-item v-for="item,index in materialList" :key="item.id" :value="item.material" :title="item.material" />
 			</mu-select-field>
 			<mu-select-field v-model="form.standard" :labelFocusClass="['label-foucs']" hintText="请选择规格"     style="width:150px">
@@ -175,6 +175,8 @@ export default {
 			util.get(url, data => {
 				if(data) {
 					this.data = data;
+				} else {
+					this.data = [];
 				}
 			});
 		},
@@ -259,6 +261,20 @@ export default {
 					continue out;
 			}
 			this.comList.push(p);
+		}
+		out1:for(let p of this.purchasePrices) {
+			for(let c of this.materialList) {
+				if(c.material == p.material)
+					continue out1;
+			}
+			this.materialList.push(p);
+		}
+		out2:for(let p of this.purchasePrices) {
+			for(let c of this.standardList) {
+				if(c.standard == p.standard)
+					continue out2;
+			}
+			this.standardList.push(p);
 		}
 	},
 }
