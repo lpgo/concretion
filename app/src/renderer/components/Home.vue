@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <mu-appbar title="茂奂建材有限公司" class="noprint">
+    <mu-appbar title="府谷县茂奂建材有限责任公司" class="noprint">
       <mu-flat-button label="刷新"  slot="right" @click="refresh"/>
       <mu-flat-button label="修改密码" slot="right" @click="openPwd"/>
       <template v-for="data in menuData">

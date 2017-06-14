@@ -9,7 +9,10 @@
 	        <mu-th tooltip="规格" class="tdHeader">规格</mu-th>
 	        <mu-th tooltip="单价" class="tdHeader">单价</mu-th>
 	        <mu-th tooltip="毛重" class="tdHeader">毛重</mu-th>
-	        <mu-th tooltip="皮重" class="tdHeader">皮重</mu-th>
+	        <mu-th tooltip="皮重" class="tdHeader" v-if="complate">皮重</mu-th>
+	        <mu-th tooltip="净重" class="tdHeader" v-if="complate">净重</mu-th>
+	        <mu-th tooltip="总价" class="tdHeader" v-if="complate">总价</mu-th>
+	        <mu-th tooltip="实付" class="tdHeader" v-if="complate">实付</mu-th>
 	      </mu-tr>
 	    </mu-thead>
 	     <mu-tbody>
@@ -21,22 +24,31 @@
 	         <mu-td>{{item.standard}}</mu-td>
 	        <mu-td>{{item.price}}</mu-td>
 	        <mu-td>{{item.totalWeight}}</mu-td>
-	        <mu-td>{{item.carWeight}}</mu-td> 
+	        <mu-td v-if="complate">{{item.carWeight}}</mu-td> 
+	        <mu-td v-if="complate">{{item.weight.toFixed(2)}}</mu-td> 
+	        <mu-td v-if="complate">{{item.total.toFixed(2)}}</mu-td> 
+	        <mu-td v-if="complate">{{myFix(item.total)}}</mu-td> 
 	      </mu-tr>
 	    </mu-tbody>
 	</mu-table>
 </template>
 <script>
+
+
+import util from '../common/util.js'
+
 export default {
 	name: "PurchaseList",
-	props: ['data', 'height', 'theadClass'],
+	props: ['data', 'height', 'theadClass','complate'],
 	data() {
 		return {};
 	},
 	methods: {
 		click(index, tr) {
-			console.log("table row click");
 			this.$emit('select', index, tr);
+		},
+		myFix(num) {
+			return util.myFix(num);
 		},
 	}
 }

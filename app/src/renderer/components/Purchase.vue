@@ -43,7 +43,7 @@
 		</mu-paper>
 		<div>
 			<PurchaseList :height="height" theadClass="saveListHead" :data="saveList" @select="saveSelect"/>
-			<PurchaseList :height="height" theadClass="printListHead" :data="outList" @select="outSelect"/>
+			<PurchaseList :height="height" theadClass="printListHead" :data="outList" @select="outSelect" complate="true"/>
 	 
 		</div>
 	</div>
