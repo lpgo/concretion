@@ -1,11 +1,13 @@
 <template>
 	<div style="padding:20px;font-size:16px;">
+		<!--
 		<span style="font-size:20px">型号：</span>
 		<template v-for="item,index in types">
 			<mu-chip class="demo-chip"  @delete="deleteType(index,item.id)" showDelete>{{item.name}}</mu-chip>
 		</template>
 		<mu-text-field  v-model="type" style="margin-left:20px;width:100px;"/><mu-raised-button label="添加" primary @click="add" style="margin:0 20px;"/>
 		<hr/>
+		-->
 		<h2 style="font-size:20px;text-align:center">销售价格</h2>
 		<mu-table :showCheckbox="false" @rowClick="click">
 			<mu-thead slot="header" >

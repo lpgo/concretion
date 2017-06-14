@@ -32,6 +32,7 @@
 		        <mu-th tooltip="单价" class="tdHeader">单价</mu-th>
 		        <mu-th tooltip="毛重" class="tdHeader">毛重</mu-th>
 		        <mu-th tooltip="皮重" class="tdHeader">皮重</mu-th>
+		        <mu-th tooltip="皮重" class="tdHeader">净重</mu-th>
 		        <mu-th tooltip="总价" class="tdHeader">总价</mu-th>
 		        <mu-th tooltip="实付" class="tdHeader">实付</mu-th>
 		        <mu-th tooltip="操作" class="tdHeader">修改</mu-th>
@@ -48,10 +49,11 @@
 		        <mu-td>{{item.price}}</mu-td>
 		        <mu-td>{{item.totalWeight}}</mu-td>
 		        <mu-td>{{item.carWeight}}</mu-td> 
+		        <mu-td>{{item.weight.toFixed(2)}}</mu-td> 
 		        <mu-td>{{item.total.toFixed(2)}}</mu-td>
 		        <mu-td>{{myFix(item.total)}}</mu-td>
-		        <mu-td><mu-flat-button label="修改" primary @click="updata(item.id,index)" :labelClass="test1"/></mu-td>
-		        <mu-td><mu-flat-button label="删除" secondary @click="remove(item.id,index)" :labelClass="test1"/></mu-td> 
+		        <mu-td><span @click="updata(item.id,index)" class="greenLink">修改</span></mu-td>
+		        <mu-td><span @click="remove(item.id,index)" class="redLink"> 删除</span></mu-td> 
 		      </mu-tr>
 		    </mu-tbody>
 		</mu-table>
@@ -265,7 +267,24 @@ export default {
 	.timeClass {
 		width: 50px;
 	}
-	.test1 {
-		min-width:0px;
+	.greenLink {
+		color: #009688;
+		cursor: pointer;
+		font-size: 15px;
+		padding: 10px;
+		margin-left: -10px;
+	}
+	.greenLink:hover{
+		background-color: #bdbdbd;
+	}
+	.redLink {
+		color: #ff4081;
+		cursor: pointer;
+		font-size: 15px;
+		padding: 10px;
+		margin-left: -10px;
+	}
+	.redLink:hover{
+		background-color: #bdbdbd;
 	}
 </style>

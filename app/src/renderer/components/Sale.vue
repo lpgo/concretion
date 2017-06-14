@@ -49,6 +49,8 @@
 			        <mu-th tooltip="施工单位" class="tdHeader">施工单位</mu-th>
 			        <mu-th tooltip="驾驶员" class="tdHeader">驾驶员</mu-th>
 			        <mu-th tooltip="本车方量" class="tdHeader">本车方量</mu-th>
+			        <mu-th tooltip="已完方量" class="tdHeader">已完方量</mu-th>
+			        <mu-th tooltip="计划方量" class="tdHeader">计划方量</mu-th>
 			        <mu-th tooltip="工程名称" class="tdHeader">工程名称</mu-th>
 			        <mu-th tooltip="运输车号" class="tdHeader">运输车号</mu-th>
 			        <mu-th tooltip="浇筑方式" class="tdHeader">浇筑方式</mu-th>
@@ -62,6 +64,8 @@
 			        <mu-td>{{item.com}}</mu-td>
 			        <mu-td>{{item.driver}}</mu-td>
 			        <mu-td>{{item.capacity}}</mu-td>
+			        <mu-td>{{item.acc}}</mu-td>
+			        <mu-td>{{item.plan}}</mu-td>
 			        <mu-td>{{item.project}}</mu-td>
 			        <mu-td>{{item.car}}</mu-td>
 			        <mu-td>{{item.way}}</mu-td> 
@@ -93,7 +97,7 @@
 					<td>运输车号</td>
 					<td>{{printData.car}}</td>
 					<td>已完方量</td>
-					<td>{{salePrice.acc.toFixed(0)}} M<sup>3</sup></td>
+					<td>{{printData.acc.toFixed(0)}} M<sup>3</sup></td>
 				</tr>
 				<tr>
 					<td>施工部位</td>
@@ -101,7 +105,7 @@
 					<td>运距</td>
 					<td>{{salePrice.distance}}</td>
 					<td>计划方量</td>
-					<td>{{salePrice.plan.toFixed(0)}} M<sup>3</sup></td>
+					<td>{{printData.plan.toFixed(0)}} M<sup>3</sup></td>
 				</tr>
 				<tr>
 					<td>强度等级</td>
@@ -111,7 +115,7 @@
 					<td>发货时间</td>
 					<td>{{timeFormat(printData.time)}}</td>
 					<td>累计车次</td>
-					<td>{{salePrice.count}}</td>
+					<td>{{printData.count}}</td>
 				</tr>
 				<tr>
 					<td>塌落度</td>
@@ -156,7 +160,7 @@ export default {
 				{id:2,name:"52米泵送"},
 			],
 			item:null,   //priceItem 包含两种方式的价格
-			printData:{com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[]},
+			printData:{com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],count:null,acc:0,plan:0},
 			barcode:"",
 			/*
 			attachs:[
@@ -327,24 +331,14 @@ export default {
 				return ;
 			}
 			if(!this.form.pbbh) {
-				this.error.pbbh = "请输入配比编号";
+				this.error.pbbh = "请输入联系电话";
 				return ;
 			}
-
 			util.post("sales", this.form, data => {
 				this.data.push(data);
-				let sale = data;
-				util.get("salePrices",data => {
-					this.addAllSalePrices(data);
-					for(let item of this.salePrices) {
-						if(item.com == this.form.com) {
-							this.salePrice = item;
-						}
-					}
-					this.printData = sale;
-					this.print();
-					this.cancel();
-				});
+				this.printData = data;
+				this.print();
+				this.cancel();
 			}, err => {
 				util.toast(err.error);
 			},true);
