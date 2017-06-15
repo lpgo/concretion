@@ -118,7 +118,7 @@
 	export default {
 		data() {
 			return {
-				height:'500px',
+				height:'620px',
 				form : {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null,standard:null},
 				printData: {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,weight:0,total:0,chargebacks:0,reason:null},
 				disabled : false,
@@ -171,7 +171,7 @@
 				util.post("purchases", this.form, data => {
 					this.form.id = data.id;
 					this.form.no = data.no;
-					this.saveList.push(this.form);
+					this.saveList.unshift(this.form);
 					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
 					this.form.com = '';
 					this.form.car = '';
@@ -209,7 +209,7 @@
 				this.form.complate = true;
 				util.patch("purchases/"+this.form.id, {carWeight:this.form.carWeight,complate: true}, data => {
 					this.outList.push(this.form);
-					this.saveList.splice(this.selectIndex, 1);
+					this.saveList.unshift(this.selectIndex, 1);
 					this.state = "new";
 					this.form = {};
 					this.form.carWeight = null;
@@ -250,7 +250,7 @@
 				util.post("purchases", this.form, data => {
 					this.form.id = data.id;
 					this.form.no = data.no;
-					this.outList.push(this.form);
+					this.outList.unshift(this.form);
 					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
 					this.form.com = '';
 					this.form.car = '';
@@ -346,15 +346,17 @@
 			},
 
 			carChange(value) {
-				for (var i = this.carInfos.length - 1; i >= 0; i--) {
-					if(this.carInfos[i].car == value) {
-						this.form.carWeight = this.carInfos[i].weight;
+				util.get("carInfos?car="+value, data => {
+					if(data && data.length > 0) {
+						this.form.carWeight = data[0].weight;
 						this.getCarWeight = true;
 					} else {
 						this.getCarWeight = false;
 						this.form.carWeight = null;
 					}
-				}
+				}, err => {
+					console.log("get car info error: " + err);
+				}, true);
 				this.error.car = null;
 			},
 
@@ -385,7 +387,7 @@
 	    	},
 	    },
 		mounted() {
-			let start = encodeURIComponent(moment().startOf('day').format());
+			let start = encodeURIComponent(moment().startOf('day').subtract(45, 'days').format());
 			let end = encodeURIComponent(moment().endOf('day').format());
 			let url = `purchases?start=${start}&end=${end}&complate=`
 			util.get(url+"false", data => {
