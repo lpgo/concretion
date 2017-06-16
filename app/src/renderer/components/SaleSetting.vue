@@ -25,7 +25,7 @@
 		<hr/>
 		<mu-raised-button label="添加" primary @click="dialog=true" style="margin:0 20px;float:right"/>
 		<mu-dialog :open="dialog" @close="close" title="添加施工单位及价格" dialogClass="dialog">
-			<span>施工单位：</span><mu-text-field  v-model="form.com" />
+			<span>施工单位：</span><mu-text-field  v-model="form.com" :errorText="error.com" @change="error.com == null"/>
 			<span>联系电话：</span><mu-text-field  v-model="form.tel" /><br/>
 			<span>运距：</span><mu-text-field  v-model="form.distance" type="number" style="width:120px;margin-right:50px"/>
 			<mu-switch label="此价格是否含税：" labelLeft v-model="form.tax"/><span v-if="form.tax">是</span><span v-if="!form.tax">否</span><br/>
@@ -69,6 +69,7 @@ export default {
 				price:{C15:null,C20:null,C25:null,C30:null,C35:null,C40:null,C45:null,C50:null},
 				attach:{auto:null,small:null,frost:null,P6:null,P8:null},
 			},
+			error:{com:null},
 			dialog:false,
 		};
 	},
@@ -97,6 +98,11 @@ export default {
 		},
 
 		addSalePrices() {
+			if(!this.form.com) {
+				this.error.com = "请输入公司名称";
+				return;
+			}
+
 			this.setFormNumber();
 			util.post("salePrices",this.form,data => {
 				this.addSalePrice(data);

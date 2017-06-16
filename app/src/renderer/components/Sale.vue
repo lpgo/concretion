@@ -76,7 +76,7 @@
 			    </mu-tbody>
 			</mu-table>
 		</div>
-		<div class="myDivToPrint">
+		<div class="hidden myDivToPrint">
 			<h2 style="text-align:center;margin-bottom:-7px">府谷县茂奂建材有限责任公司送货单</h2>
 			<div style="display:flex;justify-content:space-between;padding:0 20px">
 				<span>出厂日期：{{dateFormat(printData.time)}}</span>
@@ -222,6 +222,7 @@ export default {
 			this.form.capacity = Number(this.form.capacity);
 
 			this.form.price = this.calcPrice();
+			console.log(this.form.price);
 
 			//检查输入
 			if(!this.form.com) {
@@ -278,26 +279,17 @@ export default {
 			//基础商砼价格
 			let basePrice = this.salePrice.price[this.form.strength];
 			console.log(basePrice);
-			//是否泵送
-			if(this.form.way !== '自卸') {
-				basePrice += this.salePrice.attach.auto;
-			}
-			console.log(basePrice);
-			//计算附加价格
 			console.log(this.form.attach)
 			let sum = 0;
-			let attachNames = [];
 			for(let a of this.form.attach) {
-				sum += this.salePrice.attach[i]
-				for(n of this.attachs) {
-					if(a === n.value) {
-						attachNames.push(n.name);
-					}
-				}	
+				sum += this.salePrice.attach[a]
 			}
-			this.form.attach = attachNames;
 			console.log(sum);
-			return basePrice + sum ;
+			if(basePrice == 0) {
+				return 0;
+			} else {
+				return basePrice + this.salePrice.attach.auto + sum ;
+			}
 		},
 
 		cancel() {

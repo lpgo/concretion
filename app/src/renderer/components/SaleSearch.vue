@@ -36,7 +36,7 @@
 		        <mu-td>{{item.car}}</mu-td>
 		        <mu-td>{{item.way}}</mu-td>
 		        <mu-td>{{item.strength}}</mu-td>
-		       	<mu-td>{{item.attach}}</mu-td>
+		       	<mu-td>{{showAttachs(item.attach)}}</mu-td>
 		        <mu-td>{{item.price.toFixed(2)}}</mu-td> 
 		        <mu-td>{{item.total.toFixed(2)}}</mu-td> 
 		        <!--<mu-td><span @click="close(item.id,index)" class="greenLink" v-if="!item.closing">结账</span></mu-td>--> 
@@ -57,6 +57,12 @@ export default {
 			data:[],
 			start:moment().format('YYYY-MM-DD'),
 			end:moment().format('YYYY-MM-DD'),
+			attachs:[
+				{name:"细石",value:"small"},
+				{name:"抗冻F200",value:"frost"},
+				{name:"P6",value:"P6"},
+				{name:"P8",value:"P8"},
+			],
 		};
 	},
 	methods: {
@@ -85,6 +91,17 @@ export default {
 		},
 		timeFormat(time) {
 			return moment(time).format("HH:mm");
+		},
+		showAttachs(attach) {
+			let names = [];
+			for(let a of attach) {
+				for(let n of this.attachs) {
+					if(a === n.value) {
+						names.push(n.name);
+					}
+				}
+			}
+			return names.join(",");
 		},
 	},
 	mounted() {
