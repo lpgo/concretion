@@ -35,7 +35,7 @@
 					<td>强度等级</td><td>C15</td><td>C20</td><td>C25</td><td>C30</td><td>C35</td><td>C40</td><td>C45</td><td>C50</td>
 				</thead>
 				<tbody>
-					<td>加价(元/M<sup>3</sup>)</td><td><mu-text-field type="number"  v-model="form.price.C15" style="width:45px"/></td><td><mu-text-field type="number"  v-model="form.price.C20" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C25" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C30" style="width:45px"/></td><td><mu-text-field type="number"  v-model="form.price.C35" style="width:45px"/></td><td><mu-text-field  type="number" v-model="form.price.C40" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C45" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C50" style="width:45px"/></td>
+					<td>价格(元/M<sup>3</sup>)</td><td><mu-text-field type="number"  v-model="form.price.C15" style="width:45px"/></td><td><mu-text-field type="number"  v-model="form.price.C20" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C25" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C30" style="width:45px"/></td><td><mu-text-field type="number"  v-model="form.price.C35" style="width:45px"/></td><td><mu-text-field  type="number" v-model="form.price.C40" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C45" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C50" style="width:45px"/></td>
 				</tbody>
 			</table>
 			<h4>2.特殊砼费用：</h4>
