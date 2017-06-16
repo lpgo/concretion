@@ -387,7 +387,7 @@
 	    	},
 	    },
 		mounted() {
-			let start = encodeURIComponent(moment().startOf('day').subtract(45, 'days').format());
+			let start = encodeURIComponent(moment().startOf('day').format());
 			let end = encodeURIComponent(moment().endOf('day').format());
 			let url = `purchases?start=${start}&end=${end}&complate=`
 			util.get(url+"false", data => {

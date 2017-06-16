@@ -12,6 +12,7 @@ import Statistics from 'components/Statistics'
 import PurchaseSearch from 'components/PurchaseSearch'
 import SaleSearch from 'components/SaleSearch'
 import Checkout from 'components/Checkout'
+import PurchaseDiary from 'components/PurchaseDiary'
 export default [
 	{
       path: '/login',
@@ -35,6 +36,7 @@ export default [
         { path: '/purchaseSearch', component: PurchaseSearch, name: '采购查询' },
          { path: '/saleSearch', component: SaleSearch, name: '销售查询' },
          { path: '/checkout', component: Checkout, name: '结账' },
+         { path: '/purchaseDiary', component: PurchaseDiary, name: '采购流水' },
       ]
     }
 ]
