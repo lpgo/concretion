@@ -28,7 +28,7 @@
 					<mu-menu-item v-for="item,index in strengths" :key="item" :value="item" :title="item" />
 				</mu-select-field>
 				<span class="textLabel">附加条件：</span><mu-select-field v-model="form.attach" :labelFocusClass="['label-foucs']" hintText="请选择附加条件" style="" multiple>
-					<mu-menu-item v-for="item,index in attachs" :key="item" :value="item" :title="item" />
+					<mu-menu-item v-for="item,index in attachs" :key="item" :value="item.value" :title="item.name" />
 				</mu-select-field>
 			</div> 
 			<div class="formGroup">
@@ -76,7 +76,7 @@
 			    </mu-tbody>
 			</mu-table>
 		</div>
-		<div class="hidden myDivToPrint">
+		<div class="myDivToPrint">
 			<h2 style="text-align:center;margin-bottom:-7px">府谷县茂奂建材有限责任公司送货单</h2>
 			<div style="display:flex;justify-content:space-between;padding:0 20px">
 				<span>出厂日期：{{dateFormat(printData.time)}}</span>
@@ -174,12 +174,10 @@ export default {
 			*/
 
 			attachs:[
-				"同标号细石砼",
-				"抗渗P6砼",
-				"抗渗P8砼",
-				"抗冻砼",
-				"抗裂防水HA-P8%",
-				"抗裂防水HA-P14%",
+				{name:"细石",value:"small"},
+				{name:"抗冻F200",value:"frost"},
+				{name:"P6",value:"P6"},
+				{name:"P8",value:"P8"},
 			],
 			tlds:[
 				"140±20mm",
@@ -222,77 +220,9 @@ export default {
 	    ]),
 		save() {
 			this.form.capacity = Number(this.form.capacity);
-			//计算附加价格
-			let sum = 0;
-			let attachNames = [];
-			this.form.attach.forEach((i) =>{
-				switch(i) {
-					case "同标号细石砼":{
-						sum += 20;
-						break;
-					}
-					case "抗渗P6砼":{
-						sum += 15;
-						break;
-					}
-					case "抗渗P8砼":{
-						sum += 25;
-						break;
-					}
-					case "抗冻砼":{
-						sum += 25;
-						break;
-					}
-					case "抗裂防水HA-P8%":{
-						sum += 25;
-						break;
-					}
-					case "抗裂防水HA-P14%":{
-						sum += 40;
-						break;
-					}
-				}
-			});
 
-			if(this.form.way == "自卸") {
-				this.form.price = this.salePrice.self;
-			} else {
-				this.form.price = this.salePrice.auto;
-			}
+			this.form.price = this.calcPrice();
 
-			//计算各种强度的价格以C30为基础
-			switch(this.form.strength) {
-				case "C15": {
-					this.form.price -= 30;
-					break;
-				}
-				case "C20": {
-					this.form.price -= 20;
-					break;
-				}
-				case "C25": {
-					this.form.price -= 10;
-					break;
-				}
-				case "C35": {
-					this.form.price += 15;
-					break;
-				}
-				case "C40": {
-					this.form.price += 35;
-					break;
-				}
-				case "C45": {
-					this.form.price += 65;
-					break;
-				}
-				case "C50": {
-					this.form.price += 115;
-					break;
-				}
-			}
-
-			this.form.price += sum;
 			//检查输入
 			if(!this.form.com) {
 				this.error.com = "请选择施工单位";
@@ -343,6 +273,33 @@ export default {
 				util.toast(err.error);
 			},true);
 		},
+
+		calcPrice() {
+			//基础商砼价格
+			let basePrice = this.salePrice.price[this.form.strength];
+			console.log(basePrice);
+			//是否泵送
+			if(this.form.way !== '自卸') {
+				basePrice += this.salePrice.attach.auto;
+			}
+			console.log(basePrice);
+			//计算附加价格
+			console.log(this.form.attach)
+			let sum = 0;
+			let attachNames = [];
+			for(let a of this.form.attach) {
+				sum += this.salePrice.attach[i]
+				for(n of this.attachs) {
+					if(a === n.value) {
+						attachNames.push(n.name);
+					}
+				}	
+			}
+			this.form.attach = attachNames;
+			console.log(sum);
+			return basePrice + sum ;
+		},
+
 		cancel() {
 			this.form.com = "";
 			this.form.driver = "";
@@ -370,6 +327,7 @@ export default {
 			for(let item of this.salePrices) {
 				if(item.com == value) {
 					this.salePrice = item;
+					this.form.pbbh = item.tel;
 				}
 			}
 			util.get(`sales?com=${value}&limit=1`,data => {
@@ -385,15 +343,7 @@ export default {
 			this.error.strength = null;
 		},
 		wayChange(value) {
-			if(this.salePrice != null) {
-				if(value == "自卸") {
-					this.form.price = this.salePrice.self;
-				} else {
-					this.form.price = this.salePrice.auto;
-				}
-			}
 			this.error.way = null;
-			console.log(this.form.price);
 		},
 		print() {
 			const {remote} = this.$electron;
@@ -414,7 +364,6 @@ export default {
 	},
 	computed:{
     	...mapState({
-    		types: state => state.types,
     		salePrices: state => state.salePrices,
     		carPlates: state => state.carFrequency,
     		comFrequency: state => state.comFrequency,
