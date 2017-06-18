@@ -4,13 +4,13 @@
 		<h2 style="font-size:20px;text-align:center">施工单位及价格</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%">
 			<thead>
-				<td>施工单位</td><td>运距</td><td>是否含税</td><td>电话</td><td colspan="15">价格</td>
+				<td>施工单位</td><td>运距</td><td>是否含税</td><td>电话</td><td colspan="15">价格</td><td>操作</td>
 				
 			</thead>
 			<tbody>
-				<template v-for="item in salePrices">
+				<template v-for="item,index in salePrices">
 					<tr>
-						<td rowspan="3">{{item.com}}</td><td rowspan="3">{{item.distance}}</td><td rowspan="3"><span v-if="item.tax">是</span><span v-if="!item.tax">否</span></td><td rowspan="3">{{item.tel}}</td><td colspan="9">商砼价格</td> <td colspan="6">特殊砼加价</td>
+						<td rowspan="3">{{item.com}}</td><td rowspan="3">{{item.distance}}</td><td rowspan="3"><span v-if="item.tax">是</span><span v-if="!item.tax">否</span></td><td rowspan="3">{{item.tel}}</td><td colspan="9">商砼价格</td> <td colspan="6">特殊砼加价</td><td rowspan="3"><span @click="deleteSalePrice(index,item.id)" class="greenLink">修改</span></td>
 					</tr>
 					<tr>
 						</td><td>强度等级</td><td>C15</td><td>C20</td><td>C25</td><td>C30</td><td>C35</td><td>C40</td><td>C45</td><td>C50</td><td>特殊砼名称</td><td>泵送费</td><td>细石</td><td>抗冻F200</td><td>P6</td><td>P8</td>
@@ -23,12 +23,12 @@
 		</table>
 		
 		<hr/>
-		<mu-raised-button label="添加" primary @click="dialog=true" style="margin:0 20px;float:right"/>
+		<mu-raised-button label="添加" primary @click="dialog=true" style="margin:0 20px;position:fixed;top:100px;right:20px"/>
 		<mu-dialog :open="dialog" @close="close" title="添加施工单位及价格" dialogClass="dialog">
 			<span>施工单位：</span><mu-text-field  v-model="form.com" :errorText="error.com" @change="error.com == null"/>
 			<span>联系电话：</span><mu-text-field  v-model="form.tel" /><br/>
 			<span>运距：</span><mu-text-field  v-model="form.distance" type="number" style="width:120px;margin-right:50px"/>
-			<mu-switch label="此价格是否含税：" labelLeft v-model="form.tax"/><span v-if="form.tax">是</span><span v-if="!form.tax">否</span><br/>
+			<mu-switch label="此价格是否含税：" labelLeft v-model="form.tax"/><span v-if="form.tax">是</span><span v-if="!form.tax">否</span><span style="margin-left:40px">计划方量：</span><mu-text-field  v-model="form.plan" type="number" style="width:120px;"/><br/>
 			<h4>1.商砼价格：</h4>
 			<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%">
 				<thead>
@@ -63,7 +63,7 @@ export default {
 			form:{
 				com:null,
 				distance:null,
-				plan:300,
+				plan:null,
 				tel:'',
 				tax:false, //税
 				price:{C15:null,C20:null,C25:null,C30:null,C35:null,C40:null,C45:null,C50:null},

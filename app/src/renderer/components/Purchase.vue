@@ -6,7 +6,7 @@
 			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择客户" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择客户" labelFloat :errorText="error.com" >
 				<mu-menu-item v-for="item,index in comList" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled" :errorText="error.car" @change="carChange"/>
+			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="[]" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled" :errorText="error.car"  @blur="carChange"/>
 			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请选择物资" label="请选择物资" :disabled="disabled" fullWidth @change="nameChange" labelFloat :errorText="error.name">
 				<mu-menu-item v-for="item,index in materialList" :key="item.id" :value="item.material" :title="item.material" />
 			</mu-select-field>
@@ -28,12 +28,12 @@
 			</div>
 			
 			<div class="btnContainer">
-				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="totalWeightDisabled"/>
-				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="onceDisabled"/> 
+				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="false"/>
+				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="false"/> 
 
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
-				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="carWeightDisabled"/>
+				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="false"/>
 				</template>
 				<template v-if="state == 'out'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
@@ -170,16 +170,7 @@
 					this.form.id = data.id;
 					this.form.no = data.no;
 					this.saveList.unshift(this.form);
-					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
-					this.form.com = '';
-					this.form.car = '';
-					this.form.name = '';
-					this.form.price = null;
-					this.form.totalWeight = null;
-					this.form.carWeight = null;
-					this.form.chargebacks = null;
-					this.form.reason = null;
-					this.form.standard = null;
+					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null,standard:null};
 				}, err => {
 					util.toast(err.message);
 				},true);
@@ -215,15 +206,20 @@
 					this.outList.unshift(this.form);
 					this.saveList.splice(this.selectIndex, 1);
 					this.state = "new";
-					this.form = {};
-					this.form.carWeight = null;
-					this.form.chargebacks = null;
-					this.form.reason = null;
-					this.disabled = true;
+					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null,standard:null};
+					this.disabled = false;
 
+					//默认上一单的数据
+					this.form.com = data.com;
+					this.form.name = data.name;
+					this.form.standard = data.standard;
+					this.form.price = data.price;
+					this.form.chargebacks = data.chargebacks;
+					this.form.reason = data.reason;
+
+					//准备打印数据、打印
 					this.printData = data;
 					this.print();
-					this.addCarInfo({car:data.car,weight:data.carWeight});
 		
 				}, err => {
 					util.toast(err.message);
@@ -256,23 +252,19 @@
 					this.form.id = data.id;
 					this.form.no = data.no;
 					this.outList.unshift(this.form);
-					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null};
-					this.form.com = '';
-					this.form.car = '';
-					this.form.name = '';
-					this.form.price = null;
-					this.form.totalWeight = null;
-					this.form.carWeight = null;
-					this.form.weight = null;
-					this.form.total = null;
-					this.form.chargebacks = null;
-					this.form.reason = null;
-					this.form.standard = null;
-					this.onceDisabled = true;
+					this.state = "new";
+					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null,standard:null};
+
+					//默认上一单的数据
+					this.form.com = data.com;
+					this.form.name = data.name;
+					this.form.standard = data.standard;
+					this.form.price = data.price;
+					this.form.chargebacks = data.chargebacks;
+					this.form.reason = data.reason;
 
 					this.printData = data;
 					this.print();
-					this.addCarInfo({car:data.car,weight:data.carWeight});
 				}, err => {
 					util.toast(err.message);
 				},true);
@@ -350,7 +342,8 @@
 				}
 			},
 
-			carChange(value) {
+			carChange(e) {
+				let value = this.form.car;
 				util.get("carInfos?car="+value, data => {
 					if(data && data.length > 0) {
 						this.form.carWeight = data[0].weight;

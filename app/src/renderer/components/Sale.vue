@@ -9,7 +9,7 @@
 			</mu-select-field>
 				<span class="textLabel">驾驶员：&nbsp&nbsp</span>
 				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.driver" @change="error.driver = null"/>
-				<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number" hintText="请输入本车方量" :errorText="error.capacity" @change="error.capacity = null"/>
+				<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number" hintText="请输入本车方量" :errorText="error.capacity" @change="capacityChange"/>
 			</div>
 			<div class="formGroup">
 				<span class="textLabel">工程名称：</span>
@@ -38,19 +38,27 @@
 				<span class="textLabel">备注：</span><mu-text-field  v-model="form.remarks" hintText="请输入备注" :errorText="error.remarks" @change="error.remarks = null"/>
 				
 			</div>
+			<div class="formGroup">
+				<span class="textLabel">计划方量：</span>
+				<mu-text-field  v-model="form.plan"/>
+				<span class="textLabel">已完方量：</span><mu-text-field  v-model="form.acc"/>
+				<span class="textLabel">累计车次：</span><mu-text-field  v-model="form.count"  />
+				
+			</div>
 			<div class="saleBtnGroup">
 					<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save"/>
 					<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
 			</div>
 			
-			<mu-table style="" :showCheckbox="false" :fixedHeader="true" :height="height">
-				<mu-thead slot="header" >
+			<mu-table  style="white-space:pre-line" :showCheckbox="false" :fixedHeader="true" :height="height">
+				<mu-thead slot="header"  >
 			      <mu-tr class="printListHead">
 			        <mu-th tooltip="施工单位" class="tdHeader">施工单位</mu-th>
 			        <mu-th tooltip="驾驶员" class="tdHeader">驾驶员</mu-th>
 			        <mu-th tooltip="本车方量" class="tdHeader">本车方量</mu-th>
 			        <mu-th tooltip="已完方量" class="tdHeader">已完方量</mu-th>
 			        <mu-th tooltip="计划方量" class="tdHeader">计划方量</mu-th>
+			        <mu-th tooltip="累计车次" class="tdHeader">累计车次</mu-th>
 			        <mu-th tooltip="工程名称" class="tdHeader">工程名称</mu-th>
 			        <mu-th tooltip="运输车号" class="tdHeader">运输车号</mu-th>
 			        <mu-th tooltip="浇筑方式" class="tdHeader">浇筑方式</mu-th>
@@ -59,19 +67,20 @@
 			        <mu-th tooltip="发货时间" class="tdHeader">发货时间</mu-th>
 			      </mu-tr>
 			    </mu-thead>
-			     <mu-tbody>
+			     <mu-tbody >
 			      <mu-tr v-for="item,index in data">
-			        <mu-td>{{item.com}}</mu-td>
-			        <mu-td>{{item.driver}}</mu-td>
-			        <mu-td>{{item.capacity}}</mu-td>
-			        <mu-td>{{item.acc}}</mu-td>
-			        <mu-td>{{item.plan}}</mu-td>
-			        <mu-td>{{item.project}}</mu-td>
-			        <mu-td>{{item.car}}</mu-td>
-			        <mu-td>{{item.way}}</mu-td> 
-			        <mu-td>{{item.part}}</mu-td>
-			        <mu-td>{{item.strength}}</mu-td>
-			        <mu-td>{{timeFormat(item.time)}}</mu-td> 
+			        <mu-td style="white-space:pre-line">{{item.com}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{item.driver}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{item.capacity}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{item.acc}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{item.plan}}</mu-td>
+			         <mu-td style="white-space:pre-line">{{item.count}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{item.project}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{item.car}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{item.way}}</mu-td> 
+			        <mu-td style="white-space:pre-line">{{item.part}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{item.strength}}</mu-td>
+			        <mu-td style="white-space:pre-line">{{timeFormat(item.time)}}</mu-td> 
 			      </mu-tr>
 			    </mu-tbody>
 			</mu-table>
@@ -219,10 +228,7 @@ export default {
 	        'loadCarInfos',
 	    ]),
 		save() {
-			this.form.capacity = Number(this.form.capacity);
-
-			this.form.price = this.calcPrice();
-			console.log(this.form.price);
+		
 
 			//检查输入
 			if(!this.form.com) {
@@ -265,6 +271,11 @@ export default {
 				this.error.pbbh = "请输入联系电话";
 				return ;
 			}
+
+			this.form.capacity = Number(this.form.capacity);
+			this.form.price = this.calcPrice();
+			console.log(this.form.price);
+
 			util.post("sales", this.form, data => {
 				this.data.push(data);
 				this.printData = data;
@@ -325,6 +336,8 @@ export default {
 			util.get(`sales?com=${value}&limit=1`,data => {
 				if(data) {
 					this.form = data[0];
+					this.form.acc += this.form.capacity;
+					this.form.count += 1;
 					delete this.form.no;
 					delete this.form.id;
 				}	
@@ -336,6 +349,10 @@ export default {
 		},
 		wayChange(value) {
 			this.error.way = null;
+		},
+		capacityChange(value) {
+			//todo
+			error.capacity = null;
 		},
 		print() {
 			const {remote} = this.$electron;
