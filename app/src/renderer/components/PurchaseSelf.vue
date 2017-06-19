@@ -6,7 +6,7 @@
 			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择客户" style="" :disabled="disabled" fullWidth @change="comChange" label="请选择客户" labelFloat :errorText="error.com" >
 				<mu-menu-item v-for="item,index in comList" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled" :errorText="error.car" @change="carChange"/>
+			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="[]" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" fullWidth :disabled="disabled" :errorText="error.car" @change="carChange"/>
 			<mu-select-field v-model="form.name" :labelFocusClass="['label-foucs']" hintText="请选择物资" label="请选择物资" :disabled="disabled" fullWidth @change="nameChange" labelFloat :errorText="error.name">
 				<mu-menu-item v-for="item,index in materialList" :key="item.id" :value="item.material" :title="item.material" />
 			</mu-select-field>

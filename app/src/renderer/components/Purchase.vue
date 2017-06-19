@@ -28,12 +28,12 @@
 			</div>
 			
 			<div class="btnContainer">
-				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="false"/>
-				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="false"/> 
+				<mu-raised-button label="二次称重" class="purchaseBtn"  @click="save" secondary v-if="state == 'new'" :disabled="totalWeightDisabled"/>
+				<mu-raised-button label="一次称重" class="purchaseBtn" @click="once" primary v-if="state == 'new'" :disabled="onceDisabled"/> 
 
 				<template v-if="state == 'save'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
-				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="false"/>
+				<mu-raised-button label="出单" class="purchaseBtn" @click="out" primary :disabled="carWeightDisabled"/>
 				</template>
 				<template v-if="state == 'out'">
 				<mu-raised-button label="新建" class="purchaseBtn" @click="newOrder" secondary />
@@ -208,6 +208,7 @@
 					this.state = "new";
 					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null,standard:null};
 					this.disabled = false;
+					this.onceDisabled = true;
 
 					//默认上一单的数据
 					this.form.com = data.com;
@@ -254,6 +255,7 @@
 					this.outList.unshift(this.form);
 					this.state = "new";
 					this.form = {com:null,car:null,name:null,price:null,totalWeight:null,carWeight:null,chargebacks:0,reason:null,standard:null};
+					this.onceDisabled = true;
 
 					//默认上一单的数据
 					this.form.com = data.com;

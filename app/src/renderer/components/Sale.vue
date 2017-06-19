@@ -171,6 +171,8 @@ export default {
 			item:null,   //priceItem 包含两种方式的价格
 			printData:{com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],count:null,acc:0,plan:0},
 			barcode:"",
+
+			lastAcc:null,   //上一次的累计方量用来计算本次累计方量
 			/*
 			attachs:[
 				{id:1,name:"同标号细石砼",value:20},
@@ -336,6 +338,7 @@ export default {
 			util.get(`sales?com=${value}&limit=1`,data => {
 				if(data) {
 					this.form = data[0];
+					this.lastAcc = this.form.acc;
 					this.form.acc += this.form.capacity;
 					this.form.count += 1;
 					delete this.form.no;
@@ -351,7 +354,7 @@ export default {
 			this.error.way = null;
 		},
 		capacityChange(value) {
-			//todo
+			this.form.acc = this.lastAcc + Number(this.form.capacity);
 			error.capacity = null;
 		},
 		print() {

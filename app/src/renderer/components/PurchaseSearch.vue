@@ -41,18 +41,18 @@
 		    </mu-thead>
 		     <mu-tbody>
 		      <mu-tr v-for="item,index in data">
-		      	<mu-td>{{item.no}}</mu-td>
-		        <mu-td>{{item.com}}</mu-td>
-		        <mu-td>{{item.car}}</mu-td>
-		        <mu-td>{{item.name}}</mu-td>
-		         <mu-td>{{item.standard}}</mu-td>
-		        <mu-td>{{item.price}}</mu-td>
-		        <mu-td>{{item.totalWeight}}</mu-td>
-		        <mu-td>{{item.carWeight}}</mu-td> 
-		        <mu-td>{{item.weight.toFixed(2)}}</mu-td> 
-		        <mu-td>{{item.total.toFixed(2)}}</mu-td>
-		        <mu-td>{{myFix(item.total)}}</mu-td>
-		        <mu-td><span @click="updata(item.id,index)" class="greenLink">修改</span></mu-td>
+		      	<mu-td style="white-space:pre-line">{{item.no}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.com}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.car}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.name}}</mu-td>
+		         <mu-td style="white-space:pre-line">{{item.standard}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.price}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.totalWeight}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.carWeight}}</mu-td> 
+		        <mu-td style="white-space:pre-line">{{item.weight.toFixed(2)}}</mu-td> 
+		        <mu-td style="white-space:pre-line">{{item.total.toFixed(2)}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{myFix(item.total)}}</mu-td>
+		        <mu-td ><span @click="updata(item.id,index)" class="greenLink">修改</span></mu-td>
 		        <mu-td><span @click="remove(item.id,index)" class="redLink"> 删除</span></mu-td> 
 		      </mu-tr>
 		    </mu-tbody>

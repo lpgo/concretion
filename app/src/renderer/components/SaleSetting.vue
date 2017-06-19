@@ -10,7 +10,7 @@
 			<tbody>
 				<template v-for="item,index in salePrices">
 					<tr>
-						<td rowspan="3">{{item.com}}</td><td rowspan="3">{{item.distance}}</td><td rowspan="3"><span v-if="item.tax">是</span><span v-if="!item.tax">否</span></td><td rowspan="3">{{item.tel}}</td><td colspan="9">商砼价格</td> <td colspan="6">特殊砼加价</td><td rowspan="3"><span @click="deleteSalePrice(index,item.id)" class="greenLink">修改</span></td>
+						<td rowspan="3">{{item.com}}</td><td rowspan="3">{{item.distance}}</td><td rowspan="3"><span v-if="item.tax">是</span><span v-if="!item.tax">否</span></td><td rowspan="3">{{item.tel}}</td><td colspan="9">商砼价格</td> <td colspan="6">特殊砼加价</td><td rowspan="3"><span @click="deleteSalePrice(index,item.id)" class="greenLink">删除</span></td>
 					</tr>
 					<tr>
 						</td><td>强度等级</td><td>C15</td><td>C20</td><td>C25</td><td>C30</td><td>C35</td><td>C40</td><td>C45</td><td>C50</td><td>特殊砼名称</td><td>泵送费</td><td>细石</td><td>抗冻F200</td><td>P6</td><td>P8</td>

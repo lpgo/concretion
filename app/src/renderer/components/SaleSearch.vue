@@ -9,12 +9,12 @@
 			<mu-thead slot="header" >
 		      <mu-tr class="printListHead">
 		      	<mu-th  class="tdHeader">发货时间</mu-th>
-		        <mu-th  class="tdHeader">施工单位</mu-th>
+		        <mu-th  class="tdHeader" style="white-space:pre-line;width:180px">施工单位</mu-th>
 		        <mu-th  class="tdHeader">驾驭员</mu-th>
 		        <mu-th  class="tdHeader">本车方量</mu-th>
 		        <mu-th tooltip="已完方量" class="tdHeader">已完方量</mu-th>
 			    <mu-th tooltip="计划方量" class="tdHeader">计划方量</mu-th>
-		        <mu-th  class="tdHeader">工程名称</mu-th>
+		        <mu-th  class="tdHeader" style="white-space:pre-line;width:180px">工程名称</mu-th>
 		        <mu-th  class="tdHeader">运输车号</mu-th>
 		        <mu-th  class="tdHeader">浇筑方式</mu-th>
 		        <mu-th  class="tdHeader">强度等级</mu-th>
@@ -26,19 +26,19 @@
 		    </mu-thead>
 		     <mu-tbody>
 		      <mu-tr v-for="item,index in data">
-		       	<mu-td>{{timeFormat(item.time)}}</mu-td> 
-		        <mu-td>{{item.com}}</mu-td>
-		        <mu-td>{{item.driver}}</mu-td>
-		        <mu-td>{{item.capacity}}</mu-td>
-		        <mu-td>{{item.acc}}</mu-td>
-			    <mu-td>{{item.plan}}</mu-td>
-		        <mu-td>{{item.project}}</mu-td>
-		        <mu-td>{{item.car}}</mu-td>
-		        <mu-td>{{item.way}}</mu-td>
-		        <mu-td>{{item.strength}}</mu-td>
-		       	<mu-td>{{showAttachs(item.attach)}}</mu-td>
-		        <mu-td>{{item.price.toFixed(2)}}</mu-td> 
-		        <mu-td>{{item.total.toFixed(2)}}</mu-td> 
+		       	<mu-td style="white-space:pre-line">{{timeFormat(item.time)}}</mu-td> 
+		        <mu-td style="white-space:pre-line;width:180px">{{item.com}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.driver}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.capacity}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.acc}}</mu-td>
+			    <mu-td style="white-space:pre-line">{{item.plan}}</mu-td>
+		        <mu-td style="white-space:pre-line;width:180px">{{item.project}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.car}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.way}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.strength}}</mu-td>
+		       	<mu-td style="white-space:pre-line">{{showAttachs(item.attach)}}</mu-td>
+		        <mu-td style="white-space:pre-line">{{item.price.toFixed(2)}}</mu-td> 
+		        <mu-td style="white-space:pre-line">{{item.total.toFixed(2)}}</mu-td> 
 		        <!--<mu-td><span @click="close(item.id,index)" class="greenLink" v-if="!item.closing">结账</span></mu-td>--> 
 		      </mu-tr>
 		    </mu-tbody>

@@ -4,6 +4,7 @@
 			<mu-radio label="采购" name="group" nativeValue="p" v-model="value"  />
 			<mu-radio label="销售" name="group" nativeValue="s" v-model="value"/> 
 			<span style="margin-left:30px;font-size:22px">单号：</span><input type="text" v-model="no" @keydown.enter="get" ref="no">
+			<mu-raised-button label="查询" primary  @click="get" style="margin-left:30px" />
 		  	
 	  	</div>
 	  	<mu-table  :showCheckbox="false" :fixedHeader="true" v-if="value == 's'">
