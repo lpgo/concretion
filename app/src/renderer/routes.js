@@ -13,6 +13,7 @@ import PurchaseSearch from 'components/PurchaseSearch'
 import SaleSearch from 'components/SaleSearch'
 import Checkout from 'components/Checkout'
 import PurchaseDiary from 'components/PurchaseDiary'
+import Customer from 'components/Customer'
 export default [
 	{
       path: '/login',
@@ -37,6 +38,7 @@ export default [
          { path: '/saleSearch', component: SaleSearch, name: '销售查询' },
          { path: '/checkout', component: Checkout, name: '结账' },
          { path: '/purchaseDiary', component: PurchaseDiary, name: '采购流水' },
+        { path: '/customer', component: Customer, name: '新客户' },
       ]
     }
 ]

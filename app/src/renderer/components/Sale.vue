@@ -13,13 +13,15 @@
 			</div>
 			<div class="formGroup">
 				<span class="textLabel">工程名称：</span>
-				<mu-auto-complete hintText="请输入工程名称" v-model="form.project" openOnFocus :dataSource="projectFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :filter="myfilter" :errorText="error.project" @change="error.project = null"/>
+				<mu-select-field v-model="form.project" :labelFocusClass="['label-foucs']" hintText="工程名称" style=""  :errorText="error.project">
+					<mu-menu-item v-for="item,index in salePrice.distances"  :value="item.project" :title="item.project" />
+				</mu-select-field>
 				<span class="textLabel">运输车号：</span>
 				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.car" @change="error.car = null"/>
-				<span class="textLabel">浇筑方式：</span>
-				<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" @change="wayChange" :errorText="error.way" >
-					<mu-menu-item v-for="item,index in ways" :key="item.id" :value="item.name" :title="item.name" />
-				</mu-select-field>
+				
+
+				<span class="textLabel">计划方量：</span>
+				<mu-text-field  v-model="form.plan"/>
 			</div>
 			<div class="formGroup">
 				<span class="textLabel">施工部位：</span><mu-text-field  v-model="form.part" hintText="请选输入施工部位" :errorText="error.part" @change="error.part = null"/>
@@ -27,22 +29,27 @@
 				<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @change="typeChange" :errorText="error.strength" >
 					<mu-menu-item v-for="item,index in strengths" :key="item" :value="item" :title="item" />
 				</mu-select-field>
-				<span class="textLabel">附加条件：</span><mu-select-field v-model="form.attach" :labelFocusClass="['label-foucs']" hintText="请选择附加条件" style="" multiple>
-					<mu-menu-item v-for="item,index in attachs" :key="item" :value="item.value" :title="item.name" />
-				</mu-select-field>
+				
+				<span class="textLabel">已完方量：</span><mu-text-field type="number" v-model="form.acc"/>
 			</div> 
 			<div class="formGroup">
 				<span class="textLabel">塌落度：</span>
 				<mu-auto-complete :filter="myfilter" hintText="请选输入塌落度" v-model="form.tld" openOnFocus :dataSource="tlds" :maxSearchResults="10" :errorText="error.tld" @change="error.tld = null"/>
 				<span class="textLabel">联系电话：</span><mu-text-field  v-model="form.pbbh" hintText="联系电话" :errorText="error.pbbh" @change="error.pbbh = null"/>
-				<span class="textLabel">备注：</span><mu-text-field  v-model="form.remarks" hintText="请输入备注" :errorText="error.remarks" @change="error.remarks = null"/>
+			
+
+				<span class="textLabel">累计车次：</span><mu-text-field  v-model="form.count"  type="number"/>
 				
 			</div>
 			<div class="formGroup">
-				<span class="textLabel">计划方量：</span>
-				<mu-text-field  v-model="form.plan"/>
-				<span class="textLabel">已完方量：</span><mu-text-field  v-model="form.acc"/>
-				<span class="textLabel">累计车次：</span><mu-text-field  v-model="form.count"  />
+				<span class="textLabel">浇筑方式：</span>
+				<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" @change="wayChange" :errorText="error.way" >
+					<mu-menu-item v-for="item,index in ways" :key="item.id" :value="item.name" :title="item.name" />
+				</mu-select-field>
+				<span class="textLabel">附加条件：</span><mu-select-field v-model="form.attach" :labelFocusClass="['label-foucs']" hintText="请选择附加条件" style="" multiple>
+					<mu-menu-item v-for="item,index in attachs" :key="item" :value="item.value" :title="item.name" />
+				</mu-select-field>
+				<span class="textLabel">备注：</span><mu-text-field  v-model="form.remarks" hintText="请输入备注" :errorText="error.remarks" @change="error.remarks = null"/>
 				
 			</div>
 			<div class="saleBtnGroup">
@@ -158,8 +165,8 @@ export default {
 	data() {
 		return {
 			name: "Sale",
-			height: "260px",
-			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[]},
+			height: "180px",
+			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],acc:null,count:null},
 			error: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null},
 			data: [],
 			salePrice: {acc:0.0,plan:0.0,count:0},//选定公司后的销售价格对象
@@ -172,7 +179,7 @@ export default {
 			printData:{com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],count:null,acc:0,plan:0},
 			barcode:"",
 
-			lastAcc:null,   //上一次的累计方量用来计算本次累计方量
+			lastAcc:0,   //上一次的累计方量用来计算本次累计方量
 			/*
 			attachs:[
 				{id:1,name:"同标号细石砼",value:20},
@@ -333,6 +340,7 @@ export default {
 				if(item.com == value) {
 					this.salePrice = item;
 					this.form.pbbh = item.tel;
+					this.form.plan = item.plan;
 				}
 			}
 			util.get(`sales?com=${value}&limit=1`,data => {
@@ -343,7 +351,11 @@ export default {
 					this.form.count += 1;
 					delete this.form.no;
 					delete this.form.id;
-				}	
+				} else {
+					this.lastAcc = 0;
+					this.form.acc = 0;
+					this.form.count = 1;
+				}
 			});
 			this.error.com = null;
 		},
@@ -354,8 +366,11 @@ export default {
 			this.error.way = null;
 		},
 		capacityChange(value) {
+			console.log(this.lastAcc);
+			console.log(this.form.capacity);
 			this.form.acc = this.lastAcc + Number(this.form.capacity);
-			error.capacity = null;
+			console.log(this.form.acc);
+			this.error.capacity = null;
 		},
 		print() {
 			const {remote} = this.$electron;
