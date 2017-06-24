@@ -17,6 +17,7 @@
 			<mu-text-field hintText="请输入车号"   v-model="form.car"  style="width:150px"/>
 			<mu-text-field hintText="请输入单号"   v-model="form.no"  style="width:150px"/>
 	  		<mu-raised-button label="查询"  primary @click="search"  style="margin-left:20px"/>
+	  		<mu-raised-button label="导出"  primary @click="exportExcel"  style="margin-left:20px"/>
 	  		<mu-raised-button label="清空条件"  secondary @click="clear"  style="margin-left:20px"/>
 	  	</div>
 	  	<mu-table  :showCheckbox="false" :fixedHeader="true" >
@@ -91,6 +92,7 @@
 
 <script>
 import util from '../common/util.js'
+import conf from '../common/conf.js'
 import moment from 'moment'
 import { mapState,mapMutations } from 'vuex'
 
@@ -184,6 +186,47 @@ export default {
 				}
 			});
 		},
+		exportExcel() {
+			const {remote} = this.$electron;
+	    	const web = remote.getCurrentWebContents();
+	    	let self = this;
+
+	    	let s = encodeURIComponent(moment(this.start+' '+this.startTime).format());
+			let e = encodeURIComponent(moment(this.end+' '+this.endTime).format());
+			let url = `purchases?start=${s}&end=${e}`
+			if(this.form.com) {
+				url += '&com='+this.form.com;
+			}
+			if(this.form.name) {
+				url += '&name='+this.form.name;
+			}
+			if(this.form.standard) {
+				url += '&standard='+this.form.standard;
+			}
+			if(this.form.car) {
+				url += '&car='+this.form.car;
+			}
+			if(this.form.no) {
+				url += '&no='+this.form.no;
+			}
+	    	web.session.on('will-download', (e, item) =>{
+	    		util.loading();
+	    		item.on('updated', () => {
+			       console.log(item.getReceivedBytes());
+			   	});
+			   	item.on('done', (e, state) => {
+			   		if (state === 'interrupted') {
+			           alert("下载失败");
+			       	}
+					if (state === 'cancelled') {
+		           		alert("下载取消");
+			       	}	//下载完成，让 dock 上的下载目录Q弹一下下
+			       	util.loaded();
+			   	});
+	    	});
+	    	web.downloadURL(conf.apiUrl+url+'&fileType=excel');
+		},
+
 		willSelect(value) {
 			this.updataMaterialList = [];
 			l1:for(let item of this.purchasePrices) {
