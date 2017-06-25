@@ -220,6 +220,9 @@ export default {
 			       	}
 					if (state === 'cancelled') {
 		           		alert("下载取消");
+			       	}
+			       	if (state === 'done') {
+			       		alert("导出完成");
 			       	}	//下载完成，让 dock 上的下载目录Q弹一下下
 			       	util.loaded();
 			   	});

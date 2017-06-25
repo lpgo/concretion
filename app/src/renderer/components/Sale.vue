@@ -1,23 +1,27 @@
 <template>
 	<div>
 		<div style="padding:20px;" class="noprint">
-			<h2 style="text-align:center">送货单</h2>
+			<h2 style="text-align:center">新建送货单</h2>
 			<div class="formGroup">
 				<span class="textLabel">施工单位：</span>
 				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" @change="comChange" :errorText="error.com">
 				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-				<span class="textLabel">驾驶员：&nbsp&nbsp</span>
-				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.driver" @change="error.driver = null"/>
-				<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number" hintText="请输入本车方量" :errorText="error.capacity" @change="capacityChange"/>
+				<span class="textLabel">强度等级：</span>
+				<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @change="typeChange" :errorText="error.strength" >
+					<mu-menu-item v-for="item,index in strengths" :key="item" :value="item" :title="item" />
+				</mu-select-field>
+				<span class="textLabel">浇筑方式：</span>
+				<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" @change="wayChange" :errorText="error.way" >
+					<mu-menu-item v-for="item,index in ways" :key="item.id" :value="item.name" :title="item.name" />
+				</mu-select-field>
 			</div>
 			<div class="formGroup">
 				<span class="textLabel">工程名称：</span>
 				<mu-select-field v-model="form.project" :labelFocusClass="['label-foucs']" hintText="工程名称" style=""  :errorText="error.project">
 					<mu-menu-item v-for="item,index in salePrice.distances"  :value="item.project" :title="item.project" />
 				</mu-select-field>
-				<span class="textLabel">运输车号：</span>
-				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.car" @change="error.car = null"/>
+				<span class="textLabel">联系电话：</span><mu-text-field  v-model="form.pbbh" hintText="联系电话" :errorText="error.pbbh" @change="error.pbbh = null"/>
 				
 
 				<span class="textLabel">计划方量：</span>
@@ -25,35 +29,21 @@
 			</div>
 			<div class="formGroup">
 				<span class="textLabel">施工部位：</span><mu-text-field  v-model="form.part" hintText="请选输入施工部位" :errorText="error.part" @change="error.part = null"/>
-				<span class="textLabel">强度等级：</span>
-				<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" @change="typeChange" :errorText="error.strength" >
-					<mu-menu-item v-for="item,index in strengths" :key="item" :value="item" :title="item" />
-				</mu-select-field>
 				
+				<span class="textLabel">附加条件：</span><mu-select-field v-model="form.attach" :labelFocusClass="['label-foucs']" hintText="请选择附加条件" style="" multiple>
+					<mu-menu-item v-for="item,index in attachs" :key="item" :value="item.value" :title="item.name" />
+				</mu-select-field>
 				<span class="textLabel">已完方量：</span><mu-text-field type="number" v-model="form.acc"/>
 			</div> 
 			<div class="formGroup">
 				<span class="textLabel">塌落度：</span>
 				<mu-auto-complete :filter="myfilter" hintText="请选输入塌落度" v-model="form.tld" openOnFocus :dataSource="tlds" :maxSearchResults="10" :errorText="error.tld" @change="error.tld = null"/>
-				<span class="textLabel">联系电话：</span><mu-text-field  v-model="form.pbbh" hintText="联系电话" :errorText="error.pbbh" @change="error.pbbh = null"/>
-			
-
+				<span class="textLabel">备注：</span><mu-text-field  v-model="form.remarks" hintText="请输入备注" :errorText="error.remarks" @change="error.remarks = null"/>
 				<span class="textLabel">累计车次：</span><mu-text-field  v-model="form.count"  type="number"/>
 				
 			</div>
-			<div class="formGroup">
-				<span class="textLabel">浇筑方式：</span>
-				<mu-select-field v-model="form.way" :labelFocusClass="['label-foucs']" hintText="请选择浇筑方式" style="" @change="wayChange" :errorText="error.way" >
-					<mu-menu-item v-for="item,index in ways" :key="item.id" :value="item.name" :title="item.name" />
-				</mu-select-field>
-				<span class="textLabel">附加条件：</span><mu-select-field v-model="form.attach" :labelFocusClass="['label-foucs']" hintText="请选择附加条件" style="" multiple>
-					<mu-menu-item v-for="item,index in attachs" :key="item" :value="item.value" :title="item.name" />
-				</mu-select-field>
-				<span class="textLabel">备注：</span><mu-text-field  v-model="form.remarks" hintText="请输入备注" :errorText="error.remarks" @change="error.remarks = null"/>
-				
-			</div>
 			<div class="saleBtnGroup">
-					<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save"/>
+					<mu-raised-button label="保存" primary style="width:10%;margin:0 20px;" @click="save"/>
 					<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
 			</div>
 			
@@ -165,7 +155,7 @@ export default {
 	data() {
 		return {
 			name: "Sale",
-			height: "180px",
+			height: "210px",
 			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],acc:null,count:null},
 			error: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null},
 			data: [],
@@ -237,33 +227,20 @@ export default {
 	        'loadCarInfos',
 	    ]),
 		save() {
-		
-
 			//检查输入
 			if(!this.form.com) {
 				this.error.com = "请选择施工单位";
-				return ;
-			}
-			if(!this.form.driver) {
-				this.error.driver = "请输入驾驶员";
-				return ;
-			}
-			if(!this.form.capacity) {
-				this.error.capacity = "请输入本车方量";
-				return ;
-			}
-			if(!this.form.project) {
-				this.error.project = "请输入工程名称";
-				return ;
-			}
-			if(!this.form.car) {
-				this.error.car = "请输入车号";
 				return ;
 			}
 			if(!this.form.way) {
 				this.error.way = "请选择浇筑方式";
 				return ;
 			}
+			if(!this.form.project) {
+				this.error.project = "请输入工程名称";
+				return ;
+			}
+
 			if(!this.form.part) {
 				this.error.part = "请输入施工部位";
 				return ;
@@ -283,12 +260,13 @@ export default {
 
 			this.form.capacity = Number(this.form.capacity);
 			this.form.price = this.calcPrice();
+			this.form.prepare = true;
 			console.log(this.form.price);
 
 			util.post("sales", this.form, data => {
 				this.data.push(data);
-				this.printData = data;
-				this.print();
+				//this.printData = data;
+				//this.print();
 				this.cancel();
 			}, err => {
 				util.toast(err.error);
@@ -321,6 +299,9 @@ export default {
 			this.form.way = "";
 			this.form.part = "";
 			this.form.strength = "";
+			this.form.plan = null;
+			this.form.acc = null;
+			this.form.count = null;
 			this.price = null;
 			this.prices = [];
 			this.item = null;
@@ -346,11 +327,10 @@ export default {
 			util.get(`sales?com=${value}&limit=1`,data => {
 				if(data) {
 					this.form = data[0];
-					this.lastAcc = this.form.acc;
-					this.form.acc += this.form.capacity;
 					this.form.count += 1;
 					delete this.form.no;
 					delete this.form.id;
+					delete this.form.time;
 				} else {
 					this.lastAcc = 0;
 					this.form.acc = 0;
@@ -404,7 +384,7 @@ export default {
 	mounted() {
 		let start = encodeURIComponent(moment().startOf('day').format());
 		let end = encodeURIComponent(moment().endOf('day').format());
-		let url = `sales?start=${start}&end=${end}&closing=false`
+		let url = `sales?start=${start}&end=${end}&closing=false&prepare=true`
 		util.get(url, data => {
 			if(data) {
 				this.data = data;
