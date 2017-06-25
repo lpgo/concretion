@@ -5,6 +5,7 @@ import Home from 'components/Home'
 import Purchase from 'components/Purchase'
 import PurchaseSelf from 'components/PurchaseSelf'
 import Sale from 'components/Sale'
+import OutSale from 'components/OutSale'
 import SaleSetting from 'components/SaleSetting'
 import PurchaseSetting from 'components/PurchaseSetting'
 import Main from 'components/Main'
@@ -39,6 +40,7 @@ export default [
          { path: '/checkout', component: Checkout, name: '结账' },
          { path: '/purchaseDiary', component: PurchaseDiary, name: '采购流水' },
         { path: '/customer', component: Customer, name: '新客户' },
+        { path: '/outSale', component: OutSale, name: '确认出货单' },
       ]
     }
 ]

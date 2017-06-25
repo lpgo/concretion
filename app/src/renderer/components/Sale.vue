@@ -328,6 +328,7 @@ export default {
 				if(data) {
 					this.form = data[0];
 					this.form.count += 1;
+					this.form.acc += this.form.capacity;
 					delete this.form.no;
 					delete this.form.id;
 					delete this.form.time;
