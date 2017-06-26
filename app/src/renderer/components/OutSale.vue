@@ -245,7 +245,7 @@ export default {
 			this.form.price = this.calcPrice();
 
 			util.put("sales/"+this.form.id, this.form, data => {
-				this.data.slice(this.index, 1);
+				this.data.splice(this.index, 1);
 				this.printData = data;
 				this.print();
 				this.form = {};

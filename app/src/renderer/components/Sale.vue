@@ -109,7 +109,7 @@
 					<td>施工部位</td>
 					<td colspan="3">{{printData.part}}</td>
 					<td>运距</td>
-					<td>{{salePrice.distance}}</td>
+					<td>{{printData.distance}}</td>
 					<td>计划方量</td>
 					<td>{{printData.plan.toFixed(0)}} M<sup>3</sup></td>
 				</tr>
@@ -156,7 +156,7 @@ export default {
 		return {
 			name: "Sale",
 			height: "210px",
-			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],acc:null,count:null},
+			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],acc:null,count:null,distance:null},
 			error: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null},
 			data: [],
 			salePrice: {acc:0.0,plan:0.0,count:0},//选定公司后的销售价格对象
@@ -263,6 +263,14 @@ export default {
 			this.form.prepare = true;
 			console.log(this.form.price);
 
+			//设置运距
+			for(let p of this.salePrice.distances) {
+				if(p.project == this.form.project) {
+					this.form.distance = p.distance;
+					break;
+				}
+			}
+
 			util.post("sales", this.form, data => {
 				this.data.push(data);
 				//this.printData = data;
@@ -309,6 +317,7 @@ export default {
 			this.form.pbbh = null;
 			this.form.attach = [];
 			this.form.remarks =null;
+			this.form.distance = null;
 		},
 		dateFormat(time) {
 			return moment(time).format("YYYY-MM-DD");
@@ -322,6 +331,7 @@ export default {
 					this.salePrice = item;
 					this.form.pbbh = item.tel;
 					this.form.plan = item.plan;
+					this.form.distance = item.distance;
 				}
 			}
 			util.get(`sales?com=${value}&limit=1`,data => {
@@ -347,11 +357,7 @@ export default {
 			this.error.way = null;
 		},
 		capacityChange(value) {
-			console.log(this.lastAcc);
-			console.log(this.form.capacity);
 			this.form.acc = this.lastAcc + Number(this.form.capacity);
-			console.log(this.form.acc);
-			this.error.capacity = null;
 		},
 		print() {
 			const {remote} = this.$electron;
