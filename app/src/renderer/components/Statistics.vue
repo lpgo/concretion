@@ -2,7 +2,6 @@
 	<div style="padding:20px;">
 		<div style="display:flex">
 			<span style="font-size:20px;margin-right:10px;">时间：</span>
-			<mu-radio label="当日" name="group" nativeValue="day" v-model="value" @change="change"/> 
 		  	<mu-radio label="当月" name="group" nativeValue="month" v-model="value"  @change="change"/>
 		  	<mu-radio label="自定义" name="group" nativeValue="user" v-model="value" style="margin-right:100px" />  
 			<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" :disabled="value!='user'"/>
@@ -12,12 +11,12 @@
 			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" >
 				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
-			<mu-auto-complete hintText="请输入工程名称" v-model="form.project" openOnFocus :dataSource="projectFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :filter="myfilter"/>
-			<mu-select-field v-model="form.strength" :labelFocusClass="['label-foucs']" hintText="请选择强度等级" style="" >
-					<mu-menu-item v-for="item,index in types" :key="item.id" :value="item.name" :title="item.name" />
-			</mu-select-field>
-			<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
 			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
+
+			<mu-auto-complete :filter="myfilter" hintText="请选择泵送方式" v-model="form.way" openOnFocus :dataSource="ways" :maxSearchResults="10"/>
+
+			<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
+			
 			<mu-raised-button label="统计"  primary @click="statistics" />
 			<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
 		</div>
@@ -25,38 +24,36 @@
 		<h2>销售统计</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
 			<tr>  
+				<td>序号</td>
+				<td>日期</td>
 	            <td>强度</td>  
-	            <td colspan="3">45米泵送</td>
-	            <td colspan="3">52米泵送</td>
-	            <td colspan="3">自卸</td>
+	            <td>45米泵送方量</td>
+	            <td>52米泵送方量</td>
+	            <td>自卸方量</td>
+	            <td>砼方单价</td>
 	            <td>合计/元</td>  
 	        </tr>
-    		<tr v-for="(value, key, index) in data">
-    			<td>{{key}}</td>
-    			<template v-if="value['45米泵送']">
-					<td>{{value["45米泵送"].capacity}}方</td>
-			        <td>{{value["45米泵送"].price}}元/方</td>  
-			        <td>总计:{{value["45米泵送"].total}}元</td>
+    		<tr v-for="(value,index) in data">
+    			<td>{{index+1}}</td>
+    			<td>{{value._id.day}}</td>
+    			<td>{{value._id.strength}}</td>
+
+    			<template v-if="value._id.way == '45米泵送'">
+					<td>{{value.capacity}}</td>
+					<td>---</td>
+					<td>---</td>
 		        </template>
-		        <template v-else>
-		        	<td colspan="3">---</td>
+		       	<template v-if="value._id.way == '52米泵送'">
+		       		<td>---</td>
+					<td>{{value.capacity}}</td>
+					<td>---</td>
 		        </template>
-		       	<template v-if="value['52米泵送']">
-					<td>{{value["52米泵送"].capacity}}方</td>
-			        <td>{{value["52米泵送"].price}}元/方</td>  
-			        <td>总计:{{value["52米泵送"].total}}元</td>
+		        <template v-if="value._id.way == '自卸'">
+		        	<td>---</td>
+					<td>---</td>
+					<td>{{value.capacity}}</td>
 		        </template>
-		        <template v-else>
-		        	<td colspan="3">---</td>
-		        </template>
-		        <template v-if="value['自卸']">
-					<td>{{value["自卸"].capacity}}方</td>
-			        <td>{{value["自卸"].price}}元/方</td>  
-			        <td>总计:{{value["自卸"].total}}元</td>
-		        </template>
-		        <template v-else>
-		        	<td colspan="3">---</td>
-		        </template>
+		        <td>{{value._id.price}}</td>
 				<td>{{value.total}}</td>
 	        </tr> 
  
@@ -93,12 +90,16 @@ import { mapState,mapMutations } from 'vuex'
 export default {
 	data() {
 		return {
-			value:"day",
+			value:"month",
 			data:[],
 			driverData:[],
-			start:moment().format('YYYY-MM-DD'),
-			end:moment().format('YYYY-MM-DD'),
+			start:moment().startOf('month').format('YYYY-MM-DD'),
+			end:moment().endOf('month').format('YYYY-MM-DD'),
 			form:{com:null,driver:null,project:null,way:null,strength:null,car:null},
+			ways:[
+				'45米泵送',
+				'52米泵送',
+			],
 			myfilter (searchText, key) {
 				if(searchText) {
 					return key.indexOf(searchText) !== -1;
@@ -113,10 +114,7 @@ export default {
 			this.get(this.start,this.end);
 		},
 		change(value) {
-			if('day' == value) {
-				this.start = moment().format('YYYY-MM-DD');
-				this.end = moment().format('YYYY-MM-DD');
-			} else if('month' == value) {
+			if('month' == value) {
 				this.start = moment().startOf('month').format('YYYY-MM-DD');
 				this.end = moment().endOf('month').format('YYYY-MM-DD');
 			}
@@ -128,11 +126,8 @@ export default {
 			if(this.form.com) {
 				url += `&com=${this.form.com}`
 			}
-			if(this.form.project) {
-				url += `&project=${this.form.project}`
-			}
-			if(this.form.strength) {
-				url += `&strength=${this.form.strength}`
+			if(this.form.way) {
+				url += `&way=${this.form.way}`
 			}
 			if(this.form.driver) {
 				url += `&driver=${this.form.driver}`
@@ -143,21 +138,10 @@ export default {
 			util.get(url, data => {
 				if(!data) {
 					this.data = [];
-					return ;
+				} else {
+					data.sort((a,b) => a._id.day - b._id.day)
+					this.data = data;
 				}
-				//处理数据为表格准备
-				let o = {};
-				for(let item of data) {
-					if(o[item._id.strength]) {
-						o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
-						o[item._id.strength].total += item.total;
-					} else {
-						o[item._id.strength]={};
-						o[item._id.strength][item._id.way] = {capacity:item.capacity,price:item._id.price,total:item.total};
-						o[item._id.strength].total = item.total;
-					}
-				}
-				this.data = o;
 			});
 
 			/*//根据司机统计
@@ -206,9 +190,6 @@ export default {
     		driverFrequency: state => state.driverFrequency,
     	}),
     },
-	mounted(){
-		this.get(this.start,this.end);
-	},
 	
 }
 </script>
