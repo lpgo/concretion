@@ -1,63 +1,78 @@
 <template>
 	<div style="padding:20px;">
-		<div style="display:flex">
-			<span style="font-size:20px;margin-right:10px;">时间：</span>
-		  	<mu-radio label="当月" name="group" nativeValue="month" v-model="value"  @change="change"/>
-		  	<mu-radio label="自定义" name="group" nativeValue="user" v-model="value" style="margin-right:100px" />  
-			<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" :disabled="value!='user'"/>
-			<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'"/>
-		</div>
-		<div style="display:flex">
-			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" >
-				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
-			</mu-select-field>
-			<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
+		<div class="noprint">
+			<div style="display:flex">
+				<span style="font-size:20px;margin-right:10px;">时间：</span>
+			  	<mu-radio label="当月" name="group" nativeValue="month" v-model="value"  @change="change"/>
+			  	<mu-radio label="自定义" name="group" nativeValue="user" v-model="value" style="margin-right:100px" />  
+				<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" :disabled="value!='user'"/>
+				<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'"/>
+			</div>
+			<div style="display:flex">
+				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" >
+					<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
+				</mu-select-field>
+				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
 
-			<mu-auto-complete :filter="myfilter" hintText="请选择泵送方式" v-model="form.way" openOnFocus :dataSource="ways" :maxSearchResults="10"/>
+				<mu-auto-complete :filter="myfilter" hintText="请选择泵送方式" v-model="form.way" openOnFocus :dataSource="ways" :maxSearchResults="10"/>
 
-			<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
+				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
+				
+				<mu-raised-button label="统计"  primary @click="statistics" />
+				<mu-raised-button label="打印"  primary @click="print" style="margin-left:10px"/>
+				<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
+			</div>
 			
-			<mu-raised-button label="统计"  primary @click="statistics" />
-			<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
+			<h2>销售统计</h2>
+		</div>
+		<div class="myDivToPrint">
+			<span>施工单位：{{saleCom}}</span><span style="float:right">电话：{{saleTel}}</span>
+			<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
+				<tr>  
+					<td>序号</td>
+					<td>日期</td>
+		            <td>强度</td>  
+		            <td>45米泵送方量</td>
+		            <td>52米泵送方量</td>
+		            <td>自卸方量</td>
+		            <td>砼方单价</td>
+		            <td>合计/元</td>  
+		        </tr>
+	    		<tr v-for="(value,index) in data">
+	    			<td>{{index+1}}</td>
+	    			<td>{{value._id.day}}</td>
+	    			<td>{{value._id.strength}}</td>
+
+	    			<template v-if="value._id.way == '45米泵送'">
+						<td>{{value.capacity}}</td>
+						<td>---</td>
+						<td>---</td>
+			        </template>
+			       	<template v-if="value._id.way == '52米泵送'">
+			       		<td>---</td>
+						<td>{{value.capacity}}</td>
+						<td>---</td>
+			        </template>
+			        <template v-if="value._id.way == '自卸'">
+			        	<td>---</td>
+						<td>---</td>
+						<td>{{value.capacity}}</td>
+			        </template>
+			        <td>{{value._id.price}}</td>
+					<td>{{value.total}}</td>
+		        </tr>
+		        <tr>
+		        	<td colspan ="3">总计方量</td>
+		        	<td>{{saleCount.auto45}}</td>
+		        	<td>{{saleCount.auto52}}</td>
+		        	<td>{{saleCount.self}}</td>
+		        	<td>总计金额</td>
+		        	<td>{{saleCount.total}}</td>
+		        </tr> 
+	 
+			</table>
 		</div>
 		
-		<h2>销售统计</h2>
-		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
-			<tr>  
-				<td>序号</td>
-				<td>日期</td>
-	            <td>强度</td>  
-	            <td>45米泵送方量</td>
-	            <td>52米泵送方量</td>
-	            <td>自卸方量</td>
-	            <td>砼方单价</td>
-	            <td>合计/元</td>  
-	        </tr>
-    		<tr v-for="(value,index) in data">
-    			<td>{{index+1}}</td>
-    			<td>{{value._id.day}}</td>
-    			<td>{{value._id.strength}}</td>
-
-    			<template v-if="value._id.way == '45米泵送'">
-					<td>{{value.capacity}}</td>
-					<td>---</td>
-					<td>---</td>
-		        </template>
-		       	<template v-if="value._id.way == '52米泵送'">
-		       		<td>---</td>
-					<td>{{value.capacity}}</td>
-					<td>---</td>
-		        </template>
-		        <template v-if="value._id.way == '自卸'">
-		        	<td>---</td>
-					<td>---</td>
-					<td>{{value.capacity}}</td>
-		        </template>
-		        <td>{{value._id.price}}</td>
-				<td>{{value.total}}</td>
-	        </tr> 
- 
-		</table>
 		<!--
 		<h2>司机统计</h2>
 		<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" text-align="center">
@@ -100,6 +115,9 @@ export default {
 				'45米泵送',
 				'52米泵送',
 			],
+			saleCount:{self:0,auto45:0,auto52:0,total:0},
+			saleCom: null,
+			saleTel: null,
 			myfilter (searchText, key) {
 				if(searchText) {
 					return key.indexOf(searchText) !== -1;
@@ -141,6 +159,37 @@ export default {
 				} else {
 					data.sort((a,b) => a._id.day - b._id.day)
 					this.data = data;
+
+					//算合计
+					this.saleCount = {self:0,auto45:0,auto52:0,total:0} ;
+					for(let item of data) {
+						switch(item._id.way) {
+							case '自卸': 
+							{
+								this.saleCount.self += item.capacity;
+								break;
+							}
+							case '45米泵送':
+							{
+								this.saleCount.auto45 += item.capacity;
+								break;
+							}
+							case '52米泵送':
+							{
+								this.saleCount.auto52 += item.capacity;
+								break;
+							}
+						}
+						this.saleCount.total += item.total;
+					}
+
+					//获取施工单位和电话
+					for(let item of this.salePrices) {
+						if(this.form.com == item.com) {
+							this.saleCom = item.com;
+							this.saleTel = item.tel;
+						}
+					}
 				}
 			});
 
@@ -178,6 +227,22 @@ export default {
 			this.form.strength = null;
 			this.form.driver = null;
 			this.form.car = null;
+		},
+		print() {
+			const {remote} = this.$electron;
+	    	const web = remote.getCurrentWebContents();
+	    	
+	    	/*
+	    	web.printToPDF({}, (error, data) => {
+			    if (error) throw error
+			    fs.writeFile('sale.pdf', data, (error) => {
+			      if (error) throw error
+			      console.log('Write PDF successfully.')
+			    })
+			});
+			*/
+			web.print({silent:true});
+			
 		},
 	},
 	computed:{

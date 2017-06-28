@@ -343,8 +343,21 @@ export default {
 					delete this.form.id;
 					delete this.form.time;
 				} else {
-					this.lastAcc = 0;
+					//如果是第一单，先清空数据
+					this.form.driver = "";
+					this.form.capacity = "";
+					this.form.project = "";
+					this.form.car = "";
+					this.form.way = "";
+					this.form.part = "";
+					this.form.strength = "";
 					this.form.acc = 0;
+					this.price = null;
+					this.prices = [];
+					this.item = null;
+					this.form.tld = null;
+					this.form.attach = [];
+					this.form.remarks =null;
 					this.form.count = 1;
 				}
 			});

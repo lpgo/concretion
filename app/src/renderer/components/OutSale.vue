@@ -243,6 +243,7 @@ export default {
 			this.form.acc = Number(this.form.acc);
 			this.form.prepare = false; //现在是确认阶段
 			this.form.price = this.calcPrice();
+			this.form.total = this.form.price * this.form.capacity;
 
 			util.put("sales/"+this.form.id, this.form, data => {
 				this.data.splice(this.index, 1);
@@ -265,7 +266,11 @@ export default {
 			if(basePrice == 0) {
 				return 0;
 			} else {
-				return basePrice + this.salePrice.attach.auto + sum ;
+				if(this.form.way == '自卸') {
+					return basePrice + sum ;
+				} else {
+					return basePrice + this.salePrice.attach.auto + sum ;
+				}
 			}
 		},
 
