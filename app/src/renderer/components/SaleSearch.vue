@@ -2,8 +2,6 @@
 	<div style="margin:20px;">
 		<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" />
 		<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  />
-		<mu-radio label="未结账" name="group" nativeValue="false" v-model="value"  />
-		<mu-radio label="已结账" name="group" nativeValue="true" v-model="value"/> 
 	  	<mu-raised-button label="查询"  primary @click="search"  style="margin-left:20px"/>
 	  	<mu-table  :showCheckbox="false" :fixedHeader="true" >
 			<mu-thead slot="header" >
@@ -79,7 +77,7 @@ export default {
 		get() {
 			let s = encodeURIComponent(moment(this.start).startOf('day').format());
 			let e = encodeURIComponent(moment(this.end).endOf('day').format());
-			let url = `sales?start=${s}&end=${e}&closing=${this.value}`
+			let url = `sales?start=${s}&end=${e}`
 			util.get(url, data => {
 				if(data) {
 					this.data = data;

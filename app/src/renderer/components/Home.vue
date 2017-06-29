@@ -97,7 +97,7 @@ export default {
         {label:"磅房",icon:"devices",items:[{title:"手动录入过磅单", url:"/purchaseSelf"},{title:"录入过磅单", url:"/purchase"},{title:"磅单流水",url:"/purchaseDiary"}]},
         {label:"销售",icon:"local_shipping",items:[{title: "新建出货单", url: "/sale"},{title: "确认出货单", url: "/outSale"},{title: "销售任务", url: "/customer"}]},
         {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"},{title: "结账", url: "/checkout"}]},
-        {label:"统计",icon:"equalizer",items:[{title: "统计", url: "/statistics"}]},
+        {label:"统计",icon:"equalizer",items:[{title: "销售统计", url: "/statistics"},{title: "运费统计", url: "/statisticsCar"},{title: "泵送统计", url: "/statisticsAuto"},{title: "司机工资统计", url: "/statisticsDriver"}]},
         {label:"设置",icon:"monetization_on",items:[{title: "销售设置", url: "/saleSetting"},{title: "采购设置", url: "/PurchaseSetting"}]},
       ],
       cw:[

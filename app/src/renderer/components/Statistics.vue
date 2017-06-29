@@ -9,15 +9,16 @@
 				<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'"/>
 			</div>
 			<div style="display:flex">
-				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" >
+				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" :errorText="error" @change="error = ''" >
 					<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 				</mu-select-field>
+				<!--
 				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
 
 				<mu-auto-complete :filter="myfilter" hintText="请选择泵送方式" v-model="form.way" openOnFocus :dataSource="ways" :maxSearchResults="10"/>
 
 				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
-				
+				-->
 				<mu-raised-button label="统计"  primary @click="statistics" />
 				<mu-raised-button label="打印"  primary @click="print" style="margin-left:10px"/>
 				<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
@@ -118,6 +119,7 @@ export default {
 			saleCount:{self:0,auto45:0,auto52:0,total:0},
 			saleCom: null,
 			saleTel: null,
+			error: '',
 			myfilter (searchText, key) {
 				if(searchText) {
 					return key.indexOf(searchText) !== -1;
@@ -129,6 +131,10 @@ export default {
 	},
 	methods: {
 		statistics() {
+			if(!this.form.com) {
+				this.error = "请选择施工单位";
+				return ;
+			}
 			this.get(this.start,this.end);
 		},
 		change(value) {

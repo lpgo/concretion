@@ -169,6 +169,7 @@ export default {
 			alertWarning("位数过大，无法计算");
 			return "";
 		} // 若数量超过拾亿单位，提示
+
 		let tmpnewchar = "";
 		let perchar = part[0].charAt(i);
 		switch (perchar) {
@@ -243,6 +244,7 @@ export default {
 		}
 		newchar = tmpnewchar + newchar;
 		}
+
 		// 小数点之后进行转化
 		if (Num.indexOf(".") != -1) {
 		if (part[1].length > 2) {
@@ -250,8 +252,8 @@ export default {
 		part[1] = part[1].substr(0, 2);
 		}
 		for (var i = 0; i < part[1].length; i++) {
-		tmpnewchar = "";
-		perchar = part[1].charAt(i);
+		let tmpnewchar = "";
+		let perchar = part[1].charAt(i);
 		switch (perchar) {
 		case "0" :
 		tmpnewchar = "零" + tmpnewchar;

@@ -51,13 +51,11 @@
 				<mu-thead slot="header"  >
 			      <mu-tr class="printListHead">
 			        <mu-th tooltip="施工单位" class="tdHeader">施工单位</mu-th>
-			        <mu-th tooltip="驾驶员" class="tdHeader">驾驶员</mu-th>
 			        <mu-th tooltip="本车方量" class="tdHeader">本车方量</mu-th>
 			        <mu-th tooltip="已完方量" class="tdHeader">已完方量</mu-th>
 			        <mu-th tooltip="计划方量" class="tdHeader">计划方量</mu-th>
 			        <mu-th tooltip="累计车次" class="tdHeader">累计车次</mu-th>
 			        <mu-th tooltip="工程名称" class="tdHeader">工程名称</mu-th>
-			        <mu-th tooltip="运输车号" class="tdHeader">运输车号</mu-th>
 			        <mu-th tooltip="浇筑方式" class="tdHeader">浇筑方式</mu-th>
 			        <mu-th tooltip="施工部位" class="tdHeader">施工部位</mu-th>
 			        <mu-th tooltip="强度等级" class="tdHeader">强度等级</mu-th>
@@ -67,13 +65,11 @@
 			     <mu-tbody >
 			      <mu-tr v-for="item,index in data">
 			        <mu-td style="white-space:pre-line">{{item.com}}</mu-td>
-			        <mu-td style="white-space:pre-line">{{item.driver}}</mu-td>
 			        <mu-td style="white-space:pre-line">{{item.capacity}}</mu-td>
 			        <mu-td style="white-space:pre-line">{{item.acc}}</mu-td>
 			        <mu-td style="white-space:pre-line">{{item.plan}}</mu-td>
 			         <mu-td style="white-space:pre-line">{{item.count}}</mu-td>
 			        <mu-td style="white-space:pre-line">{{item.project}}</mu-td>
-			        <mu-td style="white-space:pre-line">{{item.car}}</mu-td>
 			        <mu-td style="white-space:pre-line">{{item.way}}</mu-td> 
 			        <mu-td style="white-space:pre-line">{{item.part}}</mu-td>
 			        <mu-td style="white-space:pre-line">{{item.strength}}</mu-td>
@@ -156,7 +152,7 @@ export default {
 		return {
 			name: "Sale",
 			height: "210px",
-			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],acc:null,count:null,distance:null},
+			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],acc:null,count:null,distance:null,remarks:null},
 			error: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null},
 			data: [],
 			salePrice: {acc:0.0,plan:0.0,count:0},//选定公司后的销售价格对象

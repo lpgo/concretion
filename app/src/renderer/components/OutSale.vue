@@ -8,7 +8,7 @@
 				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
 				<span class="textLabel">驾驶员：&nbsp&nbsp</span>
-				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.driver" @change="error.driver = null"/>
+				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.driver" @change="error.driver = null" @blur="error.driver = null"/>
 				<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number" hintText="请输入本车方量" :errorText="error.capacity" @change="capacityChange"/>
 			</div>
 			<div class="formGroup">
@@ -17,7 +17,7 @@
 					<mu-menu-item v-for="item,index in salePrice.distances"  :value="item.project" :title="item.project" />
 				</mu-select-field>
 				<span class="textLabel">运输车号：</span>
-				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.car" @change="error.car = null"/>
+				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.car" @change="error.car = null" @blur="error.car = null"/>
 				
 
 				<span class="textLabel">计划方量：</span>
@@ -238,6 +238,20 @@ export default {
 	        'loadCarInfos',
 	    ]),
 		save() {
+
+			if(!this.form.car) {
+				this.error.car = "请输入车号";
+				return ;
+			}
+			if(!this.form.driver) {
+				this.error.driver = "请输入驾驶员";
+				return ;
+			}
+			if(this.form.capacity <= 0) {
+				this.error.capacity = "请输入本车方量";
+				return ;
+			}
+
 			this.form.capacity = Number(this.form.capacity);
 			this.form.plan = Number(this.form.plan);
 			this.form.acc = Number(this.form.acc);

@@ -10,6 +10,9 @@ import SaleSetting from 'components/SaleSetting'
 import PurchaseSetting from 'components/PurchaseSetting'
 import Main from 'components/Main'
 import Statistics from 'components/Statistics'
+import StatisticsCar from 'components/StatisticsCar'
+import StatisticsAuto from 'components/StatisticsAuto'
+import StatisticsDriver from 'components/StatisticsDriver'
 import PurchaseSearch from 'components/PurchaseSearch'
 import SaleSearch from 'components/SaleSearch'
 import Checkout from 'components/Checkout'
@@ -35,6 +38,9 @@ export default [
         { path: '/saleSetting', component: SaleSetting, name: '销售设置' },
         { path: '/purchaseSetting', component: PurchaseSetting, name: '采购设置' },
         { path: '/statistics', component: Statistics, name: '统计' },
+        { path: '/statisticsCar', component: StatisticsCar, name: '运费统计' },
+        { path: '/statisticsAuto', component: StatisticsAuto, name: '泵送统计' },
+        { path: '/statisticsDriver', component: StatisticsDriver, name: '司机工资统计' },
         { path: '/purchaseSearch', component: PurchaseSearch, name: '采购查询' },
          { path: '/saleSearch', component: SaleSearch, name: '销售查询' },
          { path: '/checkout', component: Checkout, name: '结账' },
