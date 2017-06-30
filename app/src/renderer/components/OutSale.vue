@@ -53,7 +53,7 @@
 				
 			</div>
 			<div class="saleBtnGroup">
-					<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save"/>
+					<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save" :disabled="sureBtnDisabled"/>
 					<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
 			</div>
 			
@@ -181,6 +181,7 @@ export default {
 
 			lastAcc:0,   //上一次的累计方量用来计算本次累计方量
 			index:-1,
+			sureBtnDisabled:true,
 			/*
 			attachs:[
 				{id:1,name:"同标号细石砼",value:20},
@@ -255,6 +256,7 @@ export default {
 			this.form.capacity = Number(this.form.capacity);
 			this.form.plan = Number(this.form.plan);
 			this.form.acc = Number(this.form.acc);
+			this.form.count = Number(this.form.count);
 			this.form.prepare = false; //现在是确认阶段
 			this.form.price = this.calcPrice();
 			this.form.total = this.form.price * this.form.capacity;
@@ -319,6 +321,7 @@ export default {
 					this.form.plan = item.plan;
 				}
 			}
+			this.sureBtnDisabled = true;
 			util.get(`sales?com=${value}&limit=1`,data => {
 				if(data) {
 					this.form = data[0];
@@ -332,6 +335,7 @@ export default {
 					this.form.acc = 0;
 					this.form.count = 1;
 				}
+				this.sureBtnDisabled = false;
 			});
 			this.error.com = null;
 		},
@@ -372,7 +376,7 @@ export default {
 			}
 			//计算上单的累计方量
 			this.lastAcc = this.form.acc - this.form.capacity;
-
+			this.sureBtnDisabled = false;
 		},
 	},
 	computed:{

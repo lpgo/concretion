@@ -43,7 +43,7 @@
 				
 			</div>
 			<div class="saleBtnGroup">
-					<mu-raised-button label="保存" primary style="width:10%;margin:0 20px;" @click="save"/>
+					<mu-raised-button label="保存" primary style="width:10%;margin:0 20px;" @click="save" :disabled="sureBtnDisabled"/>
 					<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
 			</div>
 			
@@ -166,6 +166,7 @@ export default {
 			barcode:"",
 
 			lastAcc:0,   //上一次的累计方量用来计算本次累计方量
+			sureBtnDisabled:true,
 			/*
 			attachs:[
 				{id:1,name:"同标号细石砼",value:20},
@@ -255,6 +256,8 @@ export default {
 			}
 
 			this.form.capacity = Number(this.form.capacity);
+			this.form.plan = Number(this.form.plan);
+			this.form.acc = Number(this.form.acc);
 			this.form.price = this.calcPrice();
 			this.form.prepare = true;
 			console.log(this.form.price);
@@ -330,6 +333,7 @@ export default {
 					this.form.distance = item.distance;
 				}
 			}
+			this.sureBtnDisabled = true;
 			util.get(`sales?com=${value}&limit=1`,data => {
 				if(data) {
 					this.form = data[0];
@@ -356,6 +360,7 @@ export default {
 					this.form.remarks =null;
 					this.form.count = 1;
 				}
+				this.sureBtnDisabled = false;
 			});
 			this.error.com = null;
 		},
