@@ -57,7 +57,7 @@
 					<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
 			</div>
 			
-			<mu-table  style="white-space:pre-line"  :fixedHeader="true" :height="height" @rowClick="select" :showCheckbox="true">
+			<mu-table  style="white-space:pre-line"  :fixedHeader="true" :height="height" :showCheckbox="false">
 				<mu-thead slot="header"  >
 			      <mu-tr class="printListHead">
 			        <mu-th tooltip="施工单位" class="tdHeader">施工单位</mu-th>
@@ -165,7 +165,7 @@ export default {
 	data() {
 		return {
 			name: "Sale",
-			height: "180px",
+			height: "220px",
 			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],acc:null,count:null},
 			error: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null},
 			data: [],
@@ -239,6 +239,36 @@ export default {
 	        'loadCarInfos',
 	    ]),
 		save() {
+			//检查输入
+			if(!this.form.com) {
+				this.error.com = "请选择施工单位";
+				return ;
+			}
+			if(!this.form.way) {
+				this.error.way = "请选择浇筑方式";
+				return ;
+			}
+			if(!this.form.project) {
+				this.error.project = "请输入工程名称";
+				return ;
+			}
+
+			if(!this.form.part) {
+				this.error.part = "请输入施工部位";
+				return ;
+			}
+			if(!this.form.strength) {
+				this.error.strength = "请选择强度等级";
+				return ;
+			}
+			if(!this.form.tld) {
+				this.error.tld = "请选输入塌落度";
+				return ;
+			}
+			if(!this.form.pbbh) {
+				this.error.pbbh = "请输入联系电话";
+				return ;
+			}
 
 			if(!this.form.car) {
 				this.error.car = "请输入车号";
@@ -257,14 +287,29 @@ export default {
 			this.form.plan = Number(this.form.plan);
 			this.form.acc = Number(this.form.acc);
 			this.form.count = Number(this.form.count);
-			this.form.prepare = false; //现在是确认阶段
+			this.form.price = this.calcPrice();
+			this.form.total = this.form.price * this.form.capacity;
+
+			util.post("sales", this.form, data => {
+				this.data.unshift(data);
+				this.form = {};
+				this.cancel();
+			}, err => {
+				util.toast(err.error);
+			},true);
+		},
+
+		modifySale(index) {
+			this.form = this.data[index];
+			this.form.capacity = Number(this.form.capacity);
+			this.form.plan = Number(this.form.plan);
+			this.form.acc = Number(this.form.acc);
+			this.form.count = Number(this.form.count);
 			this.form.price = this.calcPrice();
 			this.form.total = this.form.price * this.form.capacity;
 
 			util.put("sales/"+this.form.id, this.form, data => {
-				this.data.splice(this.index, 1);
-				this.printData = data;
-				this.print();
+				alert("修改成功");
 				this.form = {};
 				this.cancel();
 			}, err => {
@@ -394,7 +439,7 @@ export default {
 	mounted() {
 		let start = encodeURIComponent(moment().startOf('day').format());
 		let end = encodeURIComponent(moment().endOf('day').format());
-		let url = `sales?start=${start}&end=${end}&closing=false&prepare=true`
+		let url = `sales?start=${start}&end=${end}&closing=false`
 		util.get(url, data => {
 			if(data) {
 				this.data = data;
