@@ -290,6 +290,14 @@ export default {
 			this.form.price = this.calcPrice();
 			this.form.total = this.form.price * this.form.capacity;
 
+			//设置运距
+			for(let p of this.salePrice.distances) {
+				if(p.project == this.form.project) {
+					this.form.distance = p.distance;
+					break;
+				}
+			}
+
 			util.post("sales", this.form, data => {
 				this.data.unshift(data);
 				this.form = {};
@@ -375,6 +383,7 @@ export default {
 					this.form.count += 1;
 					delete this.form.no;
 					delete this.form.id;
+					delete this.form.time;
 				} else {
 					this.lastAcc = 0;
 					this.form.acc = 0;
