@@ -18,6 +18,7 @@ import SaleSearch from 'components/SaleSearch'
 import Checkout from 'components/Checkout'
 import PurchaseDiary from 'components/PurchaseDiary'
 import Customer from 'components/Customer'
+import FeeSetting from 'components/FeeSetting'
 export default [
 	{
       path: '/login',
@@ -47,6 +48,7 @@ export default [
          { path: '/purchaseDiary', component: PurchaseDiary, name: '采购流水' },
         { path: '/customer', component: Customer, name: '新客户' },
         { path: '/outSale', component: OutSale, name: '确认出货单' },
+        { path: '/feeSetting', component: FeeSetting, name: '运费设置' },
       ]
     }
 ]

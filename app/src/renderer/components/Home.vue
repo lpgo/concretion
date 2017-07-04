@@ -98,7 +98,7 @@ export default {
         {label:"销售",icon:"local_shipping",items:[{title: "录入出货单", url: "/outSale"},{title: "销售任务", url: "/customer"}]},
         {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"},{title: "结账", url: "/checkout"}]},
         {label:"统计",icon:"equalizer",items:[{title: "销售统计", url: "/statistics"},{title: "运费统计", url: "/statisticsCar"},{title: "泵送统计", url: "/statisticsAuto"},{title: "司机工资统计", url: "/statisticsDriver"}]},
-        {label:"设置",icon:"monetization_on",items:[{title: "销售设置", url: "/saleSetting"},{title: "采购设置", url: "/PurchaseSetting"}]},
+        {label:"设置",icon:"monetization_on",items:[{title: "销售设置", url: "/saleSetting"},{title: "采购设置", url: "/PurchaseSetting"},{title: "运费设置", url: "/feeSetting"}]},
       ],
       cw:[
         {label:"查询",icon:"search",items:[{title: "采购查询", url: "/purchaseSearch"},{title: "销售查询", url: "/saleSearch"},{title: "结账", url: "/checkout"}]},
