@@ -53,7 +53,10 @@
 				
 			</div>
 			<div class="saleBtnGroup">
-					<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save" :disabled="sureBtnDisabled"/>
+					<mu-raised-button label="确认" primary style="width:10%;margin:0 20px;" @click="save" :disabled="sureBtnDisabled" v-if="!isModify"/>
+
+					<mu-raised-button label="修改" primary style="width:10%;margin:0 20px;" @click="modifySale" v-if="isModify"/>
+
 					<mu-raised-button label="取消" secondary style="width:10%;" @click="cancel"/> 
 			</div>
 			
@@ -72,6 +75,7 @@
 			        <mu-th tooltip="施工部位" class="tdHeader">施工部位</mu-th>
 			        <mu-th tooltip="强度等级" class="tdHeader">强度等级</mu-th>
 			        <mu-th tooltip="发货时间" class="tdHeader">发货时间</mu-th>
+			        <mu-th tooltip="修改" class="tdHeader">修改</mu-th>
 			      </mu-tr>
 			    </mu-thead>
 			     <mu-tbody >
@@ -88,6 +92,7 @@
 			        <mu-td style="white-space:pre-line">{{item.part}}</mu-td>
 			        <mu-td style="white-space:pre-line">{{item.strength}}</mu-td>
 			        <mu-td style="white-space:pre-line">{{timeFormat(item.time)}}</mu-td> 
+			        <mu-td><span @click="update(index)" class="greenLink">修改</span></mu-td>
 			      </mu-tr>
 			    </mu-tbody>
 			</mu-table>
@@ -182,6 +187,7 @@ export default {
 			lastAcc:0,   //上一次的累计方量用来计算本次累计方量
 			index:-1,
 			sureBtnDisabled:true,
+			isModify:false, //是否为修改模式
 			/*
 			attachs:[
 				{id:1,name:"同标号细石砼",value:20},
@@ -307,8 +313,18 @@ export default {
 			},true);
 		},
 
-		modifySale(index) {
+		update(index) {
 			this.form = this.data[index];
+			this.isModify = true;
+			//准备工程名称选项
+			for(let item of this.salePrices) {
+				if(item.com == this.form.com) {
+					this.salePrice = item;
+				}
+			}
+		},
+
+		modifySale() {
 			this.form.capacity = Number(this.form.capacity);
 			this.form.plan = Number(this.form.plan);
 			this.form.acc = Number(this.form.acc);
@@ -320,8 +336,10 @@ export default {
 				alert("修改成功");
 				this.form = {};
 				this.cancel();
+				this.isModify = false;
 			}, err => {
 				util.toast(err.error);
+				this.isModify = false;
 			},true);
 		},
 
@@ -418,19 +436,6 @@ export default {
 			*/
 			web.print({silent:true});
 			
-		},
-		select(index, tr) {
-			this.index = index;
-			this.form = this.data[index];
-			//准备工程名称选项
-			for(let item of this.salePrices) {
-				if(item.com == this.form.com) {
-					this.salePrice = item;
-				}
-			}
-			//计算上单的累计方量
-			this.lastAcc = this.form.acc - this.form.capacity;
-			this.sureBtnDisabled = false;
 		},
 	},
 	computed:{

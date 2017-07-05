@@ -1,8 +1,21 @@
 <template>
 	<div style="margin:20px;">
-		<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" />
-		<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  />
-	  	<mu-raised-button label="查询"  primary @click="search"  style="margin-left:20px"/>
+		<span style="font-size:18px">日期：</span><mu-date-picker mode="landscape" hintText="开始日期" v-model="start" />
+		<mu-time-picker hintText="开始时间" format="24hr" v-model="startTime"  />
+		至<mu-date-picker mode="landscape" hintText="结束日期" v-model="end" />
+		<mu-time-picker hintText="结束时间" format="24hr" v-model="endTime"  /><br>
+
+		<div style="display:flex;justify-content:space-around">
+			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位"       style="width:150px" >
+				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
+			</mu-select-field>
+			<mu-text-field hintText="请输入车号"   v-model="form.car"  style="width:150px"/>
+			<mu-text-field hintText="请输入单号"   v-model="form.no"  style="width:150px"/>
+
+	  		<mu-raised-button label="查询"  primary @click="search"  style="margin-left:20px"/>
+	  		<mu-raised-button label="导出"  primary @click="exportExcel"  style="margin-left:20px"/>
+	  		<mu-raised-button label="清空条件"  secondary @click="clear"  style="margin-left:20px"/>
+	  	</div>
 	  	<mu-table  :showCheckbox="false" :fixedHeader="true" >
 			<mu-thead slot="header" >
 		      <mu-tr class="printListHead">
@@ -46,7 +59,9 @@
 
 <script>
 import util from '../common/util.js'
+import conf from '../common/conf.js'
 import moment from 'moment'
+import { mapState,mapMutations } from 'vuex'
 
 export default {
 	data() {
@@ -54,13 +69,20 @@ export default {
 			value:"false",
 			data:[],
 			start:moment().format('YYYY-MM-DD'),
+			startTime:"00:00",
 			end:moment().format('YYYY-MM-DD'),
+			endTime:"23:59",
 			attachs:[
 				{name:"细石",value:"small"},
 				{name:"抗冻F200",value:"frost"},
 				{name:"P6",value:"P6"},
 				{name:"P8",value:"P8"},
 			],
+			form:{
+				com:null,
+				car:null,
+				no:null,
+			},
 		};
 	},
 	methods: {
@@ -74,16 +96,75 @@ export default {
 		search() {
 			this.get();
 		},
+		clear() {
+			this.form = {
+				com:null,
+				car:null,
+				no:null,
+			};
+		},
 		get() {
 			let s = encodeURIComponent(moment(this.start).startOf('day').format());
 			let e = encodeURIComponent(moment(this.end).endOf('day').format());
 			let url = `sales?start=${s}&end=${e}`
+			if(this.form.com) {
+				url += '&com='+this.form.com;
+			}
+			if(this.form.car) {
+				url += '&car='+this.form.car;
+			}
+			if(this.form.no) {
+				url += '&no='+this.form.no;
+			}
 			util.get(url, data => {
 				if(data) {
 					this.data = data;
+				} else {
+					this.data = [];
 				}
 			});
 		},
+
+		exportExcel() {
+			const {remote} = this.$electron;
+	    	const web = remote.getCurrentWebContents();
+	    	let self = this;
+
+	    	let s = encodeURIComponent(moment(this.start+' '+this.startTime).format());
+			let e = encodeURIComponent(moment(this.end+' '+this.endTime).format());
+			let url = `sales?start=${s}&end=${e}`
+			if(this.form.com) {
+				url += '&com='+this.form.com;
+			}
+			if(this.form.car) {
+				url += '&car='+this.form.car;
+			}
+			if(this.form.no) {
+				url += '&no='+this.form.no;
+			}
+	    	web.session.on('will-download', (e, item) =>{
+	    		util.loading();
+	    		item.on('updated', () => {
+			       console.log(item.getReceivedBytes());
+			   	});
+			   	item.on('done', (e, state) => {
+			   		if (state === 'interrupted') {
+			           alert("下载失败");
+			       	}
+					if (state === 'cancelled') {
+		           		alert("下载取消");
+			       	}
+			       	if (state === 'completed') {
+			       		alert("导出完成");
+			       	}	//下载完成，让 dock 上的下载目录Q弹一下下
+			       	console.log(state);
+			       	util.loaded();
+			   	});
+	    	});
+	    	web.downloadURL(conf.apiUrl+url+'&fileType=excel');
+		},
+
+
 		dateFormat(time) {
 			return moment(time).format("YYYY-MM-DD HH:mm");
 		},
@@ -102,6 +183,12 @@ export default {
 			return names.join(",");
 		},
 	},
+	computed:{
+    	...mapState({
+    		salePrices: state => state.salePrices,
+    		
+    	}),
+  	},
 	mounted() {
 		this.get();
 	},
