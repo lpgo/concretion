@@ -377,6 +377,22 @@ export default {
 			this.form.pbbh = null;
 			this.form.attach = [];
 			this.form.remarks =null;
+			this.form.plan = null;
+			this.form.acc = null;
+			this.form.count = null;
+
+			this.isModify = false;
+
+			let start = encodeURIComponent(moment().startOf('day').format());
+			let end = encodeURIComponent(moment().endOf('day').format());
+			let url = `sales?start=${start}&end=${end}&closing=false`
+			util.get(url, data => {
+				if(data) {
+					this.data = data;
+				}
+			},err => {
+				util.toast(err.error);
+			});
 		},
 		dateFormat(time) {
 			return moment(time).format("YYYY-MM-DD");

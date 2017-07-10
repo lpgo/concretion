@@ -25,10 +25,10 @@
 				<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
 			</div>
 			
-			<h2 style="text-align:center">{{form.way}}结算单</h2>
+			
 		</div>
 		<div class="myDivToPrint">
-			
+			<h2 style="text-align:center">{{form.way}}结算单</h2>
 			<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
 				<tr>  
 					<td>序号</td>
@@ -40,7 +40,7 @@
 		        </tr>
 	    		<tr v-for="(value,index) in data">
 	    			<td>{{index+1}}</td>
-	    			<td>{{value._id.day}}</td>
+	    			<td>{{toFullDate(value._id.day)}}</td>
 	    			<td>{{value._id.com}}</td>
 					<td>{{value.capacity}}</td>
 			        <td>30</td>
@@ -199,6 +199,7 @@ export default {
 			this.form.strength = null;
 			this.form.driver = null;
 			this.form.car = null;
+			this.form.way = null;
 		},
 		print() {
 			const {remote} = this.$electron;
@@ -218,6 +219,9 @@ export default {
 		},
 		numberToChinese(num) {
 			return util.moneyArabiaToChinese(num);
+		},
+		toFullDate(day) {
+			return moment(this.start).month()+'月'+day+'日';
 		},
 	},
 	computed:{

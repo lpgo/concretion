@@ -6,6 +6,7 @@
 			<mu-text-field label="密码" hintText="请输入密码" type="password" labelFloat fullWidth style="margin-bottom:30px" icon="vpn_key" v-model="pwd" :errorText="pwdMsg" @change="nameMsg=null;pwdMsg=null" @keyup.enter="login"/>
 			<mu-raised-button label="登录" v-on:click="login" class="loginBtn" labelClass="loginText" primary />
 		</mu-paper>
+		<span style="position:fixed;bottom:20px;right:10px;color:white;font-size:20px">府谷县极客科技有限公司</span>
 	</div>
 </template>
  

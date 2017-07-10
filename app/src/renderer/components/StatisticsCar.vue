@@ -24,8 +24,8 @@
 				<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
 			</div>
 		</div>
-		<h2 style="text-align:center">{{form.car}}号车运费结算单-运距结算</h2>
 		<div class="myDivToPrint">
+		<h2 style="text-align:center">{{form.car}}号车运费结算单-运距结算</h2>
 			<span>总计运费：{{carFeeCount}}</span><span style="float:right">大写：{{numberToChinese(carFeeCount)}}</span>
 			<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
 				<tr>  

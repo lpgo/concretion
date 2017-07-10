@@ -41,7 +41,7 @@
 		        </tr>
 	    		<tr v-for="(value,index) in data">
 	    			<td>{{index+1}}</td>
-	    			<td>{{value._id.day}}</td>
+	    			<td>{{toFullDate(value._id.day)}}</td>
 	    			<td>{{value._id.strength}}</td>
 
 	    			<template v-if="value._id.way == '45米泵送'">
@@ -249,6 +249,9 @@ export default {
 			*/
 			web.print({silent:true});
 			
+		},
+		toFullDate(day) {
+			return moment(this.start).month()+'月'+day+'日';
 		},
 	},
 	computed:{
