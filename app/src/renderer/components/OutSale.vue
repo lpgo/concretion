@@ -222,6 +222,7 @@ export default {
 				"C40",
 				"C45",
 				"C50",
+				"M30"
 			],
 
 			myfilter (searchText, key) {
@@ -412,9 +413,16 @@ export default {
 			util.get(`sales?com=${value}&limit=1`,data => {
 				if(data) {
 					this.form = data[0];
-					this.lastAcc = this.form.acc;
-					this.form.acc += this.form.capacity;
-					this.form.count += 1;
+					let lastTime = moment(this.form.time);
+					if(lastTime.dayOfYear() != moment().dayOfYear()) {
+						this.lastAcc = 0;
+						this.form.acc = 0;
+						this.form.count = 1;
+					} else {
+						this.lastAcc = this.form.acc;
+						this.form.acc += this.form.capacity;
+						this.form.count += 1;
+					}
 					delete this.form.no;
 					delete this.form.id;
 					delete this.form.time;

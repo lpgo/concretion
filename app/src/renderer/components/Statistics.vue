@@ -24,17 +24,17 @@
 				<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
 			</div>
 			
-			<h2>销售统计</h2>
+			
 		</div>
 		<div class="myDivToPrint">
+			<h2 style="text-align:center">府谷县茂奂建材有限责任公司销售确认单</h2>
 			<span>施工单位：{{saleCom}}</span><span style="float:right">电话：{{saleTel}}</span>
 			<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
 				<tr>  
 					<td>序号</td>
 					<td>日期</td>
 		            <td>强度</td>  
-		            <td>45米泵送方量</td>
-		            <td>52米泵送方量</td>
+		            <td>泵送方量</td>
 		            <td>自卸方量</td>
 		            <td>砼方单价</td>
 		            <td>合计/元</td>  
@@ -44,19 +44,14 @@
 	    			<td>{{toFullDate(value._id.day)}}</td>
 	    			<td>{{value._id.strength}}</td>
 
-	    			<template v-if="value._id.way == '45米泵送'">
+	    			<template v-if="value._id.way != '自卸'">
 						<td>{{value.capacity}}</td>
-						<td>---</td>
-						<td>---</td>
-			        </template>
-			       	<template v-if="value._id.way == '52米泵送'">
-			       		<td>---</td>
-						<td>{{value.capacity}}</td>
+				
 						<td>---</td>
 			        </template>
 			        <template v-if="value._id.way == '自卸'">
 			        	<td>---</td>
-						<td>---</td>
+						
 						<td>{{value.capacity}}</td>
 			        </template>
 			        <td>{{value._id.price}}</td>
@@ -65,7 +60,7 @@
 		        <tr>
 		        	<td colspan ="3">总计方量</td>
 		        	<td>{{saleCount.auto45}}</td>
-		        	<td>{{saleCount.auto52}}</td>
+		        	
 		        	<td>{{saleCount.self}}</td>
 		        	<td>总计金额</td>
 		        	<td>{{saleCount.total}}</td>
@@ -131,10 +126,6 @@ export default {
 	},
 	methods: {
 		statistics() {
-			if(!this.form.com) {
-				this.error = "请选择施工单位";
-				return ;
-			}
 			this.get(this.start,this.end);
 		},
 		change(value) {
@@ -164,7 +155,25 @@ export default {
 					this.data = [];
 				} else {
 					data.sort((a,b) => a._id.day - b._id.day)
-					this.data = data;
+
+					//合并泵送
+					let newData = [];
+					for(let i=0; i<data.length; i++) {
+						if(i > 0) {
+							if(data[i]._id.day == data[i-1]._id.day && data[i]._id.strength == data[i-1]._id.strength && data[i]._id.way != "自卸" && data[i-1]._id.way != "自卸") {
+								data[i-1].capacity += data[i].capacity;
+								console.log("合并泵送");
+							} else {
+								newData.push(data[i]);
+							}
+						} else {
+							newData.push(data[i]);
+						}
+					}
+
+					this.data = newData;
+
+
 
 					//算合计
 					this.saleCount = {self:0,auto45:0,auto52:0,total:0} ;
@@ -175,16 +184,12 @@ export default {
 								this.saleCount.self += item.capacity;
 								break;
 							}
-							case '45米泵送':
+							default:
 							{
 								this.saleCount.auto45 += item.capacity;
 								break;
 							}
-							case '52米泵送':
-							{
-								this.saleCount.auto52 += item.capacity;
-								break;
-							}
+							
 						}
 						this.saleCount.total += item.total;
 					}

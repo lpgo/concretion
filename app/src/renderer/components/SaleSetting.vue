@@ -20,13 +20,13 @@
 							</template>
 						</td>
 
-						<td rowspan="3"><span v-if="item.tax">是</span><span v-if="!item.tax">否</span></td><td rowspan="3">{{item.tel}}</td><td colspan="9">商砼价格</td> <td colspan="6">特殊砼加价</td><td rowspan="3"><span @click="deleteSalePrice(index,item.id)" class="greenLink">删除</span></td>
+						<td rowspan="3"><span v-if="item.tax">是</span><span v-if="!item.tax">否</span></td><td rowspan="3">{{item.tel}}</td><td colspan="10">商砼价格</td> <td colspan="6">特殊砼加价</td><td rowspan="3"><span @click="deleteSalePrice(index,item.id)" class="greenLink">删除</span></td>
 					</tr>
 					<tr>
-						</td><td>强度等级</td><td>C15</td><td>C20</td><td>C25</td><td>C30</td><td>C35</td><td>C40</td><td>C45</td><td>C50</td><td>特殊砼名称</td><td>泵送费</td><td>细石</td><td>抗冻F200</td><td>P6</td><td>P8</td>
+						</td><td>强度等级</td><td>C15</td><td>C20</td><td>C25</td><td>C30</td><td>C35</td><td>C40</td><td>C45</td><td>C50</td><td>M30</td><td>特殊砼名称</td><td>泵送费</td><td>细石</td><td>抗冻F200</td><td>P6</td><td>P8</td>
 					</tr>
 					<tr>
-						<td>价格(元/M<sup>3</sup>)</td><td>{{noset(item.price.C15)}}</td><td>{{noset(item.price.C20)}}</td><td>{{noset(item.price.C25)}}</td><td>{{noset(item.price.C30)}}</td><td>{{noset(item.price.C35)}}</td><td>{{noset(item.price.C40)}}</td><td>{{noset(item.price.C45)}}</td><td>{{noset(item.price.C50)}}</td><td>加价(元/M<sup>3</sup>)</td><td>{{noset(item.attach.auto)}}</td><td>{{noset(item.attach.small)}}</td><td>{{noset(item.attach.frost)}}</td><td>{{noset(item.attach.P6)}}</td><td>{{noset(item.attach.P8)}}</td>
+						<td>价格(元/M<sup>3</sup>)</td><td>{{noset(item.price.C15)}}</td><td>{{noset(item.price.C20)}}</td><td>{{noset(item.price.C25)}}</td><td>{{noset(item.price.C30)}}</td><td>{{noset(item.price.C35)}}</td><td>{{noset(item.price.C40)}}</td><td>{{noset(item.price.C45)}}</td><td>{{noset(item.price.C50)}}</td><td>{{noset(item.price.M30)}}</td><td>加价(元/M<sup>3</sup>)</td><td>{{noset(item.attach.auto)}}</td><td>{{noset(item.attach.small)}}</td><td>{{noset(item.attach.frost)}}</td><td>{{noset(item.attach.P6)}}</td><td>{{noset(item.attach.P8)}}</td>
 					</tr>
 				</template>
 			</tbody>
@@ -61,10 +61,11 @@
 			<h4>1.商砼价格：</h4>
 			<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%">
 				<thead>
-					<td>强度等级</td><td>C15</td><td>C20</td><td>C25</td><td>C30</td><td>C35</td><td>C40</td><td>C45</td><td>C50</td>
+					<td>强度等级</td><td>C15</td><td>C20</td><td>C25</td><td>C30</td><td>C35</td><td>C40</td><td>C45</td><td>C50</td><td>M30</td>
 				</thead>
 				<tbody>
 					<td>价格(元/M<sup>3</sup>)</td><td><mu-text-field type="number"  v-model="form.price.C15" style="width:45px"/></td><td><mu-text-field type="number"  v-model="form.price.C20" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C25" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C30" style="width:45px"/></td><td><mu-text-field type="number"  v-model="form.price.C35" style="width:45px"/></td><td><mu-text-field  type="number" v-model="form.price.C40" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C45" style="width:45px"/></td><td><mu-text-field type="number" v-model="form.price.C50" style="width:45px"/></td>
+					<td><mu-text-field type="number" v-model="form.price.M30" style="width:45px"/></td>
 				</tbody>
 			</table>
 			<h4>2.特殊砼费用：</h4>
@@ -96,7 +97,7 @@ export default {
 				plan:null,
 				tel:'',
 				tax:false, //税
-				price:{C15:null,C20:null,C25:null,C30:null,C35:null,C40:null,C45:null,C50:null},
+				price:{C15:null,C20:null,C25:null,C30:null,C35:null,C40:null,C45:null,C50:null,M30:null},
 				attach:{auto:null,small:null,frost:null,P6:null,P8:null},
 				distances:[],
 			},
@@ -128,6 +129,7 @@ export default {
 			this.form.price.C40 = Number(this.form.price.C40);
 			this.form.price.C45 = Number(this.form.price.C45);
 			this.form.price.C50 = Number(this.form.price.C50);
+			this.form.price.M30 = Number(this.form.price.M30);
 
 			this.form.attach.auto = Number(this.form.attach.auto);
 			this.form.attach.small = Number(this.form.attach.small);
@@ -157,7 +159,7 @@ export default {
 					plan:300,
 					tel:'',
 					tax:false, //税
-					price:{C15:null,C20:null,C25:null,C30:null,C35:null,C40:null,C45:null,C50:null},
+					price:{C15:null,C20:null,C25:null,C30:null,C35:null,C40:null,C45:null,C50:null,M30:null},
 					attach:{auto:null,small:null,frost:null,P6:null,P8:null},
 					distances:[],
 				};
