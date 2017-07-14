@@ -9,7 +9,7 @@
 				<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'"/>
 			</div>
 			<div style="display:flex">
-				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" :errorText="error" @change="error = ''" >
+				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" :errorText="error" @change="error = ''" :maxHeight="500">
 					<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 				</mu-select-field>
 				<!--
@@ -30,16 +30,18 @@
 			<h2 style="text-align:center">府谷县茂奂建材有限责任公司销售确认单</h2>
 			<span>施工单位：{{saleCom}}</span><span style="float:right">电话：{{saleTel}}</span>
 			<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
-				<tr>  
-					<td>序号</td>
-					<td>日期</td>
-		            <td>强度</td>  
-		            <td>泵送方量</td>
-		            <td>自卸方量</td>
-		            <td>砼方单价</td>
-		            <td>合计/元</td>  
-		        </tr>
-	    		<tr v-for="(value,index) in data">
+				<THEAD style="display:table-header-group;font-weight:bold">
+					<tr>  
+						<td>序号</td>
+						<td>日期</td>
+			            <td>强度</td>  
+			            <td>泵送方量</td>
+			            <td>自卸方量</td>
+			            <td>砼方单价</td>
+			            <td>合计/元</td>  
+			        </tr>
+		        </THEAD>
+	    		<tr v-for="(value,index) in data" :class="{newPage:index%30 == 0}">
 	    			<td>{{index+1}}</td>
 	    			<td>{{toFullDate(value._id.day)}}</td>
 	    			<td>{{value._id.strength}}</td>
@@ -65,7 +67,26 @@
 		        	<td>总计金额</td>
 		        	<td>{{saleCount.total}}</td>
 		        </tr> 
-	 
+	 			<TR>
+	 				<td colspan="2">合计（人民币）</td>
+	 				<td colspan="5">{{numberToChinese(saleCount.total)}}</td>
+	 			</TR>
+	 			<tr >
+	 				<td >供货单位：</td><TD colspan="3"></TD>
+	 				<td >使用单位：</td><td colspan="2"></td>
+	 			</tr>
+	 			<tr>
+	 				<td >负责人：</td><TD colspan="3"></TD>
+	 				<td >项目负责人：</td><td colspan="2"></td>
+	 			</tr>
+	 			<tr>
+	 				<td >单位：</td><TD colspan="3"></TD>
+	 				<td >单位：</td><td colspan="2"></td>
+	 			</tr>
+	 			<tr>
+	 				<td >（盖章）</td><TD colspan="3">年&nbsp&nbsp&nbsp月&nbsp&nbsp&nbsp日</TD>
+	 				<td >（盖章）</td><td colspan="2">年&nbsp&nbsp&nbsp月&nbsp&nbsp&nbsp日</td>
+	 			</tr>
 			</table>
 		</div>
 		
@@ -160,9 +181,9 @@ export default {
 					let newData = [];
 					for(let i=0; i<data.length; i++) {
 						if(i > 0) {
-							if(data[i]._id.day == data[i-1]._id.day && data[i]._id.strength == data[i-1]._id.strength && data[i]._id.way != "自卸" && data[i-1]._id.way != "自卸") {
+							if(data[i]._id.day == data[i-1]._id.day && data[i]._id.strength == data[i-1]._id.strength && data[i]._id.way != "自卸" && data[i-1]._id.way != "自卸" && data[i-1]._id.price == data[i]._id.price) {
 								data[i-1].capacity += data[i].capacity;
-								console.log("合并泵送");
+								console.log("合并泵送",i-1,data[i-1].capacity,i,data[i].capacity);
 							} else {
 								newData.push(data[i]);
 							}
@@ -253,10 +274,14 @@ export default {
 			});
 			*/
 			web.print({silent:true});
+			//window.print();
 			
 		},
 		toFullDate(day) {
-			return moment(this.start).month()+'月'+day+'日';
+			return moment(this.start).month()+1 +'月'+day+'日';
+		},
+		numberToChinese(num) {
+			return util.moneyArabiaToChinese(num);
 		},
 	},
 	computed:{
@@ -278,5 +303,8 @@ export default {
 	}
 	.radio {
 		padding-top:10px;
+	}
+	.newPage {
+		page-break-before:always;
 	}
 </style>

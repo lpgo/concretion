@@ -208,7 +208,7 @@ export default {
 			return util.moneyArabiaToChinese(num);
 		},
 		toFullDate(day) {
-			return moment(this.start).month()+'月'+day+'日';
+			return moment(this.start).month()+1 +'月'+day+'日';
 		},
 	},
 	computed:{

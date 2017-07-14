@@ -4,7 +4,7 @@
 			<h2 style="text-align:center">送货单</h2>
 			<div class="formGroup">
 				<span class="textLabel">施工单位：</span>
-				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" @change="comChange" :errorText="error.com" :disabled="false">
+				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" @change="comChange" :errorText="error.com" :disabled="false" :maxHeight="500">
 				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
 				<span class="textLabel">驾驶员：&nbsp&nbsp</span>
@@ -170,7 +170,7 @@ export default {
 	data() {
 		return {
 			name: "Sale",
-			height: "220px",
+			height: "280px",
 			form: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null,attach:[],acc:null,count:null},
 			error: {com:null,driver:null,capacity:null,project:null,car:null,way:null,part:null,strength:null,tld:null,pbbh:null,price:null},
 			data: [],

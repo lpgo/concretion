@@ -1,12 +1,96 @@
 <template>
-  <div>
-    <h4>Watch</h4>
-    <div>
-      <mu-icon value="face" color="blue" :size="48"/>
-      <button v-on:click="num++">add</button>
-      source: {{num}}  -> result: {{num$}}
-    </div>
-    <button v-on:click="test()">{{platform}}</button>{{portName}}
+  <div >
+  <input type=button value=" 打 印 " onclick=javascript:window.print() class="noprint">
+   <TABLE border="0" style="font-size:9pt;" width="300px" align="center">
+    <THEAD style="display:table-header-group;font-weight:bold">
+      <TR><TD colspan="2" align="center" style="font-weight:bold;border:3px double red">每页都有的表头</TD></TR>
+    </THEAD>
+    <TBODY style="text-align:center">
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR style="page-break-before:always;"><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+   
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+   
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+ 
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+   
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+   
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+   
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR><TD>表格内容</TD><TD>表格内容</TD></TR>
+    <TR style="page-break-before:always;"><TD>表格内容</TD><TD>表格内容</TD></TR>
+    </TBODY>
+    <TFOOT style="display:table-footer-group;font-weight:bold">
+      <TR>
+        <TD colspan="2" align="center" style="font-weight:bold;border:3px double blue">每页都有的表尾</TD>
+      </TR>
+    </TFOOT>
+    </TABLE>
+    
   </div>
 </template>
 
