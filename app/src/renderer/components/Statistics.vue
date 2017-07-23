@@ -118,6 +118,7 @@
 <script>
 import util from '../common/util.js'
 import moment from 'moment'
+import fs from 'fs'
 import { mapState,mapMutations } from 'vuex'
 export default {
 	data() {
@@ -264,15 +265,15 @@ export default {
 			const {remote} = this.$electron;
 	    	const web = remote.getCurrentWebContents();
 	    	
-	    	/*
-	    	web.printToPDF({}, (error, data) => {
-			    if (error) throw error
-			    fs.writeFile('sale.pdf', data, (error) => {
-			      if (error) throw error
-			      console.log('Write PDF successfully.')
-			    })
-			});
-			*/
+	    	
+	  //   	web.printToPDF({}, (error, data) => {
+			//     if (error) throw error
+			//     fs.writeFile('sale.pdf', data, (error) => {
+			//       if (error) throw error
+			//       console.log('Write PDF successfully.')
+			//     })
+			// });
+			
 			web.print({silent:true});
 			//window.print();
 			
