@@ -201,6 +201,28 @@ export default {
   mounted() { 
     console.log(this.user);
     this.menuData = this[this.user.role];
+
+    const {remote} = this.$electron;
+    const web = remote.getCurrentWebContents();
+    web.session.on('will-download', (e, item) =>{
+          util.loading();
+          item.on('updated', () => {
+             console.log(item.getReceivedBytes());
+          });
+          item.on('done', (e, state) => {
+              if (state === 'interrupted') {
+                 alert("下载失败");
+              }
+              if (state === 'cancelled') {
+                  alert("下载取消");
+              }
+              if (state === 'completed') {
+                alert("导出完成");
+              } //下载完成，让 dock 上的下载目录Q弹一下下
+              console.log(state);
+              util.loaded();
+          });
+        });
   },
   components: {
     MenuButton

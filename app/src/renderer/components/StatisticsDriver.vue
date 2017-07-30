@@ -20,6 +20,7 @@
 				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error" @change="error = ''"/>
 				
 				<mu-raised-button label="统计"  primary @click="statistics" />
+				<mu-raised-button label="导出"  primary @click="exportExcel"  style="margin-left:20px"/>
 				<mu-raised-button label="打印"  primary @click="print" style="margin-left:10px"/>
 				<mu-raised-button label="清空条件"  secondary @click="clear" style="margin-left:20px"/>
 			</div>
@@ -83,6 +84,7 @@
 </template>
 <script>
 import util from '../common/util.js'
+import conf from '../common/conf.js'
 import moment from 'moment'
 import { mapState,mapMutations } from 'vuex'
 export default {
@@ -203,6 +205,18 @@ export default {
 			*/
 			web.print({silent:true});
 			
+		},
+		exportExcel() {
+			const {remote} = this.$electron;
+	    	const web = remote.getCurrentWebContents();
+
+	    	let s = encodeURIComponent(moment(this.start).format());
+			let e = encodeURIComponent(moment(this.end).format());
+			let url = `statistics?start=${s}&end=${e}`
+			if(this.form.driver) {
+				url += '&driver='+this.form.driver;
+			}
+	    	web.downloadURL(conf.apiUrl+url+'&fileType=excel');
 		},
 		numberToChinese(num) {
 			return util.moneyArabiaToChinese(num);
