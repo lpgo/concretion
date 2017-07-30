@@ -6,7 +6,7 @@
 		<mu-time-picker hintText="结束时间" format="24hr" v-model="endTime"  /><br>
 
 		<div style="display:flex;justify-content:space-around">
-			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位"       style="width:150px" >
+			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位"       style="width:150px" :maxHeight="500">
 				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
 			</mu-select-field>
 			<mu-text-field hintText="请输入车号"   v-model="form.car"  style="width:150px"/>

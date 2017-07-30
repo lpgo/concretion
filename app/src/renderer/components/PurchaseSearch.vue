@@ -16,6 +16,9 @@
 			</mu-select-field>
 			<mu-text-field hintText="请输入车号"   v-model="form.car"  style="width:150px"/>
 			<mu-text-field hintText="请输入单号"   v-model="form.no"  style="width:150px"/>
+			<mu-radio label="全部" name="group" nativeValue="all" v-model="checkout"  />
+			<mu-radio label="已付款" name="group" nativeValue="true" v-model="checkout"  />
+			<mu-radio label="未付款" name="group" nativeValue="false" v-model="checkout"/>
 	  		<mu-raised-button label="查询"  primary @click="search"  style="margin-left:20px"/>
 	  		<mu-raised-button label="导出"  primary @click="exportExcel"  style="margin-left:20px"/>
 	  		<mu-raised-button label="清空条件"  secondary @click="clear"  style="margin-left:20px"/>
@@ -58,7 +61,8 @@
 		      </mu-tr>
 		    </mu-tbody>
 		</mu-table>
-
+		<hr/>
+		<span>合计：</span><span>{{total}}</span>元
 		<mu-dialog :open="dialog" @close="close" dialogClass="dialog" >
 			<mu-select-field v-model="updataForm.com" :labelFocusClass="['label-foucs']" hintText="请选择客户" style=""  fullWidth @change="updateComChange"   >
 				<mu-menu-item v-for="item,index in comList" :key="item.id" :value="item.com" :title="item.com" />
@@ -116,6 +120,8 @@ export default {
 		  	updataStandardList:[],
 
 		  	dialog:false,
+		  	checkout:"all",  //是否付款，默认全部
+		  	total:0, //合计
 		};
 	},
 	methods: {
@@ -162,7 +168,11 @@ export default {
 		get() {
 			let s = encodeURIComponent(moment(this.start+' '+this.startTime).format());
 			let e = encodeURIComponent(moment(this.end+' '+this.endTime).format());
+			let c = this.checkout;
 			let url = `purchases?start=${s}&end=${e}`
+			if(c != "all") {
+				url += `&closing=${c}`;
+			} 
 			if(this.form.com) {
 				url += '&com='+this.form.com;
 			}
@@ -180,7 +190,12 @@ export default {
 			}
 			util.get(url, data => {
 				if(data) {
+					this.total = 0;
 					this.data = data;
+					for(let p of data) {
+						console.log(p.total);
+						this.total += this.myFix(p.total);
+					}
 				} else {
 					this.data = [];
 				}
