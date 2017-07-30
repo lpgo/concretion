@@ -2,7 +2,11 @@
 	<div class="login">
 		<mu-paper class="paper" :zDepth="4" >
 			<h2 class="center">系统登录</h2>
-			<mu-text-field label="用户名" hintText="请输入用户名" type="text" labelFloat fullWidth icon="account_box" v-model="name" :errorText="nameMsg" @change="nameMsg=null;pwdMsg=null"/>
+	
+			<mu-select-field v-model="name" :labelFocusClass="['label-foucs']" :errorText="nameMsg" @change="nameMsg=null;pwdMsg=null" icon="account_box" hintText="用户名" fullWidth>
+					<mu-menu-item v-for="item in users" :title="item" :value="item"/>
+			</mu-select-field>
+
 			<mu-text-field label="密码" hintText="请输入密码" type="password" labelFloat fullWidth style="margin-bottom:30px" icon="vpn_key" v-model="pwd" :errorText="pwdMsg" @change="nameMsg=null;pwdMsg=null" @keyup.enter="login"/>
 			<mu-raised-button label="登录" v-on:click="login" class="loginBtn" labelClass="loginText" primary />
 		</mu-paper>
@@ -24,6 +28,13 @@ export default {
 			nameMsg: null,
 			pwdMsg: null,
 			toast: false,
+			users:[
+				"磅房",
+				"结算",
+				"调度",
+				"实验室",
+				"管理员",
+			],
 		};
 	},
 	methods: {
