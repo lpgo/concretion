@@ -63,7 +63,7 @@ export default {
 			}
 		},err => {
 			util.toast(err.message);
-		});
+		},true);
 	}
 }
 </script>

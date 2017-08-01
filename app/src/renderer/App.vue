@@ -2,7 +2,7 @@
   <div style="height:100%">
     <router-view></router-view>
     <mu-toast v-if="toast" :message="msg" @close="hideToast"/>
-    <mu-dialog :open="loadDialog" title="加载数据" style="width:80px">
+    <mu-dialog :open="loadDialog" title="加载数据" dialogClass="loadStyle">
       <mu-circular-progress :size="60" :strokeWidth="5"/>
     </mu-dialog>
   </div>
@@ -23,7 +23,6 @@ export default {
   },
   mounted() {
     util.bus.$on('showToast', (msg)=> {
-      console.log("app: showToast");
       this.msg = msg;
       this.toast = true;
       if (this.toastTimer) clearTimeout(this.toastTimer);
@@ -58,5 +57,9 @@ body{
     -moz-user-select:none;
     -ms-user-select:none;
     user-select:none;
+}
+
+.loadStyle {
+  width: 300px;
 }
 </style>

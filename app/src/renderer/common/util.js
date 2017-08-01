@@ -77,7 +77,10 @@ export default {
 			vue.$emit("showToast", "网络错误:"); 
 		});
 	},
-	get: function(res,success,fail) {
+	get: function(res,success,fail,showload) {
+		if(showload) {
+			vue.$emit("loading", null);
+		}
 		return fetch(conf.apiUrl+res,
 			{
 				credentials:"include",
@@ -94,8 +97,10 @@ export default {
         				vue.$emit("showToast", "网络错误:"+result.error);
         		});
         	}
+        	vue.$emit("loaded", null);
 		}).catch(err => {
 			vue.$emit("showToast", "网络错误:"); 
+			vue.$emit("loaded", null);
 		});
 	},
 	delete: function(res,success,fail) {
