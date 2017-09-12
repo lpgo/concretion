@@ -10,7 +10,7 @@
 		
 		<h2 style="font-size:20px;text-align:center">司机提成设置</h2>
 		<span>最小方量：</span><mu-text-field  v-model="form.minCapacity" type="number" style="width:50px;"/>方
-		<span style="margin-left:50px">每方价格：</span><mu-text-field  v-model="form.price" type="number" style="width:50px;"/>元<br/>
+		<span style="margin-left:50px">超过20公里每方价格：</span><mu-text-field  v-model="form.price" type="number" style="width:50px;"/>元<span style="margin-left:50px">小于20公里每方价格：</span><mu-text-field  v-model="form.minPrice" type="number" style="width:50px;"/>元<br/>
 		<mu-raised-button label="修改" primary style="margin-left:20px;float:right"  @click="modify" />
 	</div>
 </template>

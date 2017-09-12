@@ -41,7 +41,7 @@
 		        </tr>
 	    		<tr v-for="(value,index) in data">
 	    			<td>{{index+1}}</td>
-	    			<td>{{toFullDate(value._id.day)}}</td>
+	    			<td>{{getDateFromYear(value._id.day)}}</td>
 	    			<td>{{value._id.com}}</td>
 					<td>{{value.capacity}}</td>
 			        <td>30</td>
@@ -236,6 +236,9 @@ export default {
 		},
 		toFullDate(day) {
 			return moment(this.start).month()+1 +'月'+day+'日';
+		},
+		getDateFromYear(day) {
+			return moment().startOf("year").day(day-1).format("MM月DD");
 		},
 	},
 	computed:{
