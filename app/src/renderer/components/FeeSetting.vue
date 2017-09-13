@@ -38,6 +38,7 @@ export default {
 			this.form.autoMin = Number(this.form.autoMin);
 			this.form.minCapacity = Number(this.form.minCapacity);
 			this.form.price = Number(this.form.price);
+			this.form.minPrice = Number(this.form.minPrice);
 
 			util.put("feeSetting",this.form, data=>{
 				alert("修改成功");

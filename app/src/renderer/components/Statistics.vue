@@ -5,12 +5,12 @@
 				<span style="font-size:20px;margin-right:10px;">时间：</span>
 			  	<mu-radio label="当月" name="group" nativeValue="month" v-model="value"  @change="change"/>
 			  	<mu-radio label="自定义" name="group" nativeValue="user" v-model="value" style="margin-right:100px" />  
-				<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" :disabled="value!='user'"/>
-				<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'"/>
+				<mu-date-picker mode="landscape" hintText="开始时间" v-model="start" :disabled="value!='user'" @change="startChange"/>
+				<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'" @change="endChange"/>
 			</div>
 			<div style="display:flex">
 				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" :errorText="error" @change="error = ''" :maxHeight="500">
-					<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
+					<mu-menu-item v-for="item in coms" :key="item._id" :value="item._id" :title="item._id" />
 				</mu-select-field>
 				<!--
 				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
@@ -139,6 +139,7 @@ export default {
 			saleCom: null,
 			saleTel: null,
 			error: '',
+			coms:[],   //当前时间内的所有施工单位
 			myfilter (searchText, key) {
 				if(searchText) {
 					return key.indexOf(searchText) !== -1;
@@ -256,6 +257,17 @@ export default {
 			*/
 			
 		},
+
+		getComs(start, end ) {
+			let s = encodeURIComponent(moment(start).startOf('day').format());
+			let e = encodeURIComponent(moment(end).endOf('day').format());
+			let url = `getComs?start=${s}&end=${e}`
+			util.get(url, data => {
+				if (data)
+					this.coms = data;
+			});
+		},
+
 		clear() {
 			this.form.com = null;
 			this.form.project = null;
@@ -293,6 +305,16 @@ export default {
 	    	web.downloadURL(conf.apiUrl+url+'&fileType=excel');
 		},
 
+		startChange(value) {
+			this.form.com = null;
+			this.getComs(value,this.end);
+		},
+
+		endChange(value) {
+			this.form.com = null;
+			this.getComs(this.start,value);
+		},
+
 		toFullDate(day) {
 			return moment(this.start).month()+1 +'月'+day+'日';
 		},
@@ -314,6 +336,10 @@ export default {
     		projectFrequency: state => state.projectFrequency,
     		driverFrequency: state => state.driverFrequency,
     	}),
+    },
+
+    mounted() {
+		this.getComs(this.start, this.end);
     },
 	
 }
