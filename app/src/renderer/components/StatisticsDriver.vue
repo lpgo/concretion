@@ -34,11 +34,11 @@
 					<td>底工资</td>
 					<td>4000</td>
 					<td>提成</td>
-					<td>{{count}}</td>
+					<td>{{count.toFixed(2)}}</td>
 					<td>合计</td>
-					<td>{{count + 4000}}</td>
+					<td>{{Number(count.toFixed(2)) + 4000}}</td>
 					<td>大写</td>
-					<td>{{numberToChinese(count + 4000)}}</td>
+					<td>{{numberToChinese(Number(count.toFixed(2)) + 4000)}}</td>
 				</TR>
 				<tr>  
 					<td>序号</td>
@@ -52,7 +52,7 @@
 	    			<td>{{getDateFromYear(value._id.day)}}</td>
 	    			<td colspan="2">{{value._id.com}}</td>
 					<td colspan="2">{{value.capacity}}</td>
-					<td colspan="2">{{value.driverFee}}</td>
+					<td colspan="2">{{value.driverFee.toFixed(2)}}</td>
 		        </tr>
 			</table>
 		</div>

@@ -153,6 +153,10 @@ export default {
 					this.capacityTotal = 0;
 					this.autoFeeTotal = 0;
 					for(let item of data) {
+						item.autoFee = item.capacity * 30;
+						if(item.autoFee < 900) {
+							item.autoFee = 900;
+						}
 						this.autoFeeTotal += item.autoFee;
 						this.capacityTotal += item.capacity;
 					}

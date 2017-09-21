@@ -98,7 +98,7 @@ export default {
 				tel:'',
 				tax:false, //税
 				price:{C15:null,C20:null,C25:null,C30:null,C35:null,C40:null,C45:null,C50:null,M30:null},
-				attach:{auto:null,small:null,frost:null,P6:null,P8:null},
+				attach:{auto:30,small:20,frost:25,P6:15,P8:25},
 				distances:[],
 			},
 			error:{com:null},
