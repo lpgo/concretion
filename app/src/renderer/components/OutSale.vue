@@ -4,11 +4,11 @@
 			<h2 style="text-align:center">送货单</h2>
 			<div class="formGroup">
 				<span class="textLabel">施工单位：</span>
-				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" style="" @change="comChange" :errorText="error.com" :disabled="false" :maxHeight="500">
-				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
-			</mu-select-field>
+
+				<mu-auto-complete :filter="myfilter" hintText="请选择施工单位" v-model="form.com" openOnFocus :dataSource="salePrices" :dataSourceConfig="{text:'com',value:'com'}" :maxSearchResults="30" :errorText="error.com" @change="error.com = null" @blur="error.com = null" :maxHeight="500"/>
+				
 				<span class="textLabel">驾驶员：&nbsp&nbsp</span>
-				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error.driver" @change="error.driver = null" @blur="error.driver = null"/>
+				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="30" :errorText="error.driver" @change="error.driver = null" @blur="error.driver = null" :maxHeight="500"/>
 				<span class="textLabel">本车方量：</span><mu-text-field  v-model="form.capacity" type="number" hintText="请输入本车方量" :errorText="error.capacity" @change="capacityChange"/>
 			</div>
 			<div class="formGroup">

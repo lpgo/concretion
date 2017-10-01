@@ -17,7 +17,7 @@
 
 				<mu-auto-complete :filter="myfilter" hintText="请选择泵送方式" v-model="form.way" openOnFocus :dataSource="ways" :maxSearchResults="10"/>
 				-->
-				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10" :errorText="error" @change="error = ''"/>
+				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="30" :errorText="error" @change="error = ''" :maxHeight="500"/>
 				
 				<mu-raised-button label="统计"  primary @click="statistics" />
 				<mu-raised-button label="导出"  primary @click="exportExcel"  style="margin-left:20px"/>
@@ -55,6 +55,7 @@
 					<td colspan="2">{{value.driverFee.toFixed(2)}}</td>
 		        </tr>
 			</table>
+			<span>合计：</span><span>{{total}}</span>方
 		</div>
 		
 		<!--
@@ -102,6 +103,7 @@ export default {
 			],
 			count: 0 ,
 			error:'',
+			total:0, //总方量
 			myfilter (searchText, key) {
 				if(searchText) {
 					return key.indexOf(searchText) !== -1;
@@ -142,6 +144,7 @@ export default {
 				url += `&car=${this.form.car}`
 			}
 			util.get(url, data => {
+				this.total = 0 ;
 				if(!data) {
 					this.data = [];
 				} else {
@@ -151,6 +154,7 @@ export default {
 					this.count = 0;
 					for(let item of data) {
 						this.count += item.driverFee;
+						this.total += item.capacity;
 					}
 				}
 			});

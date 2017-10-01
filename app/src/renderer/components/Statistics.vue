@@ -9,9 +9,8 @@
 				<mu-date-picker mode="landscape" hintText="结束时间" v-model="end"  :disabled="value!='user'" @change="endChange"/>
 			</div>
 			<div style="display:flex">
-				<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位" :errorText="error" @change="error = ''" :maxHeight="500">
-					<mu-menu-item v-for="item in coms" :key="item._id" :value="item._id" :title="item._id" />
-				</mu-select-field>
+				<mu-auto-complete :filter="myfilter" hintText="请选择施工单位" v-model="form.com" openOnFocus :dataSource="coms" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="30" :errorText="error" @change="error = ''" :maxHeight="500"/>
+
 				<!--
 				<mu-auto-complete :filter="myfilter" hintText="请输入车号" v-model="form.car" openOnFocus :dataSource="carPlates" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="10"/>
 

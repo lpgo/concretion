@@ -62,7 +62,7 @@
 		    </mu-tbody>
 		</mu-table>
 		<hr/>
-		<span>合计：</span><span>{{total}}</span>元
+		<span>合计：</span><span>{{total}}</span>元  <span style="margin-left:50px">{{totalWeight.toFixed(2)}}</span>吨
 		<mu-dialog :open="dialog" @close="close" dialogClass="dialog" >
 			<mu-select-field v-model="updataForm.com" :labelFocusClass="['label-foucs']" hintText="请选择客户" style=""  fullWidth @change="updateComChange"   >
 				<mu-menu-item v-for="item,index in comList" :key="item.id" :value="item.com" :title="item.com" />
@@ -122,6 +122,7 @@ export default {
 		  	dialog:false,
 		  	checkout:"all",  //是否付款，默认全部
 		  	total:0, //合计
+		  	totalWeight:0, //合计总吨数
 		};
 	},
 	methods: {
@@ -189,12 +190,14 @@ export default {
 				url += '&no='+this.form.no;
 			}
 			util.get(url, data => {
+				this.total = 0;
+				this.totalWeight = 0;
 				if(data) {
-					this.total = 0;
 					this.data = data;
 					for(let p of data) {
 						console.log(p.total);
 						this.total += this.myFix(p.total);
+						this.totalWeight += p.weight;
 					}
 				} else {
 					this.data = [];
