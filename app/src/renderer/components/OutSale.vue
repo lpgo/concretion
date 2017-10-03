@@ -5,7 +5,7 @@
 			<div class="formGroup">
 				<span class="textLabel">施工单位：</span>
 
-				<mu-auto-complete :filter="myfilter" hintText="请选择施工单位" v-model="form.com" openOnFocus :dataSource="salePrices" :dataSourceConfig="{text:'com',value:'com'}" :maxSearchResults="30" :errorText="error.com" @change="error.com = null" @blur="error.com = null" :maxHeight="500"/>
+				<mu-auto-complete :filter="myfilter" hintText="请选择施工单位" v-model="form.com" openOnFocus :dataSource="salePrices" :dataSourceConfig="{text:'com',value:'com'}" :maxSearchResults="30" :errorText="error.com" @change="comChange" @blur="error.com = null" :maxHeight="500"/>
 				
 				<span class="textLabel">驾驶员：&nbsp&nbsp</span>
 				<mu-auto-complete :filter="myfilter" hintText="请输入驾驶员" v-model="form.driver" openOnFocus :dataSource="driverFrequency" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="30" :errorText="error.driver" @change="error.driver = null" @blur="error.driver = null" :maxHeight="500"/>

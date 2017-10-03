@@ -1,14 +1,13 @@
 <template>
 	<div style="margin:20px;">
-		<span style="font-size:18px">日期：</span><mu-date-picker mode="landscape" hintText="开始日期" v-model="start" />
-		<mu-time-picker hintText="开始时间" format="24hr" v-model="startTime"  />
-		至<mu-date-picker mode="landscape" hintText="结束日期" v-model="end" />
-		<mu-time-picker hintText="结束时间" format="24hr" v-model="endTime"  /><br>
+		<span style="font-size:18px">日期：</span><mu-date-picker mode="landscape" hintText="开始日期" v-model="start" @change="startChange"/>
+		<mu-time-picker hintText="开始时间" format="24hr" v-model="startTime"  @change="startTimeChange" />
+		至<mu-date-picker mode="landscape" hintText="结束日期" v-model="end" @change="endChange"/>
+		<mu-time-picker hintText="结束时间" format="24hr" v-model="endTime"  @change="endTimeChange"/><br>
 
 		<div style="display:flex;justify-content:space-around">
-			<mu-select-field v-model="form.com" :labelFocusClass="['label-foucs']" hintText="请选择施工单位"       style="width:150px" :maxHeight="500">
-				<mu-menu-item v-for="item,index in salePrices" :key="item.id" :value="item.com" :title="item.com" />
-			</mu-select-field>
+			<mu-auto-complete :filter="myfilter" hintText="请选择施工单位" v-model="form.com" openOnFocus :dataSource="coms" :dataSourceConfig="{text:'_id',value:'_id'}" :maxSearchResults="30" :errorText="error" @change="error = ''" :maxHeight="500"/>
+
 			<mu-text-field hintText="请输入车号"   v-model="form.car"  style="width:150px"/>
 			<mu-text-field hintText="请输入单号"   v-model="form.no"  style="width:150px"/>
 
@@ -83,6 +82,15 @@ export default {
 				car:null,
 				no:null,
 			},
+			error: '',
+			coms:[],   //当前时间内的所有施工单位
+			myfilter (searchText, key) {
+				if(searchText) {
+					return key.indexOf(searchText) !== -1;
+				} else {
+					return true;
+				}
+		    },
 		};
 	},
 	methods: {
@@ -104,8 +112,8 @@ export default {
 			};
 		},
 		get() {
-			let s = encodeURIComponent(moment(this.start).startOf('day').format());
-			let e = encodeURIComponent(moment(this.end).endOf('day').format());
+			let s = encodeURIComponent(moment(this.start+' '+this.startTime).format());
+			let e = encodeURIComponent(moment(this.end+' '+this.endTime).format());
 			let url = `sales?start=${s}&end=${e}`
 			if(this.form.com) {
 				url += '&com='+this.form.com;
@@ -163,6 +171,41 @@ export default {
 			}
 			return names.join(",");
 		},
+
+		startChange(start) {
+			this.form.com = null;
+			console.log(start);
+			this.getComs(start+' '+this.startTime, this.end+' '+this.endTime);
+		},
+
+		startTimeChange(startTime) {
+			this.form.com = null;
+			this.getComs(this.start+' '+startTime, this.end+' '+this.endTime);
+		},
+
+		endChange(end) {
+			this.form.com = null;
+			this.getComs(this.start+' '+this.startTime, end+' '+this.endTime);
+		},
+
+		endTimeChange(endTime) {
+			this.form.com = null;
+			this.getComs(this.start+' '+this.startTime, this.end+' '+endTime);
+		},
+
+
+
+		getComs(start, end) {
+			let s = encodeURIComponent(moment(start).format());
+			let e = encodeURIComponent(moment(end).format());
+			let url = `getComs?start=${s}&end=${e}`
+			util.get(url, data => {
+				if (data)
+					this.coms = data;
+				else 
+					this.coms = [];
+			});
+		},
 	},
 	computed:{
     	...mapState({
@@ -172,6 +215,7 @@ export default {
   	},
 	mounted() {
 		this.get();
+		this.getComs(this.start+' '+this.startTime, this.end+' '+this.endTime);
 	},
 }
 </script>
