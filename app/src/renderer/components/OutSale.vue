@@ -294,8 +294,9 @@ export default {
 			this.form.plan = Number(this.form.plan);
 			this.form.acc = Number(this.form.acc);
 			this.form.count = Number(this.form.count);
-			this.form.price = this.calcPrice();
-			this.form.total = this.form.price * this.form.capacity;
+			this.form.price = Number(this.salePrice.price[this.form.strength]);
+			this.form.attachPrice = calcPrice();
+			this.form.total = (this.form.price + this.form.attachPrice) * this.form.capacity;
 
 			//设置运距
 			for(let p of this.salePrice.distances) {
@@ -331,6 +332,7 @@ export default {
 			this.form.acc = Number(this.form.acc);
 			this.form.count = Number(this.form.count);
 			this.form.price = this.calcPrice();
+			this.form.autoPrice = this.salePrice.attach.auto;
 			this.form.total = this.form.price * this.form.capacity;
 
 			util.put("sales/"+this.form.id, this.form, data => {
@@ -344,22 +346,12 @@ export default {
 			},true);
 		},
 
-		calcPrice() {
-			//基础商砼价格
-			let basePrice = this.salePrice.price[this.form.strength];
+		calcPrice() {    //计算特殊砼价格
 			let sum = 0;
 			for(let a of this.form.attach) {
 				sum += this.salePrice.attach[a]
 			}
-			if(basePrice == 0) {
-				return 0;
-			} else {
-				if(this.form.way == '自卸') {
-					return basePrice + sum ;
-				} else {
-					return basePrice + this.salePrice.attach.auto + sum ;
-				}
-			}
+			return sum;
 		},
 
 		cancel() {
