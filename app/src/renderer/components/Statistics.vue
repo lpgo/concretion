@@ -53,7 +53,7 @@
 						<td></td>
 						<td>{{value.capacity}}</td>
 						<td>{{value._id.attachPrice}}</td>
-						<td>{{value._id.autoPrice}}</td>
+						<td>{{value.autoFee}}</td>
 			        </template>
 			        <template v-if="value._id.way == '自卸'">
 						<td>{{value.capacity}}</td>
@@ -67,15 +67,21 @@
 					<td>{{value._id.part}}</td>
 		        </tr>
 		        <tr>
-		        	<td colspan ="3">总计方量</td>
+		        	<td colspan ="3">方量小计</td>
 		        	<td>{{saleCount.self}}</td>
 		        	<td>{{saleCount.auto45}}</td>
 		        	<td>泵费小计</td>
-		        	<td>30</td>
+		        	<td>{{saleCount.autoTotal}}</td>
 		        	<td>砼款小计</td>
 		        	<td>{{saleCount.total}}</td>
 		        	<td></td>
 		        </tr> 
+		        <tr>
+		        	<td colspan ="3">总方量</td>
+		        	<td colspan ="2">{{saleCount.self + saleCount.auto45}}方</td>
+					<td colspan ="2">合计（元）</td>
+					<td colspan ="3">{{saleCount.autoTotal + saleCount.total}}</td>
+		        </tr>
 	 			<TR>
 	 				<td colspan="2">合计（人民币）</td>
 	 				<td colspan="5">{{numberToChinese(saleCount.total)}}</td>
@@ -209,8 +215,8 @@ export default {
 
 
 					//算合计
-					this.saleCount = {self:0,auto45:0,auto52:0,total:0} ;
-					for(let item of data) {
+					this.saleCount = {self:0,auto45:0,auto52:0,total:0,autoTotal:0} ;
+					for(let item of this.data) {
 						switch(item._id.way) {
 							case '自卸': 
 							{
@@ -220,11 +226,19 @@ export default {
 							default:
 							{
 								this.saleCount.auto45 += item.capacity;
+								//计算泵送费
+								if(item.capacity < 35) {
+									item.autoFee = 1000;
+								} else {
+									item.autoFee = item._id.autoPrice * item.capacity;
+								}
 								break;
 							}
 							
 						}
+						
 						this.saleCount.total += item.total;
+						this.saleCount.autoTotal += item.autoFee;
 					}
 
 					//获取施工单位和电话
