@@ -35,10 +35,13 @@
 						<td>序号</td>
 						<td>日期</td>
 			            <td>强度</td>  
-			            <td>泵送方量</td>
 			            <td>自卸方量</td>
-			            <td>砼方单价</td>
-			            <td>合计/元</td>  
+			            <td>泵送方量</td>
+			            <td>特殊砼加价</td>
+			            <td>泵送费</td>
+			            <td>方价</td>
+			            <td>泵款合计</td>
+			            <td>施工部位</td>  
 			        </tr>
 		        </THEAD>
 	    		<tr v-for="(value,index) in data" :class="{newPage:index%30 == 0}">
@@ -47,25 +50,31 @@
 	    			<td>{{value._id.strength}}</td>
 
 	    			<template v-if="value._id.way != '自卸'">
+						<td></td>
 						<td>{{value.capacity}}</td>
-				
-						<td>---</td>
+						<td>{{value._id.attachPrice}}</td>
+						<td>{{value._id.autoPrice}}</td>
 			        </template>
 			        <template v-if="value._id.way == '自卸'">
-			        	<td>---</td>
-						
 						<td>{{value.capacity}}</td>
+						<td></td>
+						<td>{{value._id.attachPrice}}</td>
+						<td></td>
 			        </template>
+			        
 			        <td>{{value._id.price}}</td>
 					<td>{{value.total}}</td>
+					<td>{{value._id.part}}</td>
 		        </tr>
 		        <tr>
 		        	<td colspan ="3">总计方量</td>
-		        	<td>{{saleCount.auto45}}</td>
-		        	
 		        	<td>{{saleCount.self}}</td>
-		        	<td>总计金额</td>
+		        	<td>{{saleCount.auto45}}</td>
+		        	<td>泵费小计</td>
+		        	<td>30</td>
+		        	<td>砼款小计</td>
 		        	<td>{{saleCount.total}}</td>
+		        	<td></td>
 		        </tr> 
 	 			<TR>
 	 				<td colspan="2">合计（人民币）</td>

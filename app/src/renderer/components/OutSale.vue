@@ -295,7 +295,8 @@ export default {
 			this.form.acc = Number(this.form.acc);
 			this.form.count = Number(this.form.count);
 			this.form.price = Number(this.salePrice.price[this.form.strength]);
-			this.form.attachPrice = calcPrice();
+			this.form.attachPrice = this.calcPrice();
+			this.form.autoPrice = this.salePrice.attach.auto;
 			this.form.total = (this.form.price + this.form.attachPrice) * this.form.capacity;
 
 			//设置运距
@@ -331,9 +332,10 @@ export default {
 			this.form.plan = Number(this.form.plan);
 			this.form.acc = Number(this.form.acc);
 			this.form.count = Number(this.form.count);
-			this.form.price = this.calcPrice();
+			this.form.price = Number(this.salePrice.price[this.form.strength]);
+			this.form.attachPrice = this.calcPrice();
 			this.form.autoPrice = this.salePrice.attach.auto;
-			this.form.total = this.form.price * this.form.capacity;
+			this.form.total = (this.form.price + this.form.attachPrice) * this.form.capacity;
 
 			util.put("sales/"+this.form.id, this.form, data => {
 				alert("修改成功");
