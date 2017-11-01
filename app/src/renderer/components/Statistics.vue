@@ -32,7 +32,6 @@
 			<table border="1" bordercolor="black" cellspacing="0" cellpadding="5" width="100%" >
 				<THEAD style="display:table-header-group;font-weight:bold">
 					<tr>  
-						<td>序号</td>
 						<td>日期</td>
 			            <td>强度</td>  
 			            <td>自卸方量</td>
@@ -41,33 +40,35 @@
 			            <td>泵送费</td>
 			            <td>方价</td>
 			            <td>泵款合计</td>
-			            <td>施工部位</td>  
+			            <td>施工部位</td>
+			            <td>备注</td>  
 			        </tr>
 		        </THEAD>
 	    		<tr v-for="(value,index) in data" :class="{newPage:index%30 == 0}">
-	    			<td>{{index+1}}</td>
 	    			<td>{{getDateFromYear(value._id.day)}}</td>
 	    			<td>{{value._id.strength}}</td>
 
 	    			<template v-if="value._id.way != '自卸'">
 						<td></td>
 						<td>{{value.capacity}}</td>
-						<td>{{value._id.attachPrice}}</td>
+						<td>{{value._id.autoPrice}}</td>
 						<td>{{value.autoFee}}</td>
+						<td>{{value._id.price + value._id.attachPrice}}</td>
 			        </template>
 			        <template v-if="value._id.way == '自卸'">
 						<td>{{value.capacity}}</td>
 						<td></td>
-						<td>{{value._id.attachPrice}}</td>
+						<td>0</td>
 						<td></td>
+						<td>{{value._id.price}}</td>
 			        </template>
 			        
-			        <td>{{value._id.price}}</td>
+			      
 					<td>{{value.total}}</td>
 					<td>{{value._id.part}}</td>
 		        </tr>
 		        <tr>
-		        	<td colspan ="3">方量小计</td>
+		        	<td colspan ="2">方量小计</td>
 		        	<td>{{saleCount.self}}</td>
 		        	<td>{{saleCount.auto45}}</td>
 		        	<td>泵费小计</td>
@@ -77,12 +78,12 @@
 		        	<td></td>
 		        </tr> 
 		        <tr>
-		        	<td colspan ="3">总方量</td>
+		        	<td colspan ="2">总方量</td>
 		        	<td colspan ="2">{{saleCount.self + saleCount.auto45}}方</td>
 					<td colspan ="2">合计（元）</td>
 					<td colspan ="3">{{saleCount.autoTotal + saleCount.total}}</td>
 		        </tr>
-	 			<TR>
+	 			<!--<TR>
 	 				<td colspan="2">合计（人民币）</td>
 	 				<td colspan="5">{{numberToChinese(saleCount.total)}}</td>
 	 			</TR>
@@ -101,6 +102,23 @@
 	 			<tr>
 	 				<td >（盖章）</td><TD colspan="3">年&nbsp&nbsp&nbsp月&nbsp&nbsp&nbsp日</TD>
 	 				<td >（盖章）</td><td colspan="2">年&nbsp&nbsp&nbsp月&nbsp&nbsp&nbsp日</td>
+	 			</tr>
+	 			-->
+	 			<tr>
+	 				<td colspan="5">
+	 					<p align="left">供货单位：</p>
+	 					<p align="left">负责人：</p>
+	 					<p align="left">单位：</p>
+	 					<p align="left">（盖章）</p>
+	 					<p align="right"><span style="margin-right:30px">年</span><span style="margin-right:30px">月</span><span style="margin-right:30px">日</span></p>
+	 				</td>
+	 				<TD colspan="5">
+	 					<p align="left">使用单位：</p>
+	 					<p align="left">项目负责人：</p>
+	 					<p align="left">单位：</p>
+	 					<p align="left">（盖章）</p>
+	 					
+	 				</TD>
 	 			</tr>
 			</table>
 		</div>
@@ -221,6 +239,7 @@ export default {
 							case '自卸': 
 							{
 								this.saleCount.self += item.capacity;
+								item.autoFee = 0;
 								break;
 							}
 							default:
@@ -228,7 +247,7 @@ export default {
 								this.saleCount.auto45 += item.capacity;
 								//计算泵送费
 								if(item.capacity < 35) {
-									item.autoFee = 1000;
+									item.autoFee = 1050;
 								} else {
 									item.autoFee = item._id.autoPrice * item.capacity;
 								}
