@@ -52,8 +52,8 @@
 						<td></td>
 						<td>{{value.capacity}}</td>
 						<td>{{value._id.autoPrice}}</td>
-						<td>{{value.autoFee}}</td>
-						<td>{{value._id.price + value._id.attachPrice}}</td>
+						<td>{{value.autoFee?value.autoFee:0}}</td>
+						<td>{{value._id.price + (value._id.attachPrice?value._id.attachPrice:0)}}</td>
 			        </template>
 			        <template v-if="value._id.way == '自卸'">
 						<td>{{value.capacity}}</td>
@@ -210,6 +210,7 @@ export default {
 			util.get(url, data => {
 				if(!data) {
 					this.data = [];
+					this.saleCount = {self:0,auto45:0,auto52:0,total:0};
 				} else {
 					data.sort((a,b) => a._id.day - b._id.day)
 
@@ -257,7 +258,7 @@ export default {
 						}
 						
 						this.saleCount.total += item.total;
-						this.saleCount.autoTotal += item.autoFee;
+						this.saleCount.autoTotal += (item.autoFee?item.autoFee:0);
 					}
 
 					//获取施工单位和电话
