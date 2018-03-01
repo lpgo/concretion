@@ -384,7 +384,7 @@
 	    		carInfos: state => state.carInfos,
 	    	}),
 	    	qrcodeSrc() {
-	    		return "http://182.61.33.210/api/qrcode?str=" + this.printData.no; 
+	    		return "http://182.61.33.210:8888/api/qrcode?str=" + this.printData.no; 
 	    	},
 	    },
 		mounted() {
@@ -417,7 +417,7 @@
 			
 			this.port = new SerialPort("COM3", {
 			  baudRate: 2400,
-			  autoOpen: false
+			  autoOpen: true
 			});
 			
 			this.port.open(function (err) {
@@ -426,12 +426,18 @@
 			  }
 			});
 			let last,count;
-			this.port.on('data', data => {
-				
-				let str = data.toString();	 
-				//console.log(data);
-				let weight = Number(str.substring(3,8)) / Math.pow(10,Number(str[8]));
 
+			const Readline = SerialPort.parsers.Readline;
+			//
+			const parser = this.port.pipe(new Readline({ delimiter: '' }));
+
+			parser.on('data', data => {
+				
+				let str = data.toString();
+				//let weight = Number(str.substring(3,8)) / Math.pow(10,Number(str[8]));
+				let weight = Number(str.substring(1,7)) / Math.pow(10,Number(str[7]));
+
+				console.log(str);
 				if(last != weight) {
 					last = weight;
 					count = 0;

@@ -383,7 +383,7 @@
 	    		carInfos: state => state.carInfos,
 	    	}),
 	    	qrcodeSrc() {
-	    		return "http://182.61.33.210/api/qrcode?str=" + this.printData.no; 
+	    		return "http://182.61.33.210:8888/api/qrcode?str=" + this.printData.no; 
 	    	},
 	    },
 		mounted() {
